@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base ───────────────────────────────────────────── */
+html {
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* DARK MODE — deep dark blue-gray, NOT pure black */
+html.dark body {
+  background-color: #0e1420;
+  color: #ecf0f8;
+}
+
+/* LIGHT MODE */
+html:not(.dark) body {
+  background-color: #eef1f7;
+  color: #1c2128;
+}
+
+/* ─── Grain texture overlay ──────────────────────────── */
+#grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(139,151,168,0.18);
+  border-radius: 3px;
+}
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: rgba(30,50,80,0.18);
+  border-radius: 3px;
+}
+
+/* ─── Selection ──────────────────────────────────────── */
+::selection {
+  background: rgba(63,185,80,0.18);
+  color: #3fb950;
+}
+
+/* ─── Terminal cursor blink ──────────────────────────── */
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ─── Reveal animations ──────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Card base (dark) ───────────────────────────────── */
+/* Background is #181f2e — clearly distinct from #0e1420 body */
+.card-dark {
+  background: #181f2e;
+  border: 1px solid rgba(139,151,168,0.1);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.card-dark:hover {
+  border-color: rgba(63,185,80,0.25);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 20px rgba(63,185,80,0.06);
+  transform: translateY(-2px);
+}
+
+/* ─── Card base (light) ──────────────────────────────── */
+.card-light {
+  background: #ffffff;
+  border: 1px solid rgba(30,50,80,0.09);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05), 0 1px 0 rgba(255,255,255,0.8) inset;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.card-light:hover {
+  border-color: rgba(26,127,55,0.28);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+  transform: translateY(-2px);
+}
+
+/* ─── Terminal window chrome ─────────────────────────── */
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(139,151,168,0.09);
+}
+.terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* ─── Skill badge ────────────────────────────────────── */
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ─── Section heading underline ──────────────────────── */
+.section-title::after {
+  content: '';
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  background: #3fb950;
+  margin-top: 6px;
+  border-radius: 1px;
+}
+
+/* ─── Nav blur ───────────────────────────────────────── */
+.nav-blur {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ─── Nav — always darker than page background ───────── */
+/* Dark mode: #07090e (near-black) with transparency */
+.nav-dark-bg {
+  background-color: rgba(7, 9, 14, 0.92);
+  border-bottom: 1px solid rgba(63,185,80,0.08);
+}
+.nav-dark-bg-transparent {
+  background-color: rgba(7, 9, 14, 0.6);
+  border-bottom: 1px solid rgba(63,185,80,0.04);
+}
+/* Light mode: white/near-white */
+.nav-light-bg {
+  background-color: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(30,50,80,0.09);
+}
+.nav-light-bg-transparent {
+  background-color: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(30,50,80,0.04);
+}
+
+/* ─── Hover underline link ───────────────────────────── */
+.nav-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #3fb950;
+  transition: width 0.25s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ─── Scanline effect ────────────────────────────────── */
+html.dark .scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.02) 2px,
+    rgba(0,0,0,0.02) 4px
+  );
+}
+
+/* ─── Photo shimmer ──────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.photo-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(139,151,168,0.06) 25%,
+    rgba(139,151,168,0.12) 50%,
+    rgba(139,151,168,0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ─── Neural canvas ──────────────────────────────────── */
+#neural-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* rendered by JS, no CSS animation needed */
+}
+
+/* ─── Content must sit above canvas ─────────────────── */
+nav, main, footer {
+  position: relative;
+  z-index: 1;
+}
