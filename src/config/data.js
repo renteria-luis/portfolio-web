@@ -21,7 +21,6 @@ export const personal = {
     "/deep-learning",
     "/mlops",
     "/llm",
-    "/fraud-detection",
     "/data-engineering",
   ],
 
@@ -92,7 +91,7 @@ export const projects = [
     statusLabel: "In Development",
     tags: ["Python", "PyTorch", "Transformers", "LangChain", "RAG", "NLP", "spaCy"],
     metrics: [
-      { label: "Phase", value: "1/4" },
+      { label: "Phase", value: "1/3" },
       { label: "Focus", value: "NLP → RAG" },
       { label: "Stack", value: "HF + LLM" },
     ],
