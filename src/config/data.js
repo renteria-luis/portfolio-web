@@ -89,7 +89,7 @@ export const projects = [
     description: "Multi-version NLP architecture scaling from classical text processing to a full RAG pipeline. Currently implementing transformer-based embeddings and vector retrieval backed by an LLM. Designed with modularity to deploy functional microservices at each phase.",
     status: "building",
     statusLabel: "In Development",
-    tags: ["Python", "PyTorch", "Transformers", "LangChain", "RAG", "NLP", "spaCy"],
+    tags: ["Python", "PyTorch", "Transformers", "LangChain", "RAG", "NLP", "spaCy", "Beautiful Soup"],
     metrics: [
       { label: "Phase", value: "1/3" },
       { label: "Focus", value: "NLP → RAG" },
