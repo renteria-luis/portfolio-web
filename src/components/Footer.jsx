@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Heart, FileDown } from 'lucide-react';
+import { Github, Linkedin, Mail, FileDown } from 'lucide-react';
 import { personal } from '../config/data';
 
 export default function Footer({ dark }) {
@@ -22,7 +22,7 @@ export default function Footer({ dark }) {
             <span>echo "Thanks for visiting 👾"</span>
           </div>
 
-          {/* Center: Social links */}
+          {/* Right: Social links */}
           <div className="flex items-center gap-3">
             <a
               href={personal.socials.github}
@@ -64,13 +64,6 @@ export default function Footer({ dark }) {
             >
               <FileDown size={12} /> CV
             </a>
-          </div>
-
-          {/* Right: Built with */}
-          <div className={`flex items-center gap-1.5 font-mono text-[10px] ${textSecondary}`}>
-            <span>built with</span>
-            <Heart size={9} className={dark ? 'text-terminal-red' : 'text-red-400'} fill="currentColor" />
-            <span>React + Tailwind</span>
           </div>
         </div>
 

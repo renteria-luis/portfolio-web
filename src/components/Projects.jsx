@@ -1,6 +1,6 @@
 import { Github, ExternalLink, Terminal, ArrowUpRight } from 'lucide-react';
 import { SiHuggingface } from 'react-icons/si';
-import { projects } from '../config/data';
+import { projects, companion } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
 
 const STATUS_STYLES = {
@@ -41,6 +41,8 @@ function ProjectCard({ project, dark }) {
       className={`group rounded-lg p-5 flex flex-col transition-all duration-300 ${dark ? 'card-dark' : 'card-light'}`}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = borderHover;
+        const line = companion.projectLines?.[project.id];
+        if (line) window.dispatchEvent(new CustomEvent('companionSay', { detail: line }));
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.borderColor = dark ? 'rgba(125,167,217,0.08)' : 'rgba(30,50,80,0.1)';

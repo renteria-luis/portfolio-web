@@ -342,12 +342,44 @@ export const companion = {
     open: "/companion/cat-open.png",
     closed: "/companion/cat-closed.png",
   },
-  // one short line per section id (hero / about / experience / projects / skills)
+  // several short lines per section — the cat picks one at random
   dialogues: {
-    hero: "Welcome aboard — scroll to explore my work",
-    about: "A bit about who I am",
-    experience: "My journey so far",
-    projects: "Peek the code — click the links to open the repos",
-    skills: "The tools I build with",
+    hero: [
+      "Welcome aboard — scroll to explore my work",
+      "Hey! I'm Luis's little astronaut",
+      "Float on down — there's good stuff below",
+      "Scroll to see what I've built",
+    ],
+    about: [
+      "A bit about who I am",
+      "The human behind the code",
+      "Here's my story so far",
+    ],
+    experience: [
+      "My journey — refineries to neural nets",
+      "Where I've been",
+      "From PLCs to LLMs",
+    ],
+    projects: [
+      "Six projects — all real, shipped or shipping",
+      "Hover a card, then click the links to open the repos",
+      "These aren't demos — they run in production",
+      "Peek the code on GitHub",
+      "From fraud detection to a shipped mobile app",
+    ],
+    skills: [
+      "The tools I build with",
+      "My daily stack",
+      "What's in the toolbox",
+    ],
+  },
+  // shown when a specific project card is hovered (keyed by project id)
+  projectLines: {
+    "wisp": "Wisp — I vibe-coded this whole app",
+    "cairn": "Cairn runs a RAG assistant fully offline",
+    "fraud-detection": "This one's live on Hugging Face — try it",
+    "graph-aml": "Catching money laundering in a transaction graph",
+    "telco-churn": "Predicting who's about to churn",
+    "house-prices": "Ranked #202 on Kaggle",
   },
 };

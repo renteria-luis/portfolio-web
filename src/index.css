@@ -259,12 +259,11 @@ nav, main, footer {
 }
 .companion-inner {
   position: relative;
-  width: 150px;
-  transition: transform 0.45s ease;   /* smooth flip when facing the mouse */
+  width: 120px;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.38));
 }
 @media (max-width: 900px) {
-  .companion-inner { width: 78px; }
+  .companion-inner { width: 62px; }
 }
 .companion-img {
   width: 100%;
