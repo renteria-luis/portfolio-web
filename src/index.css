@@ -242,8 +242,9 @@ nav, main, footer {
 }
 
 /* ─── Companion: floating astronaut cat ──────────────── */
-/* Sits above the neural canvas (z-0) but BELOW all content (nav/main/footer = z-1),
-   so it drifts in the side gutters and passes behind the cards. Never blocks clicks. */
+/* Desktop: cat sits above the neural canvas (z-0) but BELOW content, so it drifts
+   in the gutters and passes behind cards. Mobile: cat rides above content (z-60) so
+   it can be dragged out of the way. The speech bubble is always above everything. */
 .companion-layer {
   position: fixed;
   inset: 0;
@@ -251,15 +252,23 @@ nav, main, footer {
   pointer-events: none;
   overflow: hidden;
 }
+@media (max-width: 900px) {
+  .companion-layer { z-index: 60; }
+}
+.companion-layer.gone { display: none; }
 .companion-cat {
   position: absolute;
   top: 0;
   left: 0;
   will-change: transform;
+  pointer-events: auto;     /* grabbable where visible; layer stays click-through */
+  cursor: grab;
+  touch-action: none;       /* let us drag on mobile without scrolling the page */
 }
+.companion-cat:active { cursor: grabbing; }
 .companion-inner {
   position: relative;
-  width: 120px;
+  width: 135px;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.38));
 }
 @media (max-width: 900px) {
@@ -281,10 +290,10 @@ nav, main, footer {
 }
 .companion-img.blinkimg.on { opacity: 1; }
 
+/* Speech bubble — fixed, ABOVE everything, positioned to follow the cat via JS */
 .companion-bubble {
-  position: absolute;
-  bottom: 100%;
-  margin-bottom: 8px;
+  position: fixed;
+  z-index: 60;
   white-space: nowrap;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
@@ -300,8 +309,8 @@ nav, main, footer {
   transition: opacity 0.35s ease, transform 0.35s ease;
   pointer-events: none;
 }
-.companion-bubble.left  { left: 6px;  transform-origin: bottom left; }
-.companion-bubble.right { right: 6px; transform-origin: bottom right; }
+.companion-bubble.left  { transform-origin: bottom left; }
+.companion-bubble.right { transform-origin: bottom right; }
 .companion-bubble.show {
   opacity: 1;
   transform: translateY(0) scale(1);
@@ -310,4 +319,32 @@ html:not(.dark) .companion-bubble {
   background: rgba(255, 255, 255, 0.97);
   color: #1c2128;
   border-color: rgba(26, 127, 55, 0.3);
+}
+
+/* Minimized kitten head (shown after a tap/click on the cat) */
+.companion-head {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 60;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 9999px;
+  background: rgba(24, 31, 46, 0.92);
+  border: 1px solid rgba(63, 185, 80, 0.4);
+  color: #3fb950;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.companion-head:hover { transform: scale(1.1); box-shadow: 0 8px 22px rgba(63, 185, 80, 0.28); }
+.companion-head svg { width: 30px; height: 30px; }
+html:not(.dark) .companion-head {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(26, 127, 55, 0.4);
+  color: #1a7f37;
 }

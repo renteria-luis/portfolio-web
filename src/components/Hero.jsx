@@ -1,6 +1,8 @@
 import { Github, Linkedin, ArrowDown, FileDown, Mail } from 'lucide-react';
-import { personal } from '../config/data';
+import { personal, companion } from '../config/data';
 import { useTypingEffect } from '../hooks/useTypingEffect';
+
+const say = (t) => t && window.dispatchEvent(new CustomEvent('companionSay', { detail: t }));
 
 export default function Hero({ dark }) {
   const typed = useTypingEffect(personal.typingLines, { typeSpeed: 75, deleteSpeed: 40, pauseMs: 1800 });
@@ -166,7 +168,7 @@ export default function Hero({ dark }) {
 
           {/* Right: Photo placeholder */}
           <div className="lg:col-span-2 flex justify-center lg:justify-end">
-            <div className="relative">
+            <div className="relative" onMouseEnter={() => say(companion.hoverLines.photo)}>
               {personal.photoUrl ? (
                 <div
                   className={`w-52 h-52 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border ${borderColor}`}

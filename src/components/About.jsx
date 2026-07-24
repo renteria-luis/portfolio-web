@@ -1,9 +1,12 @@
-import { personal } from '../config/data';
+import { personal, companion } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
+
+const say = (t) => t && window.dispatchEvent(new CustomEvent('companionSay', { detail: t }));
 
 function MetricCard({ label, value, note, dark }) {
   return (
     <div
+      onMouseEnter={() => say(companion.hoverLines[label])}
       className={`p-4 rounded-lg border text-center transition-all duration-300 ${
         dark
           ? 'bg-[#181f2e] border-[rgba(125,167,217,0.08)] hover:border-[rgba(63,185,80,0.2)]'

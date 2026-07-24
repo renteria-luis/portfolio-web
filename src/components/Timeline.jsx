@@ -1,6 +1,8 @@
 import { Briefcase, GraduationCap } from 'lucide-react';
-import { timeline } from '../config/data';
+import { timeline, companion } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
+
+const say = (t) => t && window.dispatchEvent(new CustomEvent('companionSay', { detail: t }));
 
 const TAG_COLORS_DARK = [
   'bg-[rgba(63,185,80,0.1)] text-terminal-green border-[rgba(63,185,80,0.15)]',
@@ -55,6 +57,7 @@ function TimelineItem({ item, index, dark, isLast }) {
 
       {/* Card */}
       <div
+        onMouseEnter={() => say(companion.hoverLines[item.id])}
         className={`mb-8 rounded-lg p-5 transition-all duration-300 border ${
           dark
             ? `bg-[#181f2e] border-[rgba(125,167,217,0.08)] ${

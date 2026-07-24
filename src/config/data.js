@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────
 
 export const personal = {
-  name: "Luis Renteria",
+  name: "Luis Renteria Lezano",
   initials: "LR",
   title: "AI/ML Engineer & Data Scientist in Training",
   location: "London, ON — Canada",
@@ -381,5 +381,18 @@ export const companion = {
     "graph-aml": "Catching money laundering in a transaction graph",
     "telco-churn": "Predicting who's about to churn",
     "house-prices": "Ranked #202 on Kaggle",
+  },
+  // shown when hovering the photo / the About metric cards / a timeline entry
+  hoverLines: {
+    "photo": "That's me",
+    "GPA": "Top of my class — quietly proud",
+    "Models deployed": "Real models, actually deployed",
+    "Recall (Fraud)": "Caught 85% of the fraud",
+    "Kaggle rank": "Cracked the top on Kaggle",
+    "ucsp": "Studied abroad in Shanghai, China — what an experience",
+    "fanshawe": "Where I'm leveling up in AI/ML right now",
+    "bermalar": "Programming PLCs in a refinery — real stakes",
+    "hikvision": "Testing gear before it hit the market",
+    "td-synnex": "Cisco & Fortinet renewals days",
   },
 };
