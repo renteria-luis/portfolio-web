@@ -7,6 +7,7 @@ import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
+import Companion from './components/Companion';
 
 export default function App() {
   const [dark, setDark] = useState(() => {
@@ -28,6 +29,9 @@ export default function App() {
 
       {/* Neural network canvas — fixed, full-viewport, z-0 */}
       <NeuralBackground dark={dark} />
+
+      {/* Floating astronaut cat — above canvas (z-0), behind all content (z-1) */}
+      <Companion />
 
       {/* Page wrapper — transparent so body bg + canvas show through */}
       <div className="min-h-screen">

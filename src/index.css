@@ -240,3 +240,75 @@ nav, main, footer {
 .group:hover .spark {
   animation: spark 1.3s ease-in-out infinite;
 }
+
+/* ─── Companion: floating astronaut cat ──────────────── */
+/* Sits above the neural canvas (z-0) but BELOW all content (nav/main/footer = z-1),
+   so it drifts in the side gutters and passes behind the cards. Never blocks clicks. */
+.companion-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.companion-cat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+.companion-inner {
+  position: relative;
+  width: 150px;
+  transition: transform 0.45s ease;   /* smooth flip when facing the mouse */
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.38));
+}
+@media (max-width: 900px) {
+  .companion-inner { width: 78px; }
+}
+.companion-img {
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.companion-img.base { position: relative; display: block; }
+.companion-img.blinkimg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 90ms ease;
+}
+.companion-img.blinkimg.on { opacity: 1; }
+
+.companion-bubble {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  line-height: 1.2;
+  padding: 6px 10px;
+  border-radius: 9px;
+  background: rgba(24, 31, 46, 0.95);
+  color: #ecf0f8;
+  border: 1px solid rgba(63, 185, 80, 0.3);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(4px) scale(0.92);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.companion-bubble.left  { left: 6px;  transform-origin: bottom left; }
+.companion-bubble.right { right: 6px; transform-origin: bottom right; }
+.companion-bubble.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+html:not(.dark) .companion-bubble {
+  background: rgba(255, 255, 255, 0.97);
+  color: #1c2128;
+  border-color: rgba(26, 127, 55, 0.3);
+}

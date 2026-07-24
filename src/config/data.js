@@ -333,3 +333,21 @@ export const skillCategories = [
     ],
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────
+//  COMPANION  (the floating astronaut cat) — edit the short lines here
+// ─────────────────────────────────────────────────────────────────
+export const companion = {
+  frames: {
+    open: "/companion/cat-open.png",
+    closed: "/companion/cat-closed.png",
+  },
+  // one short line per section id (hero / about / experience / projects / skills)
+  dialogues: {
+    hero: "Welcome aboard — scroll to explore my work",
+    about: "A bit about who I am",
+    experience: "My journey so far",
+    projects: "Peek the code — click the links to open the repos",
+    skills: "The tools I build with",
+  },
+};
