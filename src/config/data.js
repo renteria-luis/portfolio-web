@@ -22,6 +22,9 @@ export const personal = {
     "/mlops",
     "/llm",
     "/data-engineering",
+    "/vibe-coding",
+    "/ai-agents",
+    "/vector-search",
   ],
 
   // Short punchy tagline under the typing effect
@@ -30,16 +33,16 @@ export const personal = {
   // Bio paragraph for the About section
   bio: [
     "Electronics & Telecommunications Engineer transitioning to AI/ML Engineering. Currently specializing in NLP, RAG architectures, and MLOps at Fanshawe College and self-directed learning.",
-    "My background in high-stakes environments — refinery SCADA systems and AI-driven enterprise security — shapes my approach. I prioritize system reliability, signal integrity, and measurable business impact over isolated academic metrics.",
+    "My background in high-stakes environments — refinery control systems (PLC/SCADA) and enterprise IP security infrastructure — shapes my approach. I prioritize system reliability, signal integrity, and measurable business impact over isolated academic metrics.",
     "I focus on shipping end-to-end pipelines: transforming messy raw data into containerized, production-ready models and APIs."
   ],
 
   // Key metrics shown as highlights
   highlights: [
-    { label: "GPA", value: "4.16 / 4.2", note: "Dean's Honour Roll" },
+    { label: "GPA", value: "4.18 / 4.2", note: "Dean's Honour Roll" },
     { label: "Models deployed", value: "3+", note: "End-to-end, Dockerized" },
     { label: "Recall (Fraud)", value: "85%", note: "PR-AUC 0.91" },
-    { label: "Bookings automated", value: "60%", note: "Time reduction" },
+    { label: "Kaggle rank", value: "#202", note: "House Prices comp" },
   ],
 
   // Photo — replace '/photo.jpg' with your actual image path in /public
@@ -61,6 +64,48 @@ export const personal = {
 //  PROJECTS
 // ─────────────────────────────────────────────────────────────────
 export const projects = [
+  {
+    id: "wisp",
+    title: "Wisp",
+    subtitle: "Cross-Platform Mobile App · AI-Assisted Build",
+    description:
+      "A fully offline, cross-platform quit-smoking companion (Expo + React Native, TypeScript). I designed the product and built it end to end by directing AI coding tools in a stack I hadn't used before. A deterministic, fully-tested rule engine — never an LLM at runtime — computes each user's adaptive plan, so it stays private, offline and explainable. Includes on-device SQLite storage, trend-based (non-punitive) progress, local notifications, English/Spanish, and CI with strict type-checking and tests.",
+    status: "complete",
+    statusLabel: "Shipped",
+    tags: ["Expo", "React Native", "TypeScript", "AI-assisted coding", "SQLite", "Zustand", "NativeWind", "i18next", "Jest", "CI"],
+    metrics: [
+      { label: "Platform", value: "iOS + Android" },
+      { label: "On-device", value: "100%" },
+      { label: "Engine", value: "Deterministic" },
+    ],
+    links: {
+      github: "https://github.com/renteria-luis/wisp",
+      demo: null,
+    },
+    accent: "terminal-purple",
+    featured: true,
+  },
+  {
+    id: "cairn",
+    title: "Cairn",
+    subtitle: "On-Device RAG Study Assistant · Android",
+    description:
+      "An offline Android study assistant: upload documents to a notebook and ask questions answered from your own material — no internet, nothing leaves the device. I designed the chunking and retrieval layer: sentence-aware chunking sized to the embedding token limit, dense retrieval over an ObjectBox HNSW vector index using EmbeddingGemma, feeding a local LLM. Retrieval is scoped per notebook so answers stay grounded in the right source.",
+    status: "building",
+    statusLabel: "In Development",
+    tags: ["Android", "Kotlin", "RAG", "EmbeddingGemma", "ObjectBox HNSW", "Vector Search", "Local LLM", "On-device"],
+    metrics: [
+      { label: "Embeddings", value: "EmbeddingGemma" },
+      { label: "Vector store", value: "HNSW" },
+      { label: "Runtime", value: "100% offline" },
+    ],
+    links: {
+      github: null,
+      demo: null,
+    },
+    accent: "terminal-orange",
+    featured: true,
+  },
   {
     id: "fraud-detection",
     title: "Fraud Detection",
@@ -86,7 +131,7 @@ export const projects = [
     id: "graph-aml",
     title: "Graph AML Detector",
     subtitle: "Graph ML · GNN · Agentic AI (In Development)",
-    description: "Graph neural network that detects money laundering on a real Bitcoin transaction graph, where fraud lives in network topology rather than in isolated transactions. Trains GraphSAGE with neighbor sampling on the Elliptic dataset and benchmarks it against an XGBoost baseline to prove the graph adds signal. A LangGraph ReAct agent then investigates each flagged node and produces an explainable risk report.",
+    description: "Graph neural network that detects money laundering on a real Bitcoin transaction graph, where fraud lives in network topology rather than in isolated transactions. Trains GraphSAGE with neighbor sampling on the Elliptic dataset and benchmarks it against an XGBoost baseline to prove the graph adds signal. A planned LangGraph ReAct agent layer will then investigate each flagged node and produce an explainable risk report.",
     status: "building",
     statusLabel: "In Development",
     tags: ["Python", "PyTorch Geometric", "GraphSAGE", "GNN", "LangGraph", "FastAPI", "NetworkX", "Docker"],
@@ -158,19 +203,7 @@ export const timeline = [
     location: "London, ON",
     description: "Focused on deploying robust ML systems. Specializing in LLM/RAG integration, advanced NLP techniques, and building containerized MLOps pipelines.",
     tags: ["ML", "Deep Learning", "NLP", "MLOps", "Co-op"],
-    highlight: "Dean's Honour Roll · GPA 4.16/4.2",
-  },
-  {
-    id: "planet",
-    type: "experience",
-    institution: "Planet Adventure Group",
-    role: "Software Developer",
-    period: "Sep 2024 — Dec 2024",
-    location: "Arequipa, Peru",
-    description:
-      "Built and maintained a Python-based reservation system handling hundreds of monthly bookings, automating previously manual workflows. Implemented SQL queries for client database management.",
-    tags: ["Python", "SQL", "Automation", "Databases"],
-    highlight: "60% reduction in booking processing time",
+    highlight: "Dean's Honour Roll · GPA 4.18/4.2",
   },
   {
     id: "hikvision",
@@ -180,9 +213,9 @@ export const timeline = [
     period: "Aug 2023 — Feb 2024",
     location: "Peru",
     description:
-      "Deployed AI-driven image recognition and access control security systems across 20+ enterprise installations in 6 cities. Led technical training for 50+ regional clients.",
-    tags: ["AI Systems", "CCTV Analytics", "Image Recognition", "Client Training"],
-    highlight: "40% increase in monitoring efficiency",
+      "Tested new hardware and software before market release, identifying and reporting defects to the product team. Deployed and validated IP video-security infrastructure — network architecture, servers, structured cabling — and delivered 20+ technical training sessions to installers and integration partners.",
+    tags: ["QA / Testing", "IP Video", "Networking", "Technical Training"],
+    highlight: "20+ technical training sessions · hardware/software QA",
   },
   {
     id: "td-synnex",
@@ -203,9 +236,9 @@ export const timeline = [
     period: "Feb 2022 — Mar 2023",
     location: "Lima, Peru",
     description:
-      "Architected real-time data acquisition and signal processing pipelines for refinery modernization. Transformed raw sensor telemetry into structured datasets. Conducted SAT/FAT validation focused on signal integrity and fault handling.",
-    tags: ["SCADA", "Signal Processing", "Data Pipelines", "Industrial Systems"],
-    highlight: "Real-time sensor telemetry → structured datasets",
+      "Programmed Allen-Bradley PLC control logic (Studio 5000) and designed the operator HMI (FactoryTalk View) for a condensate treatment plant on the Talara Refinery Modernization. Configured and calibrated field instruments and ran FAT/SAT validation as one of three engineers.",
+    tags: ["PLC / Studio 5000", "HMI / SCADA", "Instrumentation", "FAT/SAT"],
+    highlight: "Programmed PLC + HMI for a refinery modernization",
   },
   {
     id: "ucsp",
@@ -238,8 +271,24 @@ export const skillCategories = [
       { name: "NumPy",        level: "core",     icon: "SiNumpy" },
       { name: "spaCy",        level: "core",     icon: "SiSpacy" },
       { name: "RAG Architectures",    level: "learning", icon: "FaProjectDiagram" },
+      { name: "Vector Search",        level: "learning", icon: "FaSitemap" },
+      { name: "Embeddings",           level: "learning", icon: "FaProjectDiagram" },
+      { name: "On-device AI",         level: "learning", icon: "FaRobot" },
       { name: "HuggingFace",          level: "learning", icon: "SiHuggingface" },
       { name: "LangChain",            level: "learning", icon: "SiLangchain" },
+    ],
+  },
+  {
+    id: "web-dev",
+    label: "Web & AI-Assisted Dev",
+    icon: "layers",
+    skills: [
+      { name: "HTML",               level: "core",     icon: "SiHtml5" },
+      { name: "CSS",                level: "core",     icon: "SiCss3" },
+      { name: "JavaScript",         level: "learning", icon: "SiJavascript" },
+      { name: "AI Coding Tools",    level: "core",     icon: "FaRobot" },
+      { name: "Prompt Engineering", level: "core",     icon: "FaTerminal" },
+      { name: "Agentic Workflows",  level: "learning", icon: "FaProjectDiagram" },
     ],
   },
   {

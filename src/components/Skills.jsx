@@ -8,8 +8,10 @@ import { SiPython, SiPytorch, SiScikitlearn, SiPandas, SiNumpy,
          SiGit, SiGithub, SiLinux, SiGnubash, SiStreamlit,
          SiHuggingface, SiLangchain, SiPytest,
          SiGithubactions, SiMlflow,
-         SiApacheairflow, SiKubernetes } from 'react-icons/si';
-import { FaSitemap, FaDatabase, FaExchangeAlt, FaSpider, FaProjectDiagram, FaPlayCircle } from 'react-icons/fa';
+         SiApacheairflow, SiKubernetes,
+         SiHtml5, SiCss3, SiJavascript } from 'react-icons/si';
+import { FaSitemap, FaDatabase, FaExchangeAlt, FaSpider, FaProjectDiagram, FaPlayCircle,
+         FaRobot, FaTerminal } from 'react-icons/fa';
 import { BiLineChart } from 'react-icons/bi';
 import { BsGraphUpArrow } from 'react-icons/bs';
 import { TbBrandAzure, TbServerBolt } from 'react-icons/tb';
@@ -23,6 +25,7 @@ const ICON_MAP = {
   FaSitemap, FaDatabase, FaExchangeAlt, FaSpider, FaProjectDiagram, FaPlayCircle,
   BiLineChart, BsGraphUpArrow,
   TbBrandAzure, TbServerBolt,
+  SiHtml5, SiCss3, SiJavascript, FaRobot, FaTerminal,
 };
 
 // ─── Level color system — colorblind-safe ────────────────────────

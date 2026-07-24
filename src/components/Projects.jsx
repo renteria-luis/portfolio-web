@@ -154,14 +154,23 @@ function ProjectCard({ project, dark }) {
       </div>
 
       {/* GitHub link (always visible at bottom) */}
-      <div className="mt-4 flex flex-wrap items-center gap-4">
+      <div className="mt-4 flex flex-wrap items-center gap-4 relative">
+        {(project.links.github || project.links.demo) && (
+          <>
+            <span className="spark" style={{ left: '8px', top: '-5px', animationDelay: '0s' }} />
+            <span className="spark" style={{ left: '82px', top: '-7px', animationDelay: '0.4s' }} />
+            <span className="spark" style={{ left: '150px', top: '-4px', animationDelay: '0.8s' }} />
+          </>
+        )}
         {project.links.github && (
           <a
             href={project.links.github}
             target="_blank"
             rel="noopener noreferrer"
             className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
-              dark ? 'text-[#7b8fa6] hover:text-terminal-green' : 'text-[#8b9eb0] hover:text-[#1a7f37]'
+              dark
+                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:text-terminal-green'
+                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:text-[#1a7f37]'
             }`}
           >
             <Github size={11} />
@@ -174,7 +183,9 @@ function ProjectCard({ project, dark }) {
             target="_blank"
             rel="noopener noreferrer"
             className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
-              dark ? 'text-[#7b8fa6] hover:text-[#ffd21e]' : 'text-[#8b9eb0] hover:text-[#f5a623]'
+              dark
+                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:text-[#ffd21e]'
+                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:text-[#f5a623]'
             }`}
           >
             <SiHuggingface size={11} />
