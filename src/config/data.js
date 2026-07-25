@@ -73,6 +73,8 @@ export const personal = {
     github: "https://github.com/renteria-luis",
     linkedin: "https://linkedin.com/in/renteria-luis",
     huggingface: "https://huggingface.co/renteria-luis",
+    kaggle: "https://www.kaggle.com/luisrenterialezano",
+    leetcode: "https://leetcode.com/u/renteria-luis/",
   },
 };
 

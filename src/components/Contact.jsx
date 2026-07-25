@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mail, Github, Linkedin, FileDown, Copy, Check, Play, MapPin, Clock } from 'lucide-react';
+import { SiHuggingface, SiKaggle, SiLeetcode } from 'react-icons/si';
 import { personal } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
 import { ui } from '../i18n/ui';
@@ -457,7 +458,9 @@ export default function Contact({ dark }) {
                 { href: personal.cvUrl, label: 'resume.pdf', Icon: FileDown, download: true },
                 { href: personal.socials.linkedin, label: 'linkedin', Icon: Linkedin },
                 { href: personal.socials.github, label: 'github', Icon: Github },
-                { href: personal.socials.huggingface, label: 'hf spaces', Icon: null },
+                { href: personal.socials.huggingface, label: 'hf spaces', Icon: SiHuggingface },
+                { href: personal.socials.kaggle, label: 'kaggle', Icon: SiKaggle },
+                { href: personal.socials.leetcode, label: 'leetcode', Icon: SiLeetcode },
               ].map(({ href, label, Icon, download }) => (
                 <a
                   key={label}
@@ -469,7 +472,7 @@ export default function Contact({ dark }) {
                       : 'border-[rgba(30,50,80,0.15)] text-[#57606a] hover:border-[rgba(30,50,80,0.3)] hover:text-[#1c2128]'
                   }`}
                 >
-                  {Icon ? <Icon size={12} /> : <span aria-hidden="true">🤗</span>}
+                  <Icon size={12} />
                   {label}
                 </a>
               ))}
