@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design tokens ──────────────────────────────────── */
+/* Raw RGB channels so Tailwind can do `text-t2/70`. Theming is a single class
+   on <html> — no component needs to know which theme is active. */
+html.dark {
+  --c-green:  63 185 80;
+  --c-blue:   121 192 255;
+  --c-purple: 210 168 255;
+  --c-orange: 255 166 87;
+  --c-yellow: 227 179 65;
+  --c-red:    247 129 102;
+
+  --tb: 245 248 255;   /* brightest — headline name */
+  --t1: 236 240 248;   /* primary body */
+  --t2: 162 175 194;   /* secondary */
+  --t3: 123 143 166;   /* muted / captions */
+
+  --bg:      14 20 32;
+  --surface: 24 31 46;
+  --nav:     7 9 14;
+  --footer:  7 9 14;
+  --line:    125 167 217;   /* hairlines, always used at low alpha */
+}
+
+html:not(.dark) {
+  --c-green:  26 127 55;
+  --c-blue:   9 105 218;
+  --c-purple: 124 58 237;
+  --c-orange: 180 83 9;
+  --c-yellow: 154 103 0;
+  --c-red:    207 34 46;
+
+  --tb: 28 33 40;
+  --t1: 28 33 40;
+  --t2: 87 96 106;
+  --t3: 139 158 176;
+
+  --bg:      238 241 247;
+  --surface: 255 255 255;
+  --nav:     255 255 255;
+  --footer:  238 241 247;
+  --line:    30 50 80;
+}
+
 /* ─── Base ───────────────────────────────────────────── */
 html {
   font-family: 'Outfit', sans-serif;
@@ -9,16 +52,9 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* DARK MODE — deep dark blue-gray, NOT pure black */
-html.dark body {
-  background-color: #0e1420;
-  color: #ecf0f8;
-}
-
-/* LIGHT MODE */
-html:not(.dark) body {
-  background-color: #eef1f7;
-  color: #1c2128;
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--t1));
 }
 
 /* ─── Grain texture overlay ──────────────────────────── */
@@ -36,19 +72,51 @@ html:not(.dark) body {
 /* ─── Scrollbar ──────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-html.dark ::-webkit-scrollbar-thumb {
-  background: rgba(139,151,168,0.18);
-  border-radius: 3px;
-}
-html:not(.dark) ::-webkit-scrollbar-thumb {
-  background: rgba(30,50,80,0.18);
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--line) / 0.22);
   border-radius: 3px;
 }
 
 /* ─── Selection ──────────────────────────────────────── */
 ::selection {
-  background: rgba(63,185,80,0.18);
-  color: #3fb950;
+  background: rgb(var(--c-green) / 0.18);
+  color: rgb(var(--c-green));
+}
+
+/* ─── Keyboard focus ─────────────────────────────────── */
+/* Mouse users see nothing; keyboard users get a visible ring on every
+   interactive element (WCAG 2.4.7). */
+:focus-visible {
+  outline: 2px solid rgb(var(--c-green));
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Skip link ──────────────────────────────────────── */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  background: rgb(var(--surface));
+  color: rgb(var(--c-green));
+  border: 1px solid rgb(var(--c-green) / 0.4);
+  transform: translateY(-200%);
+  transition: transform 0.18s ease;
+}
+.skip-link:focus { transform: translateY(0); }
+
+/* ─── Respect reduced motion ─────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .cursor-blink,
+  .group:hover .spark,
+  .photo-shimmer { animation: none; }
 }
 
 /* ─── Terminal cursor blink ──────────────────────────── */
@@ -71,31 +139,25 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
   transform: translateY(0);
 }
 
-/* ─── Card base (dark) ───────────────────────────────── */
-/* Background is #181f2e — clearly distinct from #0e1420 body */
-.card-dark {
-  background: #181f2e;
-  border: 1px solid rgba(139,151,168,0.1);
+/* ─── Card base ──────────────────────────────────────── */
+/* Surface is deliberately lighter than the page background in dark mode and
+   pure white in light mode; both come from --surface. */
+.card {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--line) / 0.12);
   box-shadow: 0 2px 20px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
-.card-dark:hover {
-  border-color: rgba(63,185,80,0.25);
-  box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 20px rgba(63,185,80,0.06);
+.card:hover {
+  border-color: rgb(var(--c-green) / 0.25);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 20px rgb(var(--c-green) / 0.06);
   transform: translateY(-2px);
 }
-
-/* ─── Card base (light) ──────────────────────────────── */
-.card-light {
-  background: #ffffff;
-  border: 1px solid rgba(30,50,80,0.09);
+html:not(.dark) .card {
   box-shadow: 0 2px 12px rgba(0,0,0,0.05), 0 1px 0 rgba(255,255,255,0.8) inset;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
-.card-light:hover {
-  border-color: rgba(26,127,55,0.28);
+html:not(.dark) .card:hover {
   box-shadow: 0 6px 24px rgba(0,0,0,0.09);
-  transform: translateY(-2px);
 }
 
 /* ─── Terminal window chrome ─────────────────────────── */
@@ -104,7 +166,7 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
-  border-bottom: 1px solid rgba(139,151,168,0.09);
+  border-bottom: 1px solid rgb(var(--line) / 0.1);
 }
 .terminal-dot {
   width: 12px;
@@ -129,7 +191,7 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
   display: block;
   width: 2.5rem;
   height: 2px;
-  background: #3fb950;
+  background: rgb(var(--c-green));
   margin-top: 6px;
   border-radius: 1px;
 }
@@ -140,24 +202,23 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
   -webkit-backdrop-filter: blur(20px);
 }
 
-/* ─── Nav — always darker than page background ───────── */
-/* Dark mode: #07090e (near-black) with transparency */
-.nav-dark-bg {
-  background-color: rgba(7, 9, 14, 0.92);
-  border-bottom: 1px solid rgba(63,185,80,0.08);
+/* ─── Nav ────────────────────────────────────────────── */
+/* Dark: near-black, always darker than the page. Light: white. Both from --nav. */
+.nav-bar {
+  background-color: rgb(var(--nav) / 0.72);
+  border-bottom: 1px solid rgb(var(--c-green) / 0.04);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.nav-dark-bg-transparent {
-  background-color: rgba(7, 9, 14, 0.6);
-  border-bottom: 1px solid rgba(63,185,80,0.04);
+.nav-bar.scrolled {
+  background-color: rgb(var(--nav) / 0.95);
+  border-bottom: 1px solid rgb(var(--c-green) / 0.1);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.5);
 }
-/* Light mode: white/near-white */
-.nav-light-bg {
-  background-color: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(30,50,80,0.09);
-}
-.nav-light-bg-transparent {
-  background-color: rgba(255, 255, 255, 0.55);
-  border-bottom: 1px solid rgba(30,50,80,0.04);
+html:not(.dark) .nav-bar          { background-color: rgb(var(--nav) / 0.65); }
+html:not(.dark) .nav-bar.scrolled { background-color: rgb(var(--nav) / 0.94); box-shadow: 0 2px 16px rgba(0,0,0,0.07); }
+.nav-menu {
+  background-color: rgb(var(--nav) / 0.97);
+  border-top: 1px solid rgb(var(--c-green) / 0.08);
 }
 
 /* ─── Hover underline link ───────────────────────────── */
@@ -172,7 +233,7 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
   left: 0;
   width: 0;
   height: 1px;
-  background: #3fb950;
+  background: rgb(var(--c-green));
   transition: width 0.25s ease;
 }
 .nav-link:hover::after {
@@ -207,12 +268,17 @@ html.dark .scanlines {
 }
 
 /* ─── Neural canvas ──────────────────────────────────── */
-#neural-canvas {
+/* Two stacked layers: #neural-canvas holds the static graph (painted once),
+   #neural-pulses only the moving pulses. The explicit width/height matter —
+   the backing store is sized in device pixels for a crisp render on HiDPI,
+   so the element must be told to lay out at viewport size. */
+.neural-layer {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   pointer-events: none;
-  /* rendered by JS, no CSS animation needed */
 }
 
 /* ─── Content must sit above canvas ─────────────────── */
@@ -231,8 +297,8 @@ nav, main, footer {
   width: 3px;
   height: 3px;
   border-radius: 9999px;
-  background: #3fb950;
-  box-shadow: 0 0 6px rgba(63, 185, 80, 0.85);
+  background: rgb(var(--c-green));
+  box-shadow: 0 0 6px rgb(var(--c-green) / 0.85);
   pointer-events: none;
   opacity: 0;
   z-index: 5;
@@ -290,19 +356,27 @@ nav, main, footer {
 }
 .companion-img.blinkimg.on { opacity: 1; }
 
-/* Speech bubble — fixed, ABOVE everything, positioned to follow the cat via JS */
-.companion-bubble {
+/* Speech bubble — the anchor is moved with `transform` only (writing left/top
+   every frame would force a full-document layout 60×/s); the inner bubble owns
+   the show/hide transition so the two transforms never fight. */
+.companion-bubble-anchor {
   position: fixed;
+  top: 0;
+  left: 0;
   z-index: 60;
+  pointer-events: none;
+  will-change: transform;
+}
+.companion-bubble {
   white-space: nowrap;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   line-height: 1.2;
   padding: 6px 10px;
   border-radius: 9px;
-  background: rgba(24, 31, 46, 0.95);
-  color: #ecf0f8;
-  border: 1px solid rgba(63, 185, 80, 0.3);
+  background: rgb(var(--surface) / 0.96);
+  color: rgb(var(--t1));
+  border: 1px solid rgb(var(--c-green) / 0.3);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   opacity: 0;
   transform: translateY(4px) scale(0.92);
@@ -315,10 +389,8 @@ nav, main, footer {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
-html:not(.dark) .companion-bubble {
-  background: rgba(255, 255, 255, 0.97);
-  color: #1c2128;
-  border-color: rgba(26, 127, 55, 0.3);
+@media (max-width: 480px) {
+  .companion-bubble { white-space: normal; max-width: 72vw; }
 }
 
 /* Minimized kitten head (shown after a tap/click on the cat) */
@@ -333,18 +405,13 @@ html:not(.dark) .companion-bubble {
   place-items: center;
   padding: 0;
   border-radius: 9999px;
-  background: rgba(24, 31, 46, 0.92);
-  border: 1px solid rgba(63, 185, 80, 0.4);
-  color: #3fb950;
+  background: rgb(var(--surface) / 0.94);
+  border: 1px solid rgb(var(--c-green) / 0.4);
+  color: rgb(var(--c-green));
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   cursor: pointer;
   pointer-events: auto;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.companion-head:hover { transform: scale(1.1); box-shadow: 0 8px 22px rgba(63, 185, 80, 0.28); }
+.companion-head:hover { transform: scale(1.1); box-shadow: 0 8px 22px rgb(var(--c-green) / 0.28); }
 .companion-head svg { width: 30px; height: 30px; }
-html:not(.dark) .companion-head {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(26, 127, 55, 0.4);
-  color: #1a7f37;
-}
