@@ -9,8 +9,9 @@ export const personal = {
   initials: "LR",
   title: "AI/ML Engineer & Data Scientist in Training",
   location: "London, ON — Canada",
-  email: "l_renterialezano@fanshaweonline.ca",
-  phone: "548-391-6575",
+  email: "luisrenterialezano@gmail.com",
+  // NOTE: no `phone` here on purpose. It was never rendered, but it was still
+  // compiled into the public JS bundle, so it was scrapeable. CV only.
 
   // typing effect lines that cycle after your name in the hero
   typingLines: [
@@ -22,7 +23,7 @@ export const personal = {
     "/mlops",
     "/llm",
     "/data-engineering",
-    "/vibe-coding",
+    "/ai-assisted-dev",
     "/ai-agents",
     "/vector-search",
   ],
@@ -49,7 +50,7 @@ export const personal = {
   // Recommended: Professional headshot, neutral/dark background,
   // well-lit face. A shot at your desk or with a monitor works great too.
   // Square crop (1:1) looks best at the size rendered here.
-  photoUrl: '/photo.jpg', // e.g. '/photo.jpg'
+  photoUrl: '/photo.webp',
 
   // CV PDF — place your PDF inside /public and update this path
   cvUrl: "/luis_renteria_cv.pdf",
@@ -66,6 +67,7 @@ export const personal = {
 export const projects = [
   {
     id: "wisp",
+    period: "Jun — Jul 2026",
     title: "Wisp",
     subtitle: "Cross-Platform Mobile App · AI-Assisted Build",
     description:
@@ -87,6 +89,7 @@ export const projects = [
   },
   {
     id: "cairn",
+    period: "May 2026 — Present",
     title: "Cairn",
     subtitle: "On-Device RAG Study Assistant · Android",
     description:
@@ -100,14 +103,21 @@ export const projects = [
       { label: "Runtime", value: "100% offline" },
     ],
     links: {
+      // Private capstone repo owned by my teammate, so there is no public URL
+      // to link. Showing a dead link is worse than saying so plainly.
       github: null,
       demo: null,
     },
+    collaborators: [
+      { name: "Mannyking", url: "https://github.com/Mannyking", role: "repo owner" },
+    ],
+    repoPrivate: true,
     accent: "terminal-orange",
     featured: true,
   },
   {
     id: "fraud-detection",
+    period: "Jan — Mar 2026",
     title: "Fraud Detection",
     subtitle: "End-to-End ML Pipeline",
     description:
@@ -129,6 +139,7 @@ export const projects = [
   },
   {
     id: "graph-aml",
+    period: "May 2026 — Present",
     title: "Graph AML Detector",
     subtitle: "Graph ML · GNN · Agentic AI (In Development)",
     description: "Graph neural network that detects money laundering on a real Bitcoin transaction graph, where fraud lives in network topology rather than in isolated transactions. Trains GraphSAGE with neighbor sampling on the Elliptic dataset and benchmarks it against an XGBoost baseline to prove the graph adds signal. A planned LangGraph ReAct agent layer will then investigate each flagged node and produce an explainable risk report.",
@@ -149,6 +160,7 @@ export const projects = [
   },
   {
     id: "telco-churn",
+    period: "Nov 2025 — Jan 2026",
     title: "Telco Churn Prediction",
     subtitle: "Classification · Threshold Optimization · Dockerization",
     description:
@@ -170,6 +182,7 @@ export const projects = [
   },
   {
     id: "house-prices",
+    period: "Oct — Nov 2025",
     title: "House Prices Kaggle Competition",
     subtitle: "Regression · Feature Engineering · Kaggle Competition",
     description: "Built a robust regression pipeline to predict housing prices. Engineered cross-validated features and implemented a soft-voting ensemble optimizing over Lasso, Random Forest, Gradient Boosting, and SVR via GridSearch. Ranked #202 on the Kaggle Public Leaderboard (Oct 2025) by minimizing prediction error across diverse model architectures.",
@@ -339,8 +352,8 @@ export const skillCategories = [
 // ─────────────────────────────────────────────────────────────────
 export const companion = {
   frames: {
-    open: "/companion/cat-open.png",
-    closed: "/companion/cat-closed.png",
+    open: "/companion/cat-open.webp",
+    closed: "/companion/cat-closed.webp",
   },
   // several short lines per section — the cat picks one at random
   dialogues: {
@@ -371,6 +384,12 @@ export const companion = {
       "The tools I build with",
       "My daily stack",
       "What's in the toolbox",
+    ],
+    contact: [
+      "This is the part where you say hi",
+      "He actually replies — usually same day",
+      "Hiring for a Fall 2026 co-op? Perfect timing",
+      "Copy the email, I'll wait",
     ],
   },
   // shown when a specific project card is hovered (keyed by project id)
