@@ -89,6 +89,42 @@ html:not(.dark) .skip-link { background: #fff; color: #1a7f37; border-color: rgb
   .photo-shimmer { animation: none; }
 }
 
+/* ─── Autofilled inputs ──────────────────────────────── */
+/* The browser paints its own pale yellow background on autofilled fields,
+   which reads as broken on the dark theme. background-color cannot be
+   overridden directly in Chrome, so the giant inset shadow is the standard
+   workaround; Firefox needs the background-color rule instead. The absurd
+   transition delay stops the yellow flashing before our styles apply. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #181f2e inset;
+  -webkit-text-fill-color: #ecf0f8;
+  caret-color: #ecf0f8;
+  transition: background-color 100000s ease-in-out 0s;
+}
+input:autofill,
+textarea:autofill {
+  background-color: #181f2e !important;
+  color: #ecf0f8;
+  -webkit-text-fill-color: #ecf0f8;
+}
+html:not(.dark) input:-webkit-autofill,
+html:not(.dark) input:-webkit-autofill:hover,
+html:not(.dark) input:-webkit-autofill:focus,
+html:not(.dark) textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  -webkit-text-fill-color: #1c2128;
+  caret-color: #1c2128;
+}
+html:not(.dark) input:autofill,
+html:not(.dark) textarea:autofill {
+  background-color: #ffffff !important;
+  color: #1c2128;
+  -webkit-text-fill-color: #1c2128;
+}
+
 /* ─── Terminal cursor blink ──────────────────────────── */
 .cursor-blink {
   animation: blink 1s step-end infinite;
