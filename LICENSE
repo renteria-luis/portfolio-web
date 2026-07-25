@@ -1,0 +1,45 @@
+Copyright (c) 2026 Luis Renteria Lezano. All rights reserved.
+
+This repository is published so that it can be read. It is NOT open source.
+
+
+WHAT YOU MAY DO
+
+  - View, read and study the source code.
+  - Borrow individual techniques or small snippets and adapt them into your
+    own work, with your own design and your own content.
+  - Fork the repository through GitHub, as GitHub's Terms of Service allow for
+    any public repository.
+
+
+WHAT YOU MAY NOT DO, WITHOUT WRITTEN PERMISSION
+
+  - Reproduce the visual design, layout, colour system, copy or overall look
+    and feel of this site, in whole or in substantial part, for any public or
+    commercial purpose.
+  - Deploy this site, or a derivative of it, under your own name or anyone
+    else's.
+  - Redistribute, sublicense or sell this code, in whole or in substantial
+    part, whether modified or not.
+  - Use any of the personal content in this repository. That includes the
+    name "Luis Renteria Lezano", the photograph, the resume PDF, the project
+    write-ups, the biography and the illustrated astronaut cat.
+
+To request permission, write to luisrenterialezano@gmail.com.
+
+
+THIRD-PARTY MATERIAL
+
+Dependencies listed in package.json are covered by their own licenses, not by
+this one. The typefaces (IBM Plex Mono, Outfit) are licensed by their
+respective foundries under the SIL Open Font License.
+
+
+NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
