@@ -16,15 +16,15 @@
 import { z } from 'zod';
 
 const INTENTS = {
-  'co-op':    { label: 'Co-op / Full-time', subject: 'Co-op / role' },
+  'question': { label: 'General question',  subject: 'Question' },
+  'co-op':    { label: 'Role / Co-op',      subject: 'Role / Co-op' },
   'collab':   { label: 'Collaboration',     subject: 'Collaboration' },
-  'question': { label: 'Technical question', subject: 'Technical question' },
 };
 
 const trimmed = (max) => z.string().trim().max(max);
 
 const schema = z.object({
-  intent:  z.enum(Object.keys(INTENTS)).default('co-op'),
+  intent:  z.enum(Object.keys(INTENTS)).default('question'),
   name:    trimmed(120).min(2, 'name must be at least 2 characters'),
   email:   trimmed(200).email("email must be a valid address"),
   message: trimmed(5000).min(10, 'message must be at least 10 characters'),
@@ -135,7 +135,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: `CaptchaError: ${captcha.reason}` });
   }
 
-  const intent = INTENTS[d.intent] ?? INTENTS['co-op'];
+  const intent = INTENTS[d.intent] ?? INTENTS['question'];
   const signals = spamSignals(d);
 
   const rows = [

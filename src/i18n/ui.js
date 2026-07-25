@@ -76,23 +76,24 @@ export const ui = {
     },
     whatAbout: { en: 'what is this about?', es: '¿de qué se trata?' },
     intents: {
-      'co-op':    { en: 'Role / Co-op',        es: 'Puesto / Co-op' },
-      'collab':   { en: 'Collaboration',       es: 'Colaboración' },
-      'question': { en: 'Technical question',  es: 'Pregunta técnica' },
+      'question': { en: 'General question', es: 'Pregunta general' },
+      'co-op':    { en: 'Role / Co-op',     es: 'Puesto / Co-op' },
+      'collab':   { en: 'Collaboration',    es: 'Colaboración' },
     },
     placeholders: {
-      'co-op':    { en: 'Role, stack, and start date if you have one.',
-                    es: 'Puesto, stack y fecha de inicio si la tienes.' },
-      'collab':   { en: 'What you are building and where I would fit.',
-                    es: 'Qué estás construyendo y dónde encajaría yo.' },
-      'question': { en: 'Ask about anything in the projects above.',
-                    es: 'Pregunta sobre cualquiera de los proyectos de arriba.' },
-      name:  { en: 'Ada Lovelace', es: 'Ada Lovelace' },
+      // Same prompt for every intent: an open invitation asks for less than a
+      // checklist does.
+      'question': { en: 'Ask me anything', es: 'Pregúntame lo que quieras' },
+      'co-op':    { en: 'Ask me anything', es: 'Pregúntame lo que quieras' },
+      'collab':   { en: 'Ask me anything', es: 'Pregúntame lo que quieras' },
+      name:  { en: 'Your Name', es: 'Tu nombre' },
       email: { en: 'you@company.com', es: 'tu@empresa.com' },
-      company: 'RBC',
-      role:  { en: 'ML Intern', es: 'Practicante de ML' },
-      timeline: { en: 'Sept 2026', es: 'Sep 2026' },
-      link:  'https://github.com/...',
+      // Left blank on purpose: these are optional, and an example makes an
+      // optional field feel required.
+      company: '',
+      role: '',
+      timeline: '',
+      link: 'https://github.com/...',
     },
     fields: {
       name:     { en: 'name', es: 'nombre' },

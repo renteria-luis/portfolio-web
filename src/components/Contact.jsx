@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mail, Github, Linkedin, FileDown, Copy, Check, Play, MapPin, Clock } from 'lucide-react';
-import { SiHuggingface, SiKaggle, SiLeetcode } from 'react-icons/si';
+import { SiHuggingface, SiLeetcode } from 'react-icons/si';
+// Font Awesome's Kaggle mark is the plain "k"; the Simple Icons one is the
+// curved logo, which is unreadable at 12px.
+import { FaKaggle } from 'react-icons/fa';
 import { personal } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
 import { ui } from '../i18n/ui';
 import { useLang, useT } from '../i18n';
 
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-const INTENT_IDS = ['co-op', 'collab', 'question'];
+// "question" leads and is the default: it asks for the fewest fields, so the
+// form looks least like work when you first see it.
+const INTENT_IDS = ['question', 'co-op', 'collab'];
 
 const pad = (n) => String(n).padStart(2, '0');
 const stamp = (iso) => {
@@ -86,7 +91,7 @@ export default function Contact({ dark }) {
   const t = useT();
   const { lang } = useLang();
 
-  const [intent, setIntent] = useState('co-op');
+  const [intent, setIntent] = useState('question');
   const [form, setForm] = useState({
     name: '', email: '', message: '', company: '', role: '', timeline: '', link: '',
   });
@@ -459,7 +464,7 @@ export default function Contact({ dark }) {
                 { href: personal.socials.linkedin, label: 'linkedin', Icon: Linkedin },
                 { href: personal.socials.github, label: 'github', Icon: Github },
                 { href: personal.socials.huggingface, label: 'hf spaces', Icon: SiHuggingface },
-                { href: personal.socials.kaggle, label: 'kaggle', Icon: SiKaggle },
+                { href: personal.socials.kaggle, label: 'kaggle', Icon: FaKaggle },
                 { href: personal.socials.leetcode, label: 'leetcode', Icon: SiLeetcode },
               ].map(({ href, label, Icon, download }) => (
                 <a
