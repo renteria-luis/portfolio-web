@@ -5,6 +5,7 @@ const SECTIONS = ['hero', 'about', 'experience', 'projects', 'skills'];
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const catW = () => (window.innerWidth < 900 ? 62 : 135);
 const catH = () => catW() * (508 / 520);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 export default function Companion() {
   const wrapRef = useRef(null);
@@ -17,40 +18,45 @@ export default function Companion() {
   const [hidden, setHidden] = useState(false);
 
   const st = useRef({
-    x: 40, y: 260, baseX: 40, baseY: 260, driftX: 0, driftY: 0,
+    x: 40, y: 260, baseX: 40, baseY: 260, driftX: 0, driftY: 0, renderY: 260,
     face: 1, opacity: 0, phase: 'in', t: 0, teleportAt: 14, driftAt: 4,
     reduced: false, section: 'hero', lockUntil: 0, side: 'left',
     hidden: false, dragging: false, moved: false, offX: 0, offY: 0, lastW: 0,
+    vx: 0, vy: 0, lastMX: 0, lastMY: 0, lastMT: 0,
   });
 
-  // ---- drag / tap-to-hide (defined in component scope; use the shared ref) ----
+  // ---- drag (started via window hit-test so it works even when the cat sits
+  //      behind the cards on desktop, where the layer can't receive the event) ----
   const onDragMove = (e) => {
     const s = st.current;
+    const now = performance.now();
+    const dt = Math.max(1, now - s.lastMT);
+    s.vx = clamp((e.clientX - s.lastMX) / dt * 16, -38, 38);
+    s.vy = clamp((e.clientY - s.lastMY) / dt * 16, -38, 38);
+    s.lastMX = e.clientX; s.lastMY = e.clientY; s.lastMT = now;
     const nx = e.clientX - s.offX, ny = e.clientY - s.offY;
     if (Math.hypot(nx - s.x, ny - s.y) > 3) s.moved = true;
-    s.x = nx; s.y = ny; s.baseX = nx; s.baseY = ny;
+    s.x = nx; s.y = ny;
   };
   const onDragUp = () => {
     const s = st.current;
     s.dragging = false;
     window.removeEventListener('pointermove', onDragMove);
     window.removeEventListener('pointerup', onDragUp);
-    if (!s.moved) {                    // a tap/click, not a drag -> minimize to the head
+    if (!s.moved) {                       // a tap/click -> minimize into the head
       s.hidden = true; setHidden(true);
-    } else {                           // dropped somewhere -> rest there
-      const cw = catW();
-      const chosen = (s.x + cw / 2) < window.innerWidth / 2 ? 'left' : 'right';
-      s.side = chosen; setSide(chosen);
-      s.face = chosen === 'left' ? -1 : 1;
-      s.phase = 'idle'; s.teleportAt = s.t + 14 + Math.random() * 6;
+    } else {                              // released with velocity -> glide + decelerate
+      s.phase = 'inertia';
     }
   };
-  const onDown = (e) => {
+  const startDrag = (e) => {
     const s = st.current;
-    if (s.hidden) return;
+    if (s.hidden || s.dragging) return;
     s.dragging = true; s.moved = false; s.phase = 'drag';
+    s.y = s.renderY;                      // bake in the current bob so it doesn't jump
     s.offX = e.clientX - s.x; s.offY = e.clientY - s.y;
-    try { wrapRef.current.setPointerCapture(e.pointerId); } catch (_) {}
+    s.lastMX = e.clientX; s.lastMY = e.clientY; s.lastMT = performance.now(); s.vx = 0; s.vy = 0;
+    e.preventDefault();
     window.addEventListener('pointermove', onDragMove);
     window.addEventListener('pointerup', onDragUp);
   };
@@ -97,16 +103,29 @@ export default function Companion() {
       if (s.reduced) {
         s.x = 12; s.y = vh - ch - 16; s.opacity = 1;
       } else if (s.phase === 'drag') {
-        // position is set directly by the pointer handlers
+        // position driven by the pointer handlers
+      } else if (s.phase === 'inertia') {
+        const k = dt / 16;
+        s.x += s.vx * k; s.y += s.vy * k;
+        const f = Math.pow(0.9, k);
+        s.vx *= f; s.vy *= f;
+        if (s.x < 0) { s.x = 0; s.vx = 0; } if (s.x > vw - cw) { s.x = vw - cw; s.vx = 0; }
+        if (s.y < 40) { s.y = 40; s.vy = 0; } if (s.y > vh - ch) { s.y = vh - ch; s.vy = 0; }
+        if (Math.hypot(s.vx, s.vy) < 0.4) {
+          s.baseX = s.x; s.baseY = s.y;
+          const chosen = (s.x + cw / 2) < vw / 2 ? 'left' : 'right';
+          s.side = chosen; setSide(chosen); s.face = chosen === 'left' ? -1 : 1;
+          s.phase = 'idle'; s.teleportAt = s.t + 12 + Math.random() * 6;
+        }
       } else if (s.phase === 'idle') {
-        if (s.t > s.driftAt) {
-          s.driftAt = s.t + 6 + Math.random() * 5;
-          if (Math.random() < 0.3) { s.driftX = (Math.random() - 0.5) * 40; s.driftY = (Math.random() - 0.5) * 90; }
+        if (s.t > s.driftAt) {                         // wander a little around its spot
+          s.driftAt = s.t + 4 + Math.random() * 4;
+          if (Math.random() < 0.5) { s.driftX = (Math.random() - 0.5) * 50; s.driftY = (Math.random() - 0.5) * 100; }
           else { s.driftX *= 0.2; s.driftY *= 0.2; }
         }
         if (s.t > s.teleportAt) s.phase = 'out';
-        s.x += (s.baseX + s.driftX - s.x) * 0.015;
-        s.y += (s.baseY + s.driftY - s.y) * 0.015;
+        s.x += (s.baseX + s.driftX - s.x) * 0.02;
+        s.y += (s.baseY + s.driftY - s.y) * 0.02;
       } else if (s.phase === 'out') {
         s.opacity -= dt / 1400;
         if (s.opacity <= 0) { s.opacity = 0; placeAnchor(); s.x = s.baseX; s.y = s.baseY; s.phase = 'in'; }
@@ -115,10 +134,11 @@ export default function Companion() {
         if (s.opacity >= 1) { s.opacity = 1; s.phase = 'idle'; s.teleportAt = s.t + 12 + Math.random() * 6; }
       }
 
-      const bob = (s.reduced || s.phase === 'drag') ? 0 : Math.sin(s.t * 1.0) * 6;
+      const bob = (s.reduced || s.phase === 'drag' || s.phase === 'inertia') ? 0 : Math.sin(s.t * 1.0) * 6;
       const topY = s.y + bob;
+      s.renderY = topY;
       if (wrapRef.current) {
-        wrapRef.current.style.opacity = s.phase === 'drag' ? 1 : s.opacity;
+        wrapRef.current.style.opacity = (s.phase === 'drag' || s.phase === 'inertia') ? 1 : s.opacity;
         wrapRef.current.style.transform = `translate3d(${s.x}px,${topY}px,0)`;
       }
       if (innerRef.current) innerRef.current.style.transform = `scaleX(${s.face})`;
@@ -132,9 +152,20 @@ export default function Companion() {
     }
     raf = requestAnimationFrame(loop);
 
-    // only re-anchor on a real WIDTH change (mobile scroll fires resize on height — ignore it)
+    // window-level pointerdown hit-test -> start a drag when pressing on the cat,
+    // regardless of z-index / what is painted on top (fixes desktop + Firefox)
+    const onWinDown = (e) => {
+      if (s.hidden || s.dragging) return;
+      const cw = catW(), ch = catH();
+      if (e.clientX >= s.x && e.clientX <= s.x + cw && e.clientY >= s.renderY && e.clientY <= s.renderY + ch) {
+        e.stopPropagation();
+        startDrag(e);
+      }
+    };
+    window.addEventListener('pointerdown', onWinDown, true);
+
     const onResize = () => {
-      if (Math.abs(window.innerWidth - s.lastW) < 64) return;
+      if (Math.abs(window.innerWidth - s.lastW) < 64) return;   // ignore mobile URL-bar height changes
       s.lastW = window.innerWidth;
       placeAnchor(); s.x = s.baseX; s.y = s.baseY;
     };
@@ -173,6 +204,7 @@ export default function Companion() {
 
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener('pointerdown', onWinDown, true);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('companionSay', onSay);
       window.removeEventListener('pointermove', onDragMove);
@@ -189,9 +221,8 @@ export default function Companion() {
 
   return (
     <>
-      {/* Cat layer — behind cards on desktop (z-0), above content on mobile (z-60) */}
       <div className={`companion-layer ${hidden ? 'gone' : ''}`}>
-        <div ref={wrapRef} className="companion-cat" style={{ opacity: 0 }} onPointerDown={onDown}>
+        <div ref={wrapRef} className="companion-cat" style={{ opacity: 0 }}>
           <div ref={innerRef} className="companion-inner">
             <img src={companion.frames.open} alt="" className="companion-img base" draggable="false" />
             <img src={companion.frames.closed} alt="" className={`companion-img blinkimg ${blink ? 'on' : ''}`} draggable="false" />
@@ -199,13 +230,11 @@ export default function Companion() {
         </div>
       </div>
 
-      {/* Bubble — always above everything, follows the cat */}
       <div ref={bubbleRef} aria-hidden="true"
            className={`companion-bubble ${side} ${showBubble && !hidden ? 'show' : ''}`}>
         {dialogue}
       </div>
 
-      {/* Minimized kitten head — click to bring the astronaut back */}
       {hidden && (
         <button className="companion-head" onClick={restore} aria-label="Bring back the astronaut cat" title="Bring the cat back">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

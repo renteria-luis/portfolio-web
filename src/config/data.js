@@ -114,7 +114,7 @@ export const projects = [
       "Engineered a fraud detection pipeline focused on resolving data-level bottlenecks and extreme class imbalance. Evaluated 3 baseline architectures (Logistic Regression, Random Forest, XGBoost) and prioritized robust feature engineering over unnecessary model complexity. Optimized the classification threshold to 0.2226 to strictly maximize Recall. Deployed the selected model via FastAPI with Pydantic validation and multi-stage Docker containerization.",
     status: "live",
     statusLabel: "Live on HF",
-    tags: ["Python", "XGBoost", "Scikit-learn", "FastAPI", "Docker", "Streamlit", "EDA"],
+    tags: ["Python", "XGBoost", "Scikit-learn", "FastAPI", "Docker", "Docker Compose", "Streamlit", "Hugging Face", "EDA"],
     metrics: [
       { label: "Recall", value: "85%" },
       { label: "PR-AUC", value: "0.91" },
@@ -134,7 +134,7 @@ export const projects = [
     description: "Graph neural network that detects money laundering on a real Bitcoin transaction graph, where fraud lives in network topology rather than in isolated transactions. Trains GraphSAGE with neighbor sampling on the Elliptic dataset and benchmarks it against an XGBoost baseline to prove the graph adds signal. A planned LangGraph ReAct agent layer will then investigate each flagged node and produce an explainable risk report.",
     status: "building",
     statusLabel: "In Development",
-    tags: ["Python", "PyTorch Geometric", "GraphSAGE", "GNN", "LangGraph", "FastAPI", "NetworkX", "Docker"],
+    tags: ["Python", "PyTorch Geometric", "GraphSAGE", "GNN", "LangGraph", "FastAPI", "NetworkX", "Docker", "Docker Compose"],
     metrics: [
     { label: "Dataset", value: "Elliptic 204K" },
     { label: "Model", value: "GraphSAGE" },
