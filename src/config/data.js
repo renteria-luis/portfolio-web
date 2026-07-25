@@ -7,7 +7,7 @@
 export const personal = {
   name: "Luis Renteria Lezano",
   initials: "LR",
-  title: "AI/ML Engineer & Data Scientist in Training",
+  title: "AI/ML Engineer & Data Scientist",
   location: "London, ON — Canada",
   email: "luisrenterialezano@gmail.com",
   // NOTE: no `phone` here on purpose. It was never rendered, but it was still

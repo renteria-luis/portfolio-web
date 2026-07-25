@@ -11,17 +11,16 @@ import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
 import Companion from './components/Companion';
 
-const Divider = () => (
-  <div className="max-w-5xl mx-auto px-6 h-px bg-line/[0.06]" />
-);
-
 export default function App() {
-  // Defaults to dark; the inline script in index.html applies the stored choice
-  // before first paint so there is no flash.
-  const [dark, setDark] = useState(() => localStorage.getItem('theme') !== 'light');
+  const [dark, setDark] = useState(() => {
+    const stored = localStorage.getItem('theme');
+    if (stored) return stored === 'dark';
+    return true;
+  });
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark);
+    const html = document.documentElement;
+    dark ? html.classList.add('dark') : html.classList.remove('dark');
     localStorage.setItem('theme', dark ? 'dark' : 'light');
   }, [dark]);
 
@@ -33,27 +32,34 @@ export default function App() {
       {/* Film grain overlay — above canvas, pointer-events none */}
       <div id="grain" aria-hidden="true" />
 
-      {/* Neural network canvases — fixed, full-viewport, z-0 */}
+      {/* Neural network canvas — fixed, full-viewport, z-0 */}
       <NeuralBackground dark={dark} />
 
-      {/* Floating astronaut cat — above canvas (z-0), behind content (z-1) */}
+      {/* Floating astronaut cat — above canvas (z-0), behind all content (z-1) */}
       <Companion />
 
+      {/* Page wrapper — transparent so body bg + canvas show through */}
       <div className="min-h-screen">
-        <Nav dark={dark} toggleDark={() => setDark((p) => !p)} />
+        <Nav dark={dark} toggleDark={() => setDark(p => !p)} />
         <main id="main">
-          <Hero />
-          <Divider />
-          <About />
-          <Divider />
-          <Timeline />
-          <Projects />
-          <Divider />
-          <Skills />
-          <Divider />
-          <Contact />
+          <Hero dark={dark} />
+
+          {/* Section dividers — pure Tailwind, no inline styles */}
+          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
+          <About dark={dark} />
+
+          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
+          <Timeline dark={dark} />
+
+          <Projects dark={dark} />
+
+          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
+          <Skills dark={dark} />
+
+          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
+          <Contact dark={dark} />
         </main>
-        <Footer />
+        <Footer dark={dark} />
       </div>
 
       <Analytics />

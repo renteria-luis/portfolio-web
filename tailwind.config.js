@@ -1,11 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-
-// Every colour is a CSS variable holding raw RGB channels, so Tailwind can
-// still apply opacity modifiers (text-terminal-green/70) *and* the whole
-// palette swaps theme by flipping one class on <html>. That is what lets the
-// components drop their `dark` prop entirely — see src/index.css for the values.
-const themed = (name) => `rgb(var(--${name}) / <alpha-value>)`;
-
 export default {
   darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
@@ -16,23 +9,12 @@ export default {
         sans: ['"Outfit"', 'sans-serif'],
       },
       colors: {
-        // accents
-        'terminal-green':  themed('c-green'),
-        'terminal-blue':   themed('c-blue'),
-        'terminal-purple': themed('c-purple'),
-        'terminal-orange': themed('c-orange'),
-        'terminal-red':    themed('c-red'),
-        'terminal-yellow': themed('c-yellow'),
-        // text ramp: tb brightest -> t3 faintest
-        tb: themed('tb'),
-        t1: themed('t1'),
-        t2: themed('t2'),
-        t3: themed('t3'),
-        // surfaces
-        surface: themed('surface'),
-        navbg:   themed('nav'),
-        footerbg: themed('footer'),
-        line:    themed('line'),
+        'terminal-green': '#3fb950',
+        'terminal-blue': '#79c0ff',
+        'terminal-purple': '#d2a8ff',
+        'terminal-orange': '#ffa657',
+        'terminal-red': '#f78166',
+        'terminal-yellow': '#e3b341',
       },
       animation: {
         'blink': 'blink 1s step-end infinite',
@@ -61,9 +43,14 @@ export default {
         slideInRight: {
           from: { opacity: '0', transform: 'translateX(-16px)' },
           to: { opacity: '1', transform: 'translateX(0)' },
-        },
+        }
       },
+      boxShadow: {
+        'card-dark': '0 0 0 1px rgba(125,167,217,0.08), 0 4px 24px rgba(0,0,0,0.5)',
+        'card-hover-dark': '0 0 0 1px rgba(63,185,80,0.2), 0 8px 32px rgba(0,0,0,0.6), 0 0 24px rgba(63,185,80,0.06)',
+        'nav-dark': '0 1px 0 rgba(125,167,217,0.08)',
+      }
     },
   },
   plugins: [],
-};
+}
