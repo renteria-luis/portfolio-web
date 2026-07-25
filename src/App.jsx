@@ -10,8 +10,11 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
 import Companion from './components/Companion';
+import { ui } from './i18n/ui';
+import { useT } from './i18n';
 
 export default function App() {
+  const t = useT();
   const [dark, setDark] = useState(() => {
     const stored = localStorage.getItem('theme');
     if (stored) return stored === 'dark';
@@ -27,7 +30,7 @@ export default function App() {
   return (
     <>
       {/* Keyboard users land here first: Tab reveals it, Enter jumps past the nav */}
-      <a href="#main" className="skip-link">skip to content</a>
+      <a href="#main" className="skip-link">{t(ui.skipLink)}</a>
 
       {/* Film grain overlay: above canvas, pointer-events none */}
       <div id="grain" aria-hidden="true" />

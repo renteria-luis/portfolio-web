@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { companion } from '../config/data';
+import { useLang, useT } from '../i18n';
 
 const SECTIONS = ['hero', 'about', 'experience', 'projects', 'skills', 'contact'];
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -29,6 +30,10 @@ export default function Companion() {
   const [blink, setBlink] = useState(false);
   const [side, setSide] = useState('left');
   const [hidden, setHidden] = useState(false);
+  // `dialogue` holds the { en, es } bundle, not a string, so switching language
+  // re-translates a bubble that is already on screen.
+  const t = useT();
+  const { lang } = useLang();
 
   const st = useRef({
     // position / velocity (px, px per second)
@@ -52,7 +57,7 @@ export default function Companion() {
     if (!el) return;
     st.current.bubbleW = el.offsetWidth;
     st.current.bubbleH = el.offsetHeight;
-  }, [dialogue]);
+  }, [dialogue, lang]);
 
   useEffect(() => {
     const s = st.current;
@@ -329,7 +334,7 @@ export default function Companion() {
       <div ref={anchorRef} className="companion-bubble-anchor" aria-hidden="true"
            style={{ transform: 'translate3d(-9999px,0,0)', opacity: 0 }}>
         <div ref={bubbleRef} className={`companion-bubble ${side} ${showBubble && !hidden ? 'show' : ''}`}>
-          {dialogue}
+          {t(dialogue)}
         </div>
       </div>
 

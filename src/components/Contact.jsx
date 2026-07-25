@@ -2,22 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Mail, Github, Linkedin, FileDown, Copy, Check, Play, MapPin, Clock } from 'lucide-react';
 import { personal } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
+import { ui } from '../i18n/ui';
+import { useLang, useT } from '../i18n';
 
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-
-// Intent router: each choice changes which optional fields appear and what
-// subject line the email arrives with.
-const INTENTS = [
-  { id: 'co-op',    label: 'Co-op / Full-time', hint: 'Rol, stack y fecha de inicio.' },
-  { id: 'collab',   label: 'Collaboration',     hint: 'What are you building?' },
-  { id: 'question', label: 'Technical question', hint: 'Ask away.' },
-];
-
-const PLACEHOLDER = {
-  'co-op':    'Role, stack, and start date if you have one.',
-  'collab':   'What you are building and where I would fit.',
-  'question': 'Ask about anything in the projects above.',
-};
+const INTENT_IDS = ['co-op', 'collab', 'question'];
 
 const pad = (n) => String(n).padStart(2, '0');
 const stamp = (iso) => {
@@ -27,7 +16,7 @@ const stamp = (iso) => {
 };
 
 /** Loads the Turnstile script once, on demand. */
-function useTurnstile(containerRef, active, onToken) {
+function useTurnstile(containerRef, active, onToken, lang) {
   useEffect(() => {
     if (!active || !SITE_KEY || !containerRef.current) return;
     let widgetId;
@@ -35,9 +24,11 @@ function useTurnstile(containerRef, active, onToken) {
 
     const render = () => {
       if (cancelled || !window.turnstile || !containerRef.current) return;
+      containerRef.current.innerHTML = '';
       widgetId = window.turnstile.render(containerRef.current, {
         sitekey: SITE_KEY,
         theme: 'auto',
+        language: lang,
         callback: onToken,
         'error-callback': () => onToken(''),
         'expired-callback': () => onToken(''),
@@ -61,10 +52,10 @@ function useTurnstile(containerRef, active, onToken) {
       cancelled = true;
       if (widgetId && window.turnstile) window.turnstile.remove(widgetId);
     };
-  }, [active, containerRef, onToken]);
+  }, [active, containerRef, onToken, lang]);
 }
 
-function CopyButton({ value, dark, label = 'copy' }) {
+function CopyButton({ value, dark, t }) {
   const [done, setDone] = useState(false);
   return (
     <button
@@ -73,7 +64,7 @@ function CopyButton({ value, dark, label = 'copy' }) {
         try { await navigator.clipboard.writeText(value); } catch { return; }
         setDone(true); setTimeout(() => setDone(false), 1800);
       }}
-      aria-label={done ? 'Copied to clipboard' : `Copy ${label}`}
+      aria-label={t(ui.contact.copyAria)}
       className={`flex items-center gap-1.5 font-mono text-[10px] px-2 py-1 rounded border transition-colors ${
         dark
           ? 'border-[rgba(125,167,217,0.15)] text-[#7b8fa6] hover:text-[#ecf0f8] hover:border-[rgba(125,167,217,0.3)]'
@@ -81,7 +72,7 @@ function CopyButton({ value, dark, label = 'copy' }) {
       }`}
     >
       {done ? <Check size={11} className={dark ? 'text-terminal-green' : 'text-[#1a7f37]'} /> : <Copy size={11} />}
-      {done ? 'copied' : label}
+      {t(done ? ui.contact.copied : ui.contact.copy)}
     </button>
   );
 }
@@ -91,12 +82,14 @@ export default function Contact({ dark }) {
   const sectionRef = useRef(null);
   const turnstileRef = useRef(null);
   const mountedAt = useRef(Date.now());
+  const t = useT();
+  const { lang } = useLang();
 
   const [intent, setIntent] = useState('co-op');
   const [form, setForm] = useState({
     name: '', email: '', message: '', company: '', role: '', timeline: '', link: '',
   });
-  const [ref_, setRef] = useState('');
+  const [refParam, setRefParam] = useState('');
   const [token, setToken] = useState('');
   const [status, setStatus] = useState('idle');   // idle | queued | running | ok | error
   const [result, setResult] = useState(null);
@@ -110,9 +103,11 @@ export default function Contact({ dark }) {
     const q = new URLSearchParams(window.location.search);
     const get = (k) => (q.get(k) || '').slice(0, 120);
     const company = get('company'), role = get('role'), r = get('ref');
-    if (company || role) setForm((f) => ({ ...f, company: company || f.company, role: role || f.role }));
-    if (company || role) setIntent('co-op');
-    if (r) setRef(r);
+    if (company || role) {
+      setForm((f) => ({ ...f, company: company || f.company, role: role || f.role }));
+      setIntent('co-op');
+    }
+    if (r) setRefParam(r);
   }, []);
 
   // Only load the captcha script once the section is actually approached.
@@ -124,11 +119,26 @@ export default function Contact({ dark }) {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-  useTurnstile(turnstileRef, inView, setToken);
+  useTurnstile(turnstileRef, inView && status !== 'ok', setToken, lang);
 
   const set = (k) => (e) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
     if (badField === k) { setBadField(null); setError(null); }
+  };
+
+  /**
+   * Brings the form back after a successful send. Name and email are kept
+   * because the same person is writing again; the message is cleared so the
+   * previous one cannot be sent twice by accident. The captcha token is
+   * dropped since Turnstile tokens are single use.
+   */
+  const sendAnother = () => {
+    setStatus('idle');
+    setResult(null);
+    setError(null);
+    setBadField(null);
+    setToken('');
+    setForm((f) => ({ ...f, message: '', link: '' }));
   };
 
   async function onSubmit(e) {
@@ -148,7 +158,7 @@ export default function Contact({ dark }) {
         body: JSON.stringify({
           ...form,
           intent,
-          ref: ref_,
+          ref: refParam,
           website: e.target.website?.value || '',       // honeypot
           elapsed: Date.now() - mountedAt.current,      // time-trap
           token,
@@ -157,7 +167,7 @@ export default function Contact({ dark }) {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setBadField(data.field || null);
-        setError(data.error || `DeliveryError: server responded ${res.status}`);
+        setError(data.error || `DeliveryError: ${res.status}`);
         setStatus('error');
         if (window.turnstile) window.turnstile.reset();
         setToken('');
@@ -166,7 +176,7 @@ export default function Contact({ dark }) {
       setResult({ ...data, ms: Math.round(performance.now() - started) });
       setStatus('ok');
     } catch {
-      setError('NetworkError: could not reach the server');
+      setError(t(ui.contact.errors.network));
       setStatus('error');
     }
   }
@@ -191,8 +201,8 @@ export default function Contact({ dark }) {
 
   const labelCls = `block font-mono text-[10px] uppercase tracking-wider mb-1.5 ${textMuted}`;
   const busy = status === 'queued' || status === 'running';
-
-  const btnLabel = { idle: 'send message', queued: 'queued', running: 'sending', error: 'retry' }[status] || 'send message';
+  const sent = status === 'ok';
+  const btnLabel = t(ui.contact.button[status] ?? ui.contact.button.idle);
 
   return (
     <section id="contact" ref={sectionRef} className="py-24 max-w-5xl mx-auto px-6">
@@ -200,20 +210,19 @@ export default function Contact({ dark }) {
         {/* Header */}
         <div className="mb-12">
           <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
-            05 / contact
+            {t(ui.contact.label)}
           </p>
           <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
-            hiring for an AI/ML co-op?
+            {t(ui.contact.title)}
           </h2>
           <p className={`mt-3 text-sm ${textSecondary} max-w-2xl`}>
-            I reply within 24 hours. If it is about a role, include the stack and the timeline
-            and I can tell you straight away whether I am a fit.
+            {t(ui.contact.intro)}
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
-          {/* ── Form, inside the same terminal chrome as the rest of the site ── */}
+          {/* ── Terminal card: form, replaced by the receipt once sent ─────── */}
           <div
             className={`lg:col-span-3 rounded-lg border ${borderColor} ${cardBg} overflow-hidden`}
             style={{ boxShadow: terminalShadow }}
@@ -227,160 +236,176 @@ export default function Contact({ dark }) {
               </span>
             </div>
 
-            <form onSubmit={onSubmit} className="p-5" noValidate>
-              {/* Intent router */}
-              <div className="mb-5">
-                <span className={labelCls}>what is this about?</span>
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Reason for contact">
-                  {INTENTS.map((it) => {
-                    const on = intent === it.id;
-                    return (
-                      <button
-                        key={it.id}
-                        type="button"
-                        onClick={() => setIntent(it.id)}
-                        aria-pressed={on}
-                        className={`font-mono text-[11px] px-3 py-1.5 rounded border transition-all duration-200 ${
-                          on
-                            ? dark
-                              ? 'bg-terminal-green/10 border-terminal-green/40 text-terminal-green'
-                              : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.4)] text-[#1a7f37]'
-                            : dark
-                              ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:border-[rgba(125,167,217,0.3)]'
-                              : 'border-[rgba(30,50,80,0.15)] text-[#57606a] hover:border-[rgba(30,50,80,0.3)]'
-                        }`}
-                      >
-                        {it.label}
-                      </button>
-                    );
-                  })}
+            {sent ? (
+              /* The form is gone on purpose: it prevents a double send, and the
+                 receipt is the only thing left to read. */
+              <div className="p-5" aria-live="polite">
+                <div className={`font-mono text-[11px] px-4 py-3 rounded border ${
+                  dark
+                    ? 'bg-[rgba(63,185,80,0.06)] border-[rgba(63,185,80,0.3)]'
+                    : 'bg-[rgba(26,127,55,0.05)] border-[rgba(26,127,55,0.25)]'
+                }`}>
+                  <div className={`flex items-center gap-2 mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+                    <Check size={13} /> {t(ui.contact.delivered)}
+                    <span className={textMuted}>· 200 OK · {result.ms}ms</span>
+                  </div>
+                  <div className={`grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 ${textSecondary}`}>
+                    <span className={textMuted}>{t(ui.contact.receipt.id)}</span>
+                    <span className="flex items-center gap-2 flex-wrap">
+                      {result.id}
+                      <CopyButton value={result.id} dark={dark} t={t} />
+                    </span>
+                    <span className={textMuted}>{t(ui.contact.receipt.queued)}</span>
+                    <span>{stamp(result.queuedAt)}</span>
+                    <span className={textMuted}>{t(ui.contact.receipt.sla)}</span>
+                    <span>{result.sla}</span>
+                  </div>
+                  <p className={`mt-2.5 ${textMuted}`}>{t(ui.contact.receipt.keep)}</p>
+                  <button
+                    type="button"
+                    onClick={sendAnother}
+                    className={`mt-2 font-mono text-[11px] underline underline-offset-2 decoration-dotted transition-colors ${
+                      dark ? 'text-[#7b8fa6] hover:text-terminal-green' : 'text-[#8b9eb0] hover:text-[#1a7f37]'
+                    }`}
+                  >
+                    {t(ui.contact.receipt.again)}
+                  </button>
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className={labelCls} htmlFor="c-name">name</label>
-                  <input id="c-name" name="name" value={form.name} onChange={set('name')}
-                         autoComplete="name" required maxLength={120}
-                         className={field(badField === 'name')} placeholder="Ada Lovelace" />
-                </div>
-                <div>
-                  <label className={labelCls} htmlFor="c-email">email</label>
-                  <input id="c-email" name="email" type="email" inputMode="email"
-                         value={form.email} onChange={set('email')}
-                         autoComplete="email" required maxLength={200}
-                         className={field(badField === 'email')} placeholder="you@company.com" />
-                </div>
-              </div>
-
-              {/* Fields that only make sense for the chosen intent */}
-              {intent === 'co-op' && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <label className={labelCls} htmlFor="c-company">company (optional)</label>
-                    <input id="c-company" value={form.company} onChange={set('company')}
-                           autoComplete="organization" maxLength={120}
-                           className={field(false)} placeholder="RBC" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="c-role">role (optional)</label>
-                    <input id="c-role" value={form.role} onChange={set('role')}
-                           maxLength={120} className={field(false)} placeholder="ML Intern" />
-                  </div>
-                  <div>
-                    <label className={labelCls} htmlFor="c-timeline">timeline (optional)</label>
-                    <input id="c-timeline" value={form.timeline} onChange={set('timeline')}
-                           maxLength={120} className={field(false)} placeholder="Sept 2026" />
+            ) : (
+              <form onSubmit={onSubmit} className="p-5" noValidate>
+                {/* Intent router */}
+                <div className="mb-5">
+                  <span className={labelCls}>{t(ui.contact.whatAbout)}</span>
+                  <div className="flex flex-wrap gap-2" role="group" aria-label={t(ui.contact.whatAbout)}>
+                    {INTENT_IDS.map((id) => {
+                      const on = intent === id;
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() => setIntent(id)}
+                          aria-pressed={on}
+                          className={`font-mono text-[11px] px-3 py-1.5 rounded border transition-all duration-200 ${
+                            on
+                              ? dark
+                                ? 'bg-terminal-green/10 border-terminal-green/40 text-terminal-green'
+                                : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.4)] text-[#1a7f37]'
+                              : dark
+                                ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:border-[rgba(125,167,217,0.3)]'
+                                : 'border-[rgba(30,50,80,0.15)] text-[#57606a] hover:border-[rgba(30,50,80,0.3)]'
+                          }`}
+                        >
+                          {t(ui.contact.intents[id])}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
-              )}
 
-              {intent === 'collab' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className={labelCls} htmlFor="c-name">{t(ui.contact.fields.name)}</label>
+                    <input id="c-name" name="name" value={form.name} onChange={set('name')}
+                           autoComplete="name" required maxLength={120}
+                           className={field(badField === 'name')}
+                           placeholder={t(ui.contact.placeholders.name)} />
+                  </div>
+                  <div>
+                    <label className={labelCls} htmlFor="c-email">{t(ui.contact.fields.email)}</label>
+                    <input id="c-email" name="email" type="email" inputMode="email"
+                           value={form.email} onChange={set('email')}
+                           autoComplete="email" required maxLength={200}
+                           className={field(badField === 'email')}
+                           placeholder={t(ui.contact.placeholders.email)} />
+                  </div>
+                </div>
+
+                {/* Fields that only make sense for the chosen intent */}
+                {intent === 'co-op' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <label className={labelCls} htmlFor="c-company">{t(ui.contact.fields.company)}</label>
+                      <input id="c-company" value={form.company} onChange={set('company')}
+                             autoComplete="organization" maxLength={120}
+                             className={field(false)} placeholder={ui.contact.placeholders.company} />
+                    </div>
+                    <div>
+                      <label className={labelCls} htmlFor="c-role">{t(ui.contact.fields.role)}</label>
+                      <input id="c-role" value={form.role} onChange={set('role')}
+                             maxLength={120} className={field(false)}
+                             placeholder={t(ui.contact.placeholders.role)} />
+                    </div>
+                    <div>
+                      <label className={labelCls} htmlFor="c-timeline">{t(ui.contact.fields.timeline)}</label>
+                      <input id="c-timeline" value={form.timeline} onChange={set('timeline')}
+                             maxLength={120} className={field(false)}
+                             placeholder={t(ui.contact.placeholders.timeline)} />
+                    </div>
+                  </div>
+                )}
+
+                {intent === 'collab' && (
+                  <div className="mb-4">
+                    <label className={labelCls} htmlFor="c-link">{t(ui.contact.fields.link)}</label>
+                    <input id="c-link" value={form.link} onChange={set('link')}
+                           inputMode="url" maxLength={300}
+                           className={field(false)} placeholder={ui.contact.placeholders.link} />
+                  </div>
+                )}
+
                 <div className="mb-4">
-                  <label className={labelCls} htmlFor="c-link">repo or project link (optional)</label>
-                  <input id="c-link" value={form.link} onChange={set('link')}
-                         inputMode="url" maxLength={300}
-                         className={field(false)} placeholder="https://github.com/..." />
+                  <label className={labelCls} htmlFor="c-message">{t(ui.contact.fields.message)}</label>
+                  <textarea id="c-message" name="message" rows={6} value={form.message}
+                            onChange={set('message')} required maxLength={5000}
+                            className={`${field(badField === 'message')} resize-y leading-6`}
+                            placeholder={t(ui.contact.placeholders[intent])} />
                 </div>
-              )}
 
-              <div className="mb-4">
-                <label className={labelCls} htmlFor="c-message">message</label>
-                <textarea id="c-message" name="message" rows={6} value={form.message}
-                          onChange={set('message')} required maxLength={5000}
-                          className={`${field(badField === 'message')} resize-y leading-6`}
-                          placeholder={PLACEHOLDER[intent]} />
-              </div>
+                {/* Honeypot: off-screen, not display:none, so bots still fill it */}
+                <div aria-hidden="true" className="absolute w-px h-px -left-[9999px] overflow-hidden">
+                  <label htmlFor="c-website">{t(ui.contact.fields.honeypot)}</label>
+                  <input id="c-website" name="website" tabIndex={-1} autoComplete="off" />
+                </div>
 
-              {/* Honeypot: off-screen, not display:none, so bots still fill it */}
-              <div aria-hidden="true" className="absolute w-px h-px -left-[9999px] overflow-hidden">
-                <label htmlFor="c-website">Leave this field empty</label>
-                <input id="c-website" name="website" tabIndex={-1} autoComplete="off" />
-              </div>
+                <div ref={turnstileRef} className="mb-4 empty:mb-0" />
 
-              <div ref={turnstileRef} className="mb-4 empty:mb-0" />
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="submit"
+                    disabled={busy}
+                    className={`flex items-center gap-2 font-mono text-xs px-4 py-2.5 rounded border transition-all duration-200 disabled:opacity-70 ${
+                      dark
+                        ? 'bg-terminal-green/10 border-terminal-green/30 text-terminal-green hover:bg-terminal-green/15 hover:border-terminal-green/60'
+                        : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#1a7f37] hover:bg-[rgba(26,127,55,0.14)]'
+                    }`}
+                  >
+                    {busy
+                      ? <span className="w-3 h-3 rounded-full border-2 border-current border-r-transparent animate-spin" />
+                      : <Play size={12} />}
+                    {btnLabel}
+                  </button>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <button
-                  type="submit"
-                  disabled={busy}
-                  className={`flex items-center gap-2 font-mono text-xs px-4 py-2.5 rounded border transition-all duration-200 disabled:opacity-70 ${
-                    dark
-                      ? 'bg-terminal-green/10 border-terminal-green/30 text-terminal-green hover:bg-terminal-green/15 hover:border-terminal-green/60'
-                      : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#1a7f37] hover:bg-[rgba(26,127,55,0.14)]'
-                  }`}
-                >
-                  {busy
-                    ? <span className="w-3 h-3 rounded-full border-2 border-current border-r-transparent animate-spin" />
-                    : <Play size={12} />}
-                  {btnLabel}
-                </button>
+                  {busy && (
+                    <span className={`font-mono text-[11px] ${textMuted}`}>
+                      {status === 'queued' ? t(ui.contact.queuedNote) : 'POST /api/contact'}
+                    </span>
+                  )}
+                </div>
 
-                {busy && (
-                  <span className={`font-mono text-[11px] ${textMuted}`}>
-                    {status === 'queued' ? 'queued...' : 'POST /api/contact'}
-                  </span>
-                )}
-              </div>
-
-              {/* Output area, mirroring a notebook cell result */}
-              <div aria-live="polite" className="mt-4">
-                {status === 'error' && (
-                  <div className={`font-mono text-[11px] px-3 py-2.5 rounded border ${
-                    dark
-                      ? 'bg-[rgba(247,129,102,0.07)] border-[rgba(247,129,102,0.3)] text-[#f78166]'
-                      : 'bg-[rgba(207,34,46,0.05)] border-[rgba(207,34,46,0.25)] text-[#cf222e]'
-                  }`}>
-                    {error}
-                  </div>
-                )}
-
-                {status === 'ok' && result && (
-                  <div className={`font-mono text-[11px] px-4 py-3 rounded border ${
-                    dark
-                      ? 'bg-[rgba(63,185,80,0.06)] border-[rgba(63,185,80,0.3)]'
-                      : 'bg-[rgba(26,127,55,0.05)] border-[rgba(26,127,55,0.25)]'
-                  }`}>
-                    <div className={`flex items-center gap-2 mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
-                      <Check size={13} /> delivered
-                      <span className={textMuted}>· 200 OK · {result.ms}ms</span>
+                <div aria-live="polite" className="mt-4">
+                  {status === 'error' && (
+                    <div className={`font-mono text-[11px] px-3 py-2.5 rounded border ${
+                      dark
+                        ? 'bg-[rgba(247,129,102,0.07)] border-[rgba(247,129,102,0.3)] text-[#f78166]'
+                        : 'bg-[rgba(207,34,46,0.05)] border-[rgba(207,34,46,0.25)] text-[#cf222e]'
+                    }`}>
+                      {error}
                     </div>
-                    <div className={`grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 ${textSecondary}`}>
-                      <span className={textMuted}>id</span>
-                      <span className="flex items-center gap-2">
-                        {result.id}
-                        <CopyButton value={result.id} dark={dark} label="id" />
-                      </span>
-                      <span className={textMuted}>queued</span><span>{stamp(result.queuedAt)}</span>
-                      <span className={textMuted}>sla</span><span>{result.sla}</span>
-                    </div>
-                    <p className={`mt-2.5 ${textMuted}`}>
-                      Keep that id if you need to follow up.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </form>
+                  )}
+                </div>
+              </form>
+            )}
           </div>
 
           {/* ── Availability card ───────────────────────────────────────── */}
@@ -388,27 +413,34 @@ export default function Contact({ dark }) {
             <div className={`rounded-lg border ${borderColor} ${cardBg} p-5`}>
               <div className={`flex items-center gap-2 font-mono text-xs mb-4 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
                 <span className="inline-block w-2 h-2 rounded-full bg-terminal-green animate-pulse" />
-                available
+                {t(ui.contact.availability.available)}
               </div>
 
               <dl className="space-y-3">
-                {[
-                  ['looking for', 'AI/ML co-op, Fall 2026'],
-                  ['after that', 'Full-time, from Apr 2027'],
-                ].map(([k, v]) => (
-                  <div key={k}>
-                    <dt className={`font-mono text-[10px] uppercase tracking-wider ${textMuted}`}>{k}</dt>
-                    <dd className={`font-mono text-xs mt-0.5 ${textPrimary}`}>{v}</dd>
-                  </div>
-                ))}
+                <div>
+                  <dt className={`font-mono text-[10px] uppercase tracking-wider ${textMuted}`}>
+                    {t(ui.contact.availability.lookingFor)}
+                  </dt>
+                  <dd className={`font-mono text-xs mt-0.5 ${textPrimary}`}>
+                    {t(ui.contact.availability.lookingForValue)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className={`font-mono text-[10px] uppercase tracking-wider ${textMuted}`}>
+                    {t(ui.contact.availability.afterThat)}
+                  </dt>
+                  <dd className={`font-mono text-xs mt-0.5 ${textPrimary}`}>
+                    {t(ui.contact.availability.afterThatValue)}
+                  </dd>
+                </div>
               </dl>
 
               <div className={`mt-4 pt-4 border-t ${borderColor} space-y-2 font-mono text-[11px] ${textSecondary}`}>
                 <p className="flex items-center gap-2">
-                  <MapPin size={12} className={textMuted} /> {personal.location} (EST)
+                  <MapPin size={12} className={textMuted} /> {t(personal.location)} (EST)
                 </p>
                 <p className="flex items-center gap-2">
-                  <Clock size={12} className={textMuted} /> replies in under 24h · EN / ES
+                  <Clock size={12} className={textMuted} /> {t(ui.contact.availability.replies)}
                 </p>
                 <p className="flex items-center gap-2">
                   <Mail size={12} className={textMuted} />
@@ -425,7 +457,7 @@ export default function Contact({ dark }) {
                 { href: personal.cvUrl, label: 'resume.pdf', Icon: FileDown, download: true },
                 { href: personal.socials.linkedin, label: 'linkedin', Icon: Linkedin },
                 { href: personal.socials.github, label: 'github', Icon: Github },
-                { href: 'https://huggingface.co/renteria-luis', label: 'hf spaces', Icon: null },
+                { href: personal.socials.huggingface, label: 'hf spaces', Icon: null },
               ].map(({ href, label, Icon, download }) => (
                 <a
                   key={label}

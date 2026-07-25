@@ -1,6 +1,8 @@
 import { Brain, Database, Box, Layers } from 'lucide-react';
 import { skillCategories } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
+import { ui } from '../i18n/ui';
+import { useT } from '../i18n';
 
 // ─── react-icons imports ──────────────────────────────────────────
 import { SiPython, SiPytorch, SiScikitlearn, SiPandas, SiNumpy,
@@ -34,21 +36,18 @@ const LEVEL_STYLES = {
     dark:  'bg-[rgba(63,185,80,0.09)]  text-[#5fd87a] border-[rgba(63,185,80,0.22)]',
     light: 'bg-[rgba(26,127,55,0.07)]  text-[#16783a] border-[rgba(26,127,55,0.22)]',
     dot: { dark: '#3fb950', light: '#1a7f37' },
-    label: 'core',
     legend: { dark: '#3fb950', light: '#1a7f37' },
   },
   learning: {
     dark:  'bg-[rgba(79,162,255,0.09)]  text-[#79c0ff] border-[rgba(79,162,255,0.22)]',
     light: 'bg-[rgba(9,105,218,0.07)]   text-[#0969da] border-[rgba(9,105,218,0.2)]',
     dot: { dark: '#79c0ff', light: '#0969da' },
-    label: 'learning',
     legend: { dark: '#79c0ff', light: '#0969da' },
   },
   roadmap: {
     dark:  'bg-[rgba(255,50,50,0.09)]  text-[#ff6060] border-[rgba(255,50,50,0.22)]',
     light: 'bg-[rgba(220,38,38,0.07)]  text-[#dc2626] border-[rgba(220,38,38,0.2)]',
     dot: { dark: '#ff4040', light: '#dc2626' },
-    label: 'roadmap',
     legend: { dark: '#ff4040', light: '#dc2626' },
   },
 };
@@ -65,7 +64,7 @@ const CATEGORY_ACCENT = {
   'data-apps': { dark: { border: 'rgba(227,179,65,0.2)',  icon: '#e3b341', bg: 'rgba(227,179,65,0.07)'  }, light: { border: 'rgba(154,103,0,0.2)',  icon: '#9a6700', bg: 'rgba(154,103,0,0.06)'  } },
 };
 
-function SkillBadge({ skill, dark }) {
+function SkillBadge({ skill, dark, t }) {
   const levelStyle = LEVEL_STYLES[skill.level];
   const modeClass  = dark ? levelStyle.dark : levelStyle.light;
   const IconComp   = ICON_MAP[skill.icon];
@@ -82,12 +81,12 @@ function SkillBadge({ skill, dark }) {
           style={{ background: dark ? levelStyle.dot.dark : levelStyle.dot.light }}
         />
       )}
-      <span className="leading-none">{skill.name}</span>
+      <span className="leading-none">{t(skill.name)}</span>
     </div>
   );
 }
 
-function CategoryBlock({ category, dark }) {
+function CategoryBlock({ category, dark, t }) {
   const accent     = CATEGORY_ACCENT[category.id] || CATEGORY_ACCENT['ml-ai'];
   const modeAccent = dark ? accent.dark : accent.light;
   const IconComp   = CATEGORY_ICONS[category.icon] || Brain;
@@ -101,15 +100,12 @@ function CategoryBlock({ category, dark }) {
       }`}
     >
       <div className="flex items-center gap-2.5 mb-4">
-        <div
-          className="p-1.5 rounded"
-          style={{ background: modeAccent.bg }}
-        >
+        <div className="p-1.5 rounded" style={{ background: modeAccent.bg }}>
           <IconComp size={14} style={{ color: modeAccent.icon }} />
         </div>
         <div>
           <div className={`font-mono text-xs font-semibold ${dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]'}`}>
-            {category.label}
+            {t(category.label)}
           </div>
           <div className={`font-mono text-[9px] uppercase tracking-widest ${dark ? 'text-[#a2afc2]' : 'text-[#57606a]'}`}>
             ~/skills/{category.id}
@@ -119,7 +115,7 @@ function CategoryBlock({ category, dark }) {
 
       <div className="flex flex-wrap gap-2">
         {category.skills.map((skill) => (
-          <SkillBadge key={skill.name} skill={skill} dark={dark} />
+          <SkillBadge key={t(skill.name)} skill={skill} dark={dark} t={t} />
         ))}
       </div>
     </div>
@@ -128,11 +124,13 @@ function CategoryBlock({ category, dark }) {
 
 export default function Skills({ dark }) {
   const ref = useReveal(0.05);
+  const t = useT();
   const textPrimary   = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]'  : 'text-[#57606a]';
 
   const legendItems = Object.entries(LEVEL_STYLES).map(([level, style]) => ({
-    level, label: style.label,
+    level,
+    label: t(ui.skills.levels[level]),
     color: dark ? style.legend.dark : style.legend.light,
   }));
 
@@ -141,19 +139,19 @@ export default function Skills({ dark }) {
       <div ref={ref} className="reveal">
         <div className="mb-12">
           <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
-            04 / skills
+            {t(ui.skills.label)}
           </p>
           <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
-            tech stack
+            {ui.skills.title}
           </h2>
           <p className={`mt-3 text-sm ${textSecondary}`}>
-            Tools I use daily, tools I'm actively learning, and what's on my roadmap.
+            {t(ui.skills.subtitle)}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {skillCategories.map((cat) => (
-            <CategoryBlock key={cat.id} category={cat} dark={dark} />
+            <CategoryBlock key={cat.id} category={cat} dark={dark} t={t} />
           ))}
         </div>
 
@@ -162,7 +160,7 @@ export default function Skills({ dark }) {
           dark ? 'border-[rgba(139,151,168,0.07)]' : 'border-[rgba(30,50,80,0.08)]'
         }`}>
           <span className={`font-mono text-[9px] uppercase tracking-widest ${textSecondary}`}>
-            Legend:
+            {t(ui.skills.legend)}
           </span>
           {legendItems.map(({ level, label, color }) => (
             <div key={level} className="flex items-center gap-2">

@@ -1,11 +1,14 @@
 import { Github, Linkedin, ArrowDown, FileDown, Mail } from 'lucide-react';
 import { personal, companion } from '../config/data';
 import { useTypingEffect } from '../hooks/useTypingEffect';
+import { ui } from '../i18n/ui';
+import { useT } from '../i18n';
 
 const say = (t) => t && window.dispatchEvent(new CustomEvent('companionSay', { detail: t }));
 
 export default function Hero({ dark }) {
   const typed = useTypingEffect(personal.typingLines, { typeSpeed: 75, deleteSpeed: 40, pauseMs: 1800 });
+  const t = useT();
 
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
@@ -50,7 +53,7 @@ export default function Hero({ dark }) {
             {/* Small breadcrumb label */}
             <div className={`font-mono text-xs mb-6 flex items-center gap-2 ${textSecondary}`}>
               <span className="inline-block w-2 h-2 rounded-full bg-terminal-green animate-pulse" />
-              available for ML/data co-op (Fall 2026)
+              {t(ui.hero.available)}
             </div>
 
             {/* Terminal Window */}
@@ -68,30 +71,27 @@ export default function Hero({ dark }) {
                 </span>
               </div>
 
-              {/* Terminal body */}
+              {/* Terminal body. The commands themselves are never translated. */}
               <div className="p-5 font-mono text-sm leading-relaxed">
-                {/* Command 1 */}
                 <div className={`mb-1 ${textSecondary}`}>
                   <span className="text-terminal-green">❯</span>{' '}
                   <span className={textPrimary}>whoami</span>
                 </div>
                 {/* The page's only <h1>. Search engines and screen readers use
-                    it as the document title: it has to be the name. */}
+                    it as the document title, so it has to be the name. */}
                 <h1 className={`mb-4 text-base font-semibold pl-4 ${dark ? 'text-[#f5f8ff]' : 'text-[#1c2128]'}`}>
                   {personal.name}
-                  <span className="sr-only">, AI/ML Engineer &amp; Data Scientist, London, Ontario</span>
+                  <span className="sr-only">{t(ui.hero.srTitle)}</span>
                 </h1>
 
-                {/* Command 2 */}
                 <div className={`mb-1 ${textSecondary}`}>
                   <span className="text-terminal-green">❯</span>{' '}
                   <span className={textPrimary}>cat title.txt</span>
                 </div>
                 <div className={`mb-4 pl-4 text-xs ${textSecondary} leading-5`}>
-                  {personal.title}
+                  {t(personal.title)}
                 </div>
 
-                {/* Command 3: typing effect */}
                 <div className={`mb-1 ${textSecondary}`}>
                   <span className="text-terminal-green">❯</span>{' '}
                   <span className={textPrimary}>ls /core-focus</span>
@@ -105,7 +105,7 @@ export default function Hero({ dark }) {
 
             {/* Tagline */}
             <p className={`mt-6 text-sm leading-relaxed ${textSecondary} max-w-md`}>
-              {personal.tagline}
+              {t(personal.tagline)}
             </p>
 
             {/* CTA Buttons */}
@@ -118,7 +118,7 @@ export default function Hero({ dark }) {
                     : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#1a7f37] hover:bg-[rgba(26,127,55,0.14)]'
                 }`}
               >
-                ./view-projects
+                {t(ui.hero.viewProjects)}
               </a>
               <a
                 href={personal.cvUrl}
@@ -130,7 +130,7 @@ export default function Hero({ dark }) {
                 }`}
               >
                 <FileDown size={12} />
-                download resume
+                {t(ui.hero.downloadCv)}
               </a>
             </div>
 
@@ -139,7 +139,7 @@ export default function Hero({ dark }) {
               <a
                 href={personal.socials.github}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener noreferrer me"
                 className={`flex items-center gap-1.5 font-mono text-xs transition-colors ${
                   dark ? 'hover:text-terminal-green' : 'hover:text-[#1a7f37]'
                 }`}
@@ -150,7 +150,7 @@ export default function Hero({ dark }) {
               <a
                 href={personal.socials.linkedin}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener noreferrer me"
                 className={`flex items-center gap-1.5 font-mono text-xs transition-colors ${
                   dark ? 'hover:text-terminal-blue' : 'hover:text-[#0969da]'
                 }`}
@@ -164,12 +164,12 @@ export default function Hero({ dark }) {
                   dark ? 'hover:text-terminal-purple' : 'hover:text-[#7c3aed]'
                 }`}
               >
-                <Mail size={14} /> email
+                <Mail size={14} /> {t(ui.hero.email)}
               </a>
             </div>
           </div>
 
-          {/* Right: Photo placeholder */}
+          {/* Right: Photo */}
           <div className="lg:col-span-2 flex justify-center lg:justify-end">
             <div className="relative" onMouseEnter={() => say(companion.hoverLines.photo)}>
               {personal.photoUrl ? (
@@ -179,7 +179,7 @@ export default function Hero({ dark }) {
                 >
                   <img
                     src={personal.photoUrl}
-                    alt={`${personal.name}, ${personal.title}`}
+                    alt={`${personal.name}, ${t(personal.title)}`}
                     width="512"
                     height="512"
                     fetchPriority="high"
@@ -204,10 +204,6 @@ export default function Hero({ dark }) {
                   >
                     {personal.initials}
                   </div>
-                  <p className={`font-mono text-[10px] text-center px-4 leading-relaxed ${textSecondary}`}>
-                    place <span className={dark ? 'text-terminal-green' : 'text-[#1a7f37]'}>/public/photo.jpg</span>
-                    <br />& set <span className={dark ? 'text-terminal-blue' : 'text-[#0969da]'}>photoUrl</span> in data.js
-                  </p>
                 </div>
               )}
 
@@ -219,7 +215,7 @@ export default function Hero({ dark }) {
                     : 'bg-white border-[rgba(30,50,80,0.12)] text-[#57606a]'
                 }`}
               >
-                📍 {personal.location}
+                📍 {t(personal.location)}
               </div>
             </div>
           </div>
@@ -229,7 +225,7 @@ export default function Hero({ dark }) {
         <div className={`mt-20 flex justify-center ${textSecondary}`}>
           <a href="#about" className="flex flex-col items-center gap-2 group">
             <span className="font-mono text-[10px] tracking-widest uppercase opacity-50 group-hover:opacity-80 transition-opacity">
-              scroll
+              {t(ui.hero.scroll)}
             </span>
             <ArrowDown size={14} className="animate-bounce opacity-50 group-hover:opacity-80 transition-opacity" />
           </a>

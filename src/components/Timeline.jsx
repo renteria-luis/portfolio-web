@@ -1,6 +1,8 @@
 import { Briefcase, GraduationCap } from 'lucide-react';
 import { timeline, companion } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
+import { ui } from '../i18n/ui';
+import { useT } from '../i18n';
 
 const say = (t) => t && window.dispatchEvent(new CustomEvent('companionSay', { detail: t }));
 
@@ -17,7 +19,7 @@ const TAG_COLORS_LIGHT = [
   'bg-[rgba(180,83,9,0.08)] text-[#b45309] border-[rgba(180,83,9,0.2)]',
 ];
 
-function TimelineItem({ item, index, dark, isLast }) {
+function TimelineItem({ item, index, dark, isLast, t }) {
   const isExp = item.type === 'experience';
   const tagColors = dark ? TAG_COLORS_DARK : TAG_COLORS_LIGHT;
   const tagColor = tagColors[index % tagColors.length];
@@ -72,26 +74,26 @@ function TimelineItem({ item, index, dark, isLast }) {
         <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
           <div>
             <h3 className={`font-mono text-sm font-semibold ${textPrimary}`}>
-              {item.role}
+              {t(item.role)}
             </h3>
             <div className={`font-mono text-xs mt-0.5 ${
               isExp
                 ? dark ? 'text-terminal-green' : 'text-[#1a7f37]'
                 : dark ? 'text-terminal-blue' : 'text-[#0969da]'
             }`}>
-              {item.institution}
+              {t(item.institution)}
             </div>
           </div>
           <div className="text-right">
-            <div className={`font-mono text-[11px] ${textSecondary}`}>{item.period}</div>
+            <div className={`font-mono text-[11px] ${textSecondary}`}>{t(item.period)}</div>
             <div className={`font-mono text-[10px] mt-0.5 ${dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}`}>
-              {item.location}
+              {t(item.location)}
             </div>
           </div>
         </div>
 
         {/* Description */}
-        <p className={`text-xs leading-6 mb-3 ${textSecondary}`}>{item.description}</p>
+        <p className={`text-xs leading-6 mb-3 ${textSecondary}`}>{t(item.description)}</p>
 
         {/* Highlight */}
         {item.highlight && (
@@ -100,18 +102,15 @@ function TimelineItem({ item, index, dark, isLast }) {
               ? dark ? 'bg-[rgba(63,185,80,0.06)] text-terminal-green/70' : 'bg-[rgba(26,127,55,0.06)] text-[#1a7f37]'
               : dark ? 'bg-[rgba(121,192,255,0.06)] text-terminal-blue/70' : 'bg-[rgba(9,105,218,0.06)] text-[#0969da]'
           }`}>
-            ✦ {item.highlight}
+            ✦ {t(item.highlight)}
           </div>
         )}
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5">
           {item.tags.map((tag) => (
-            <span
-              key={tag}
-              className={`tag border ${tagColor}`}
-            >
-              {tag}
+            <span key={t(tag)} className={`tag border ${tagColor}`}>
+              {t(tag)}
             </span>
           ))}
         </div>
@@ -122,6 +121,7 @@ function TimelineItem({ item, index, dark, isLast }) {
 
 export default function Timeline({ dark }) {
   const ref = useReveal(0.05);
+  const t = useT();
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
 
   return (
@@ -130,10 +130,10 @@ export default function Timeline({ dark }) {
         {/* Section header */}
         <div className="mb-12">
           <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
-            02 / experience & education
+            {t(ui.timeline.label)}
           </p>
           <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
-            career timeline
+            {t(ui.timeline.title)}
           </h2>
         </div>
 
@@ -146,6 +146,7 @@ export default function Timeline({ dark }) {
               index={i}
               dark={dark}
               isLast={i === timeline.length - 1}
+              t={t}
             />
           ))}
         </div>

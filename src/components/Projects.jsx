@@ -2,6 +2,8 @@ import { Github, ExternalLink, Terminal, ArrowUpRight, Lock } from 'lucide-react
 import { SiHuggingface } from 'react-icons/si';
 import { projects, companion } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
+import { ui } from '../i18n/ui';
+import { useT } from '../i18n';
 
 const STATUS_STYLES = {
   live: {
@@ -28,11 +30,12 @@ const ACCENT_MAP = {
   'terminal-orange': { dark: 'rgba(255,166,87,0.2)', light: 'rgba(180,83,9,0.25)', text: '#ffa657', textLight: '#b45309' },
 };
 
-function ProjectCard({ project, dark }) {
+function ProjectCard({ project, dark, t }) {
   const status = STATUS_STYLES[project.status];
   const accent = ACCENT_MAP[project.accent];
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
+  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]';
   const accentColor = dark ? accent.text : accent.textLight;
   const borderHover = dark ? accent.dark : accent.light;
 
@@ -65,7 +68,7 @@ function ProjectCard({ project, dark }) {
                 animation: project.status === 'building' ? 'blink 1.5s ease-in-out infinite' : 'none',
               }}
             />
-            {project.statusLabel}
+            {t(project.statusLabel)}
           </div>
         </div>
 
@@ -81,7 +84,7 @@ function ProjectCard({ project, dark }) {
                   ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:text-[#ecf0f8] hover:border-[rgba(125,167,217,0.3)]'
                   : 'border-[rgba(30,50,80,0.12)] text-[#57606a] hover:text-[#1c2128]'
               }`}
-              aria-label="GitHub"
+              aria-label={`${project.title}: ${t(ui.projects.srcOn)}`}
             >
               <Github size={13} />
             </a>
@@ -96,8 +99,8 @@ function ProjectCard({ project, dark }) {
                   ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:text-[#ffd21e] hover:border-[rgba(255,210,30,0.3)]'
                   : 'border-[rgba(30,50,80,0.12)] text-[#57606a] hover:text-[#f5a623]'
               }`}
-              aria-label="Live demo on Hugging Face"
-              title="Live demo on Hugging Face Spaces"
+              aria-label={`${project.title}: ${t(ui.projects.liveDemo)}`}
+              title={t(ui.projects.liveDemo)}
             >
               {project.links.demo.includes('huggingface.co')
                 ? <SiHuggingface size={13} />
@@ -114,19 +117,19 @@ function ProjectCard({ project, dark }) {
           <ArrowUpRight size={12} style={{ color: accentColor }} className="opacity-0 group-hover:opacity-100 transition-opacity" />
         </h3>
         <p style={{ color: accentColor }} className="font-mono text-[10px] mt-0.5 opacity-70">
-          {project.subtitle}
+          {t(project.subtitle)}
         </p>
       </div>
 
       {/* Description */}
       <p className={`text-xs leading-6 mt-2 flex-1 ${textSecondary}`}>
-        {project.description}
+        {t(project.description)}
       </p>
 
       {/* Date range */}
       {project.period && (
-        <div className={`mt-3 font-mono text-[10px] ${dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}`}>
-          {project.period}
+        <div className={`mt-3 font-mono text-[10px] ${textMuted}`}>
+          {t(project.period)}
         </div>
       )}
 
@@ -134,12 +137,12 @@ function ProjectCard({ project, dark }) {
       {project.metrics && (
         <div className={`mt-4 pt-3 border-t flex gap-4 ${dark ? 'border-[rgba(125,167,217,0.06)]' : 'border-[rgba(30,50,80,0.08)]'}`}>
           {project.metrics.map((m) => (
-            <div key={m.label} className="text-center">
+            <div key={t(m.label)} className="text-center">
               <div className="font-mono text-xs font-semibold" style={{ color: accentColor }}>
-                {m.value}
+                {t(m.value)}
               </div>
-              <div className={`font-mono text-[9px] uppercase tracking-wide mt-0.5 ${dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}`}>
-                {m.label}
+              <div className={`font-mono text-[9px] uppercase tracking-wide mt-0.5 ${textMuted}`}>
+                {t(m.label)}
               </div>
             </div>
           ))}
@@ -162,7 +165,7 @@ function ProjectCard({ project, dark }) {
         ))}
       </div>
 
-      {/* GitHub link (always visible at bottom) */}
+      {/* Bottom link row */}
       <div className="mt-4 flex flex-wrap items-center gap-4 relative">
         {(project.links.github || project.links.demo) && (
           <>
@@ -186,18 +189,17 @@ function ProjectCard({ project, dark }) {
             github.com/{project.links.github.split('github.com/')[1]}
           </a>
         )}
+
         {/* No public repo: say so and credit the owner rather than show a dead link */}
         {project.repoPrivate && (
-          <span className={`flex flex-wrap items-center gap-1.5 font-mono text-[11px] ${
-            dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'
-          }`}>
+          <span className={`flex flex-wrap items-center gap-1.5 font-mono text-[11px] ${textMuted}`}>
             <Lock size={11} />
-            private repo
+            {t(ui.projects.privateRepo)}
             {project.collaborators?.length > 0 && (
               <>
                 <span className="opacity-50">·</span>
                 <span>
-                  with{' '}
+                  {t(ui.projects.with)}{' '}
                   {project.collaborators.map((c, i) => (
                     <span key={c.name}>
                       {i > 0 && ', '}
@@ -241,6 +243,7 @@ function ProjectCard({ project, dark }) {
 
 export default function Projects({ dark }) {
   const ref = useReveal(0.05);
+  const t = useT();
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
 
@@ -248,46 +251,43 @@ export default function Projects({ dark }) {
   const others = projects.filter((p) => !p.featured);
 
   return (
-    <section
-      id="projects"
-      className="py-24"
-    >
+    <section id="projects" className="py-24">
       <div className="max-w-5xl mx-auto px-6">
         <div ref={ref} className="reveal">
           {/* Section header */}
           <div className="mb-12">
             <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
-              03 / projects
+              {t(ui.projects.label)}
             </p>
             <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
-              what I've built
+              {t(ui.projects.title)}
             </h2>
             <p className={`mt-3 text-sm ${textSecondary}`}>
-              End-to-end ML systems. Real data, real deployments.
+              {t(ui.projects.subtitle)}
             </p>
           </div>
 
           {/* Featured: 2 column */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {featured.map((p) => (
-              <ProjectCard key={p.id} project={p} dark={dark} />
+              <ProjectCard key={p.id} project={p} dark={dark} t={t} />
             ))}
           </div>
 
           {/* Others: 2 column, smaller visual weight */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {others.map((p) => (
-              <ProjectCard key={p.id} project={p} dark={dark} />
+              <ProjectCard key={p.id} project={p} dark={dark} t={t} />
             ))}
           </div>
 
           {/* CTA */}
           <div className={`mt-8 text-center font-mono text-xs ${textSecondary}`}>
-            More on{' '}
+            {t(ui.projects.more)}{' '}
             <a
               href="https://github.com/renteria-luis"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer me"
               className={`transition-colors ${dark ? 'text-terminal-green hover:text-terminal-green/70' : 'text-[#1a7f37] hover:opacity-70'}`}
             >
               github.com/renteria-luis

@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, Moon, Sun, FileDown, Menu, X } from 'lucide-react';
+import { Github, Linkedin, Mail, Moon, Sun, FileDown, Menu, X, Languages } from 'lucide-react';
 import { personal } from '../config/data';
+import { ui } from '../i18n/ui';
+import { useLang, useT } from '../i18n';
 
-const navLinks = [
-  { label: 'about',      href: '#about'      },
-  { label: 'experience', href: '#experience' },
-  { label: 'projects',   href: '#projects'   },
-  { label: 'skills',     href: '#skills'     },
-  { label: 'contact',    href: '#contact'    },
-];
+const navLinks = ['about', 'experience', 'projects', 'skills', 'contact'];
 
 export default function Nav({ dark, toggleDark }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { lang, toggle } = useLang();
+  const t = useT();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 36);
@@ -21,23 +19,17 @@ export default function Nav({ dark, toggleDark }) {
   }, []);
 
   // ── Nav bg strategy:
-  //   Dark mode:  near-black (#07090e): always darker than #0e1420 body
-  //   Light mode: clean white: contrasts against #eef1f7 body
-  //   Pre-scroll: slightly more transparent so page grid bleeds through subtly
-  //   Post-scroll: more opaque + slight shadow to feel "lifted"
+  //   Dark mode:  near-black (#07090e), always darker than #0e1420 body
+  //   Light mode: clean white, contrasts against #eef1f7 body
   const navStyle = dark
     ? {
         backgroundColor: scrolled ? 'rgba(7,9,14,0.95)' : 'rgba(7,9,14,0.72)',
-        borderBottom:     scrolled
-          ? '1px solid rgba(63,185,80,0.1)'
-          : '1px solid rgba(63,185,80,0.04)',
+        borderBottom: scrolled ? '1px solid rgba(63,185,80,0.1)' : '1px solid rgba(63,185,80,0.04)',
         boxShadow: scrolled ? '0 2px 24px rgba(0,0,0,0.5)' : 'none',
       }
     : {
         backgroundColor: scrolled ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.65)',
-        borderBottom:     scrolled
-          ? '1px solid rgba(30,50,80,0.1)'
-          : '1px solid rgba(30,50,80,0.04)',
+        borderBottom: scrolled ? '1px solid rgba(30,50,80,0.1)' : '1px solid rgba(30,50,80,0.04)',
         boxShadow: scrolled ? '0 2px 16px rgba(0,0,0,0.07)' : 'none',
       };
 
@@ -49,6 +41,8 @@ export default function Nav({ dark, toggleDark }) {
   const textBright = dark ? '#ecf0f8' : '#1c2128';
   const accent     = dark ? '#3fb950' : '#1a7f37';
 
+  const themeLabel = t(dark ? ui.nav.themeToLight : ui.nav.themeToDark);
+
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 nav-blur transition-all duration-300"
@@ -56,7 +50,6 @@ export default function Nav({ dark, toggleDark }) {
     >
       <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
 
-        {/* Logo / Prompt */}
         <a
           href="#hero"
           className="font-mono text-sm font-medium tracking-tight transition-colors"
@@ -68,79 +61,80 @@ export default function Nav({ dark, toggleDark }) {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
+          {navLinks.map((key) => (
             <a
-              key={link.label}
-              href={link.href}
+              key={key}
+              href={`#${key}`}
               className="nav-link font-mono text-xs font-medium transition-colors"
               style={{ color: textMuted }}
               onMouseEnter={(e) => { e.currentTarget.style.color = textBright; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = textMuted;  }}
             >
               <span style={{ color: dark ? 'rgba(63,185,80,0.5)' : 'rgba(26,127,55,0.5)' }}>./</span>
-              {link.label}
+              {t(ui.nav[key])}
             </a>
           ))}
 
-          {/* Divider */}
           <div className={`w-px h-4 ${dark ? 'bg-white/[0.14]' : 'bg-black/[0.14]'}`} />
 
-          {/* Socials */}
           <div className="flex items-center gap-3">
-            <a href={personal.socials.github} target="_blank" rel="noopener noreferrer"
-               aria-label="GitHub"
-               className="transition-colors"
-               style={{ color: textMuted }}
+            <a href={personal.socials.github} target="_blank" rel="noopener noreferrer me"
+               aria-label="GitHub" className="transition-colors" style={{ color: textMuted }}
                onMouseEnter={(e) => { e.currentTarget.style.color = accent; }}
                onMouseLeave={(e) => { e.currentTarget.style.color = textMuted; }}>
               <Github size={15} />
             </a>
-            <a href={personal.socials.linkedin} target="_blank" rel="noopener noreferrer"
-               aria-label="LinkedIn"
-               className="transition-colors"
-               style={{ color: textMuted }}
+            <a href={personal.socials.linkedin} target="_blank" rel="noopener noreferrer me"
+               aria-label="LinkedIn" className="transition-colors" style={{ color: textMuted }}
                onMouseEnter={(e) => { e.currentTarget.style.color = dark ? '#79c0ff' : '#0969da'; }}
                onMouseLeave={(e) => { e.currentTarget.style.color = textMuted; }}>
               <Linkedin size={15} />
             </a>
-            <a href={`mailto:${personal.email}`}
-               aria-label="Email"
-               className="transition-colors"
-               style={{ color: textMuted }}
+            <a href={`mailto:${personal.email}`} aria-label={t(ui.hero.email)}
+               className="transition-colors" style={{ color: textMuted }}
                onMouseEnter={(e) => { e.currentTarget.style.color = dark ? '#d2a8ff' : '#7c3aed'; }}
                onMouseLeave={(e) => { e.currentTarget.style.color = textMuted; }}>
               <Mail size={15} />
             </a>
           </div>
 
-          {/* CV Button */}
           <a
             href={personal.cvUrl}
             download
             className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded border transition-all"
-            style={{
-              color:        accent,
-              borderColor:  dark ? 'rgba(63,185,80,0.25)' : 'rgba(26,127,55,0.3)',
-            }}
+            style={{ color: accent, borderColor: dark ? 'rgba(63,185,80,0.25)' : 'rgba(26,127,55,0.3)' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = dark ? 'rgba(63,185,80,0.1)' : 'rgba(26,127,55,0.07)';
-              e.currentTarget.style.borderColor      = accent;
+              e.currentTarget.style.borderColor = accent;
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.borderColor      = dark ? 'rgba(63,185,80,0.25)' : 'rgba(26,127,55,0.3)';
+              e.currentTarget.style.borderColor = dark ? 'rgba(63,185,80,0.25)' : 'rgba(26,127,55,0.3)';
             }}
           >
             <FileDown size={12} />
             resume.pdf
           </a>
 
-          {/* Dark/Light Toggle */}
+          {/* Language toggle. Shows the language you would switch TO. */}
+          <button
+            onClick={toggle}
+            className="flex items-center gap-1 p-1.5 rounded font-mono text-[11px] transition-colors"
+            style={{ color: textMuted }}
+            aria-label={t(ui.nav.langSwitch)}
+            title={t(ui.nav.langSwitch)}
+            onMouseEnter={(e) => { e.currentTarget.style.color = accent; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = textMuted; }}
+          >
+            <Languages size={15} />
+            {lang === 'en' ? 'ES' : 'EN'}
+          </button>
+
           <button
             onClick={toggleDark}
             className="p-1.5 rounded transition-colors"
             style={{ color: textMuted }}
-            aria-label="Toggle theme"
+            aria-label={themeLabel}
             onMouseEnter={(e) => { e.currentTarget.style.color = dark ? '#e3b341' : '#b45309'; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = textMuted; }}
           >
@@ -149,16 +143,21 @@ export default function Nav({ dark, toggleDark }) {
         </div>
 
         {/* Mobile buttons */}
-        <div className="md:hidden flex items-center gap-3">
+        <div className="md:hidden flex items-center gap-2">
+          <button onClick={toggle} className="flex items-center gap-1 p-1.5 rounded font-mono text-[11px]"
+                  style={{ color: textMuted }} aria-label={t(ui.nav.langSwitch)}>
+            <Languages size={15} />
+            {lang === 'en' ? 'ES' : 'EN'}
+          </button>
           <button onClick={toggleDark} className="p-1.5 rounded" style={{ color: textMuted }}
-                  aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}>
+                  aria-label={themeLabel}>
             {dark ? <Sun size={15} /> : <Moon size={15} />}
           </button>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="p-1.5 rounded transition-colors"
             style={{ color: textMuted }}
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-label={t(mobileOpen ? ui.nav.closeMenu : ui.nav.openMenu)}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
           >
@@ -170,25 +169,25 @@ export default function Nav({ dark, toggleDark }) {
       {/* Mobile menu */}
       {mobileOpen && (
         <div id="mobile-menu" className="md:hidden px-6 py-4 flex flex-col gap-4 nav-blur" style={mobileMenuStyle}>
-          {navLinks.map((link) => (
+          {navLinks.map((key) => (
             <a
-              key={link.label}
-              href={link.href}
+              key={key}
+              href={`#${key}`}
               onClick={() => setMobileOpen(false)}
               className="font-mono text-sm"
               style={{ color: textBright }}
             >
-              <span style={{ color: 'rgba(63,185,80,0.5)' }}>~/</span>{link.label}
+              <span style={{ color: 'rgba(63,185,80,0.5)' }}>~/</span>{t(ui.nav[key])}
             </a>
           ))}
           <div className="flex items-center gap-4 pt-2">
-            <a href={personal.socials.github} target="_blank" rel="noopener noreferrer">
+            <a href={personal.socials.github} target="_blank" rel="noopener noreferrer me" aria-label="GitHub">
               <Github size={16} style={{ color: textMuted }} />
             </a>
-            <a href={personal.socials.linkedin} target="_blank" rel="noopener noreferrer">
+            <a href={personal.socials.linkedin} target="_blank" rel="noopener noreferrer me" aria-label="LinkedIn">
               <Linkedin size={16} style={{ color: textMuted }} />
             </a>
-            <a href={`mailto:${personal.email}`}>
+            <a href={`mailto:${personal.email}`} aria-label={t(ui.hero.email)}>
               <Mail size={16} style={{ color: textMuted }} />
             </a>
             <a

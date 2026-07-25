@@ -1,7 +1,10 @@
 import { Github, Linkedin, Mail, FileDown } from 'lucide-react';
 import { personal } from '../config/data';
+import { ui } from '../i18n/ui';
+import { useT } from '../i18n';
 
 export default function Footer({ dark }) {
+  const t = useT();
   const textSecondary = dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]';
 
   return (
@@ -19,7 +22,7 @@ export default function Footer({ dark }) {
           <div className={`font-mono text-xs ${textSecondary}`}>
             <span className={dark ? 'text-terminal-green/50' : 'text-[#1a7f37]/50'}>luis@portfolio</span>
             <span className={dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}>:~$ </span>
-            <span>echo "Thanks for visiting 👾"</span>
+            <span>{t(ui.footer.thanks)}</span>
           </div>
 
           {/* Right: Social links */}
@@ -71,7 +74,7 @@ export default function Footer({ dark }) {
         <div className={`mt-6 pt-4 border-t text-center font-mono text-[10px] ${textSecondary} ${
           dark ? 'border-[rgba(139,151,168,0.07)]' : 'border-[rgba(30,50,80,0.08)]'
         }`}>
-          © {new Date().getFullYear()} {personal.name} · {personal.location}
+          © {new Date().getFullYear()} {personal.name} · {t(personal.location)}
         </div>
       </div>
     </footer>
