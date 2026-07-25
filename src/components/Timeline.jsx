@@ -41,7 +41,7 @@ function TimelineItem({ item, index, dark, isLast }) {
             : <GraduationCap size={7} className={dark ? 'text-terminal-blue' : 'text-[#0969da]'} />
           }
         </div>
-        {/* Gradient connector line — gradient backgrounds require inline style (no Tailwind equivalent) */}
+        {/* Gradient connector line: gradient backgrounds require inline style (no Tailwind equivalent) */}
         {!isLast && (
           <div
             className="absolute left-[7px] top-[18px] w-px"

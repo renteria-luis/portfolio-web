@@ -3,7 +3,7 @@ import { Mail, Github, Linkedin, FileDown, Copy, Check } from 'lucide-react';
 import { personal } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
 
-const MAILTO = `mailto:${personal.email}?subject=${encodeURIComponent('Hi Luis — opportunity')}`;
+const MAILTO = `mailto:${personal.email}?subject=${encodeURIComponent('Hi Luis')}`;
 
 function CopyEmail({ dark }) {
   const [copied, setCopied] = useState(false);
@@ -12,7 +12,7 @@ function CopyEmail({ dark }) {
     try {
       await navigator.clipboard.writeText(personal.email);
     } catch {
-      return;   // clipboard blocked (insecure origin / denied) — the mailto still works
+      return;   // clipboard blocked (insecure origin / denied): the mailto still works
     }
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
@@ -70,8 +70,8 @@ export default function Contact({ dark }) {
             let's talk
           </h2>
           <p className={`mt-3 text-sm ${textSecondary}`}>
-            Actively looking for an ML/Data co-op for Fall 2026. If you're hiring — or just want to
-            talk about RAG, MLOps or graph ML — my inbox is open.
+            Actively looking for an ML/Data co-op for Fall 2026. If you're hiring, or just want to
+            talk about RAG, MLOps or graph ML, my inbox is open.
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function Contact({ dark }) {
               <Prompt>cat availability.txt</Prompt>
               <div className={`mb-4 pl-4 text-xs ${textSecondary} leading-5`}>
                 <span className="inline-block w-2 h-2 rounded-full bg-terminal-green animate-pulse mr-1.5" />
-                ML/Data co-op — Fall 2026 · open to full-time after graduation
+                ML/Data co-op, Fall 2026 · open to full-time after graduation
               </div>
 
               <Prompt>echo $EMAIL</Prompt>

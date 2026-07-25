@@ -9,7 +9,7 @@ const CAT_RATIO = 508 / 520;
 /**
  * Floating astronaut cat.
  *
- * Motion model — everything below runs on one rAF loop and only ever writes
+ * Motion model: everything below runs on one rAF loop and only ever writes
  * `transform` / `opacity`, so no frame touches layout:
  *   target = anchor + wander(t)      continuous layered sines, never a jump
  *   position -> target               critically damped spring, integrated in
@@ -35,7 +35,7 @@ export default function Companion() {
     x: 40, y: 260, vx: 0, vy: 0,
     baseX: 40, baseY: 260,
     renderX: 40, renderY: 260,
-    // wander phases — random per session so it never repeats the same path
+    // wander phases: random per session so it never repeats the same path
     p: [0, 0, 0, 0, 0].map(() => Math.random() * Math.PI * 2),
     face: 1, opacity: 0, lastOpacity: -1, phase: 'in', t: 0, teleportAt: 14,
     reduced: false, section: 'hero', lockUntil: 0, side: 'left',
@@ -197,14 +197,14 @@ export default function Companion() {
         const tx = clamp(s.baseX + wx, 2, vw - cw - 2);
         const ty = clamp(s.baseY + wy, 56, vh - ch - 8);
 
-        // Critically damped spring — smooth catch-up, no overshoot, dt-correct.
+        // Critically damped spring: smooth catch-up, no overshoot, dt-correct.
         const k = 5.5, d = 2 * Math.sqrt(k);
         s.vx += ((tx - s.x) * k - s.vx * d) * dt;
         s.vy += ((ty - s.y) * k - s.vy * d) * dt;
         s.x += s.vx * dt; s.y += s.vy * dt;
       }
 
-      // Lazy tumble — computed unconditionally so grabbing the cat doesn't
+      // Lazy tumble: computed unconditionally so grabbing the cat doesn't
       // snap it upright mid-drag.
       const rot = s.reduced ? 0 : Math.sin(s.t * 0.27 + s.p[0]) * 3.2;
       s.renderX = s.x; s.renderY = s.y;
@@ -220,7 +220,7 @@ export default function Companion() {
         }
         wrap.style.transform = `translate3d(${s.x.toFixed(2)}px,${s.y.toFixed(2)}px,0) rotate(${rot.toFixed(2)}deg)`;
       }
-      // Only written when it actually flips — the drop-shadow on this node would
+      // Only written when it actually flips: the drop-shadow on this node would
       // otherwise be re-rasterized every frame.
       if (s.face !== lastFace && innerRef.current) {
         innerRef.current.style.transform = `scaleX(${s.face})`;

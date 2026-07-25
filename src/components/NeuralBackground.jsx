@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * NeuralBackground — animated neural-network / data-flow graph.
+ * NeuralBackground: animated neural-network / data-flow graph.
  *
  * Split across two stacked canvases so the per-frame cost is near zero:
  *   #neural-canvas  static graph (nodes + edges). Painted once per resize and
- *                   then never touched again — the graph doesn't move.
+ *                   then never touched again: the graph doesn't move.
  *   #neural-pulses  only the travelling pulses. Each pulse is a pre-rendered
  *                   sprite blitted with globalAlpha, and only the rectangles
  *                   touched last frame get cleared.

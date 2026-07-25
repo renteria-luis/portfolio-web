@@ -28,7 +28,7 @@ const ICON_MAP = {
   SiHtml5, SiCss3, SiJavascript, FaRobot, FaTerminal,
 };
 
-// ─── Level color system — colorblind-safe ────────────────────────
+// ─── Level color system: colorblind-safe ────────────────────────
 const LEVEL_STYLES = {
   core: {
     dark:  'bg-[rgba(63,185,80,0.09)]  text-[#5fd87a] border-[rgba(63,185,80,0.22)]',

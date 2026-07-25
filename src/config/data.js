@@ -8,7 +8,7 @@ export const personal = {
   name: "Luis Renteria Lezano",
   initials: "LR",
   title: "AI/ML Engineer & Data Scientist",
-  location: "London, ON — Canada",
+  location: "London, ON, Canada",
   email: "luisrenterialezano@gmail.com",
   // NOTE: no `phone` here on purpose. It was never rendered, but it was still
   // compiled into the public JS bundle, so it was scrapeable. CV only.
@@ -29,12 +29,12 @@ export const personal = {
   ],
 
   // Short punchy tagline under the typing effect
-  tagline: "Building end-to-end ML systems with real industrial impact — not just academic theory.",
+  tagline: "Building end-to-end ML systems with real industrial impact, not just academic theory.",
 
   // Bio paragraph for the About section
   bio: [
     "Electronics & Telecommunications Engineer transitioning to AI/ML Engineering. Currently specializing in NLP, RAG architectures, and MLOps at Fanshawe College and self-directed learning.",
-    "My background in high-stakes environments — refinery control systems (PLC/SCADA) and enterprise IP security infrastructure — shapes my approach. I prioritize system reliability, signal integrity, and measurable business impact over isolated academic metrics.",
+    "My background in high-stakes environments (refinery control systems with PLC/SCADA, and enterprise IP security infrastructure) shapes my approach. I prioritize system reliability, signal integrity, and measurable business impact over isolated academic metrics.",
     "I focus on shipping end-to-end pipelines: transforming messy raw data into containerized, production-ready models and APIs."
   ],
 
@@ -46,13 +46,13 @@ export const personal = {
     { label: "Kaggle rank", value: "#202", note: "House Prices comp" },
   ],
 
-  // Photo — replace '/photo.jpg' with your actual image path in /public
+  // Photo: replace '/photo.jpg' with your actual image path in /public
   // Recommended: Professional headshot, neutral/dark background,
   // well-lit face. A shot at your desk or with a monitor works great too.
   // Square crop (1:1) looks best at the size rendered here.
   photoUrl: '/photo.webp',
 
-  // CV PDF — place your PDF inside /public and update this path
+  // CV PDF: place your PDF inside /public and update this path
   cvUrl: "/luis_renteria_cv.pdf",
 
   socials: {
@@ -67,11 +67,11 @@ export const personal = {
 export const projects = [
   {
     id: "wisp",
-    period: "Jun — Jul 2026",
+    period: "Jun 2026 - Jul 2026",
     title: "Wisp",
     subtitle: "Cross-Platform Mobile App · AI-Assisted Build",
     description:
-      "A fully offline, cross-platform quit-smoking companion (Expo + React Native, TypeScript). I designed the product and built it end to end by directing AI coding tools in a stack I hadn't used before. A deterministic, fully-tested rule engine — never an LLM at runtime — computes each user's adaptive plan, so it stays private, offline and explainable. Includes on-device SQLite storage, trend-based (non-punitive) progress, local notifications, English/Spanish, and CI with strict type-checking and tests.",
+      "A fully offline, cross-platform quit-smoking companion (Expo + React Native, TypeScript). I designed the product and built it end to end by directing AI coding tools in a stack I hadn't used before. A deterministic, fully-tested rule engine (never an LLM at runtime) computes each user's adaptive plan, so it stays private, offline and explainable. Includes on-device SQLite storage, trend-based (non-punitive) progress, local notifications, English/Spanish, and CI with strict type-checking and tests.",
     status: "complete",
     statusLabel: "Shipped",
     tags: ["Expo", "React Native", "TypeScript", "AI-assisted coding", "SQLite", "Zustand", "NativeWind", "i18next", "Jest", "CI"],
@@ -89,11 +89,11 @@ export const projects = [
   },
   {
     id: "cairn",
-    period: "May 2026 — Present",
+    period: "May 2026 - Present",
     title: "Cairn",
     subtitle: "On-Device RAG Study Assistant · Android",
     description:
-      "An offline Android study assistant: upload documents to a notebook and ask questions answered from your own material — no internet, nothing leaves the device. I designed the chunking and retrieval layer: sentence-aware chunking sized to the embedding token limit, dense retrieval over an ObjectBox HNSW vector index using EmbeddingGemma, feeding a local LLM. Retrieval is scoped per notebook so answers stay grounded in the right source.",
+      "An offline Android study assistant: upload documents to a notebook and ask questions answered from your own material: no internet, nothing leaves the device. I designed the chunking and retrieval layer: sentence-aware chunking sized to the embedding token limit, dense retrieval over an ObjectBox HNSW vector index using EmbeddingGemma, feeding a local LLM. Retrieval is scoped per notebook so answers stay grounded in the right source.",
     status: "building",
     statusLabel: "In Development",
     tags: ["Android", "Kotlin", "RAG", "EmbeddingGemma", "ObjectBox HNSW", "Vector Search", "Local LLM", "On-device"],
@@ -117,7 +117,7 @@ export const projects = [
   },
   {
     id: "fraud-detection",
-    period: "Jan — Mar 2026",
+    period: "Jan 2026 - Mar 2026",
     title: "Fraud Detection",
     subtitle: "End-to-End ML Pipeline",
     description:
@@ -139,7 +139,7 @@ export const projects = [
   },
   {
     id: "graph-aml",
-    period: "May 2026 — Present",
+    period: "May 2026 - Present",
     title: "Graph AML Detector",
     subtitle: "Graph ML · GNN · Agentic AI (In Development)",
     description: "Graph neural network that detects money laundering on a real Bitcoin transaction graph, where fraud lives in network topology rather than in isolated transactions. Trains GraphSAGE with neighbor sampling on the Elliptic dataset and benchmarks it against an XGBoost baseline to prove the graph adds signal. A planned LangGraph ReAct agent layer will then investigate each flagged node and produce an explainable risk report.",
@@ -160,7 +160,7 @@ export const projects = [
   },
   {
     id: "telco-churn",
-    period: "Nov 2025 — Jan 2026",
+    period: "Nov 2025 - Jan 2026",
     title: "Telco Churn Prediction",
     subtitle: "Classification · Threshold Optimization · Dockerization",
     description:
@@ -182,7 +182,7 @@ export const projects = [
   },
   {
     id: "house-prices",
-    period: "Oct — Nov 2025",
+    period: "Oct 2025 - Nov 2025",
     title: "House Prices Kaggle Competition",
     subtitle: "Regression · Feature Engineering · Kaggle Competition",
     description: "Built a robust regression pipeline to predict housing prices. Engineered cross-validated features and implemented a soft-voting ensemble optimizing over Lasso, Random Forest, Gradient Boosting, and SVR via GridSearch. Ranked #202 on the Kaggle Public Leaderboard (Oct 2025) by minimizing prediction error across diverse model architectures.",
@@ -211,8 +211,8 @@ export const timeline = [
     id: "fanshawe",
     type: "education",
     institution: "Fanshawe College",
-    role: "Graduate Certificate — Artificial Intelligence & Machine Learning (Co-op)",
-    period: "Sep 2025 — Present",
+    role: "Graduate Certificate, Artificial Intelligence & Machine Learning (Co-op)",
+    period: "Sep 2025 - Present",
     location: "London, ON",
     description: "Focused on deploying robust ML systems. Specializing in LLM/RAG integration, advanced NLP techniques, and building containerized MLOps pipelines.",
     tags: ["ML", "Deep Learning", "NLP", "MLOps", "Co-op"],
@@ -223,10 +223,10 @@ export const timeline = [
     type: "experience",
     institution: "Hikvision Peru",
     role: "Technical Support Analyst",
-    period: "Aug 2023 — Feb 2024",
+    period: "Aug 2023 - Feb 2024",
     location: "Peru",
     description:
-      "Tested new hardware and software before market release, identifying and reporting defects to the product team. Deployed and validated IP video-security infrastructure — network architecture, servers, structured cabling — and delivered 20+ technical training sessions to installers and integration partners.",
+      "Tested new hardware and software before market release, identifying and reporting defects to the product team. Deployed and validated IP video-security infrastructure (network architecture, servers, structured cabling), and delivered 20+ technical training sessions to installers and integration partners.",
     tags: ["QA / Testing", "IP Video", "Networking", "Technical Training"],
     highlight: "20+ technical training sessions · hardware/software QA",
   },
@@ -235,7 +235,7 @@ export const timeline = [
     type: "experience",
     institution: "TD Synnex",
     role: "Renewals Specialist",
-    period: "Apr 2023 — Aug 2023",
+    period: "Apr 2023 - Aug 2023",
     location: "Lima, Peru",
     description: "Collaborated with pre-sales teams and assisted enterprise clients with Fortinet and Cisco infrastructure. Navigated technical requirements for network security and hardware deployments.",
     tags: ["Technical Sales", "Networking", "Fortinet", "Cisco"],
@@ -244,9 +244,9 @@ export const timeline = [
   {
     id: "bermalar",
     type: "experience",
-    institution: "Bermalar Consulting — Petroperu Refinery",
+    institution: "Bermalar Consulting, Petroperu Refinery",
     role: "Applications Engineer",
-    period: "Feb 2022 — Mar 2023",
+    period: "Feb 2022 - Mar 2023",
     location: "Lima, Peru",
     description:
       "Programmed Allen-Bradley PLC control logic (Studio 5000) and designed the operator HMI (FactoryTalk View) for a condensate treatment plant on the Talara Refinery Modernization. Configured and calibrated field instruments and ran FAT/SAT validation as one of three engineers.",
@@ -257,13 +257,13 @@ export const timeline = [
     id: "ucsp",
     type: "education",
     institution: "Catholic University of San Pablo (UCSP)",
-    role: "Bachelor's — Electronic & Telecommunications Engineering",
-    period: "Aug 2015 — Aug 2020",
+    role: "Bachelor's, Electronic & Telecommunications Engineering",
+    period: "Aug 2015 - Aug 2020",
     location: "Arequipa, Peru",
     description:
       "Full-scholarship Aerospace Engineering summer program at Shanghai Jiao Tong University (SJTU), China. Strong foundation in signal processing, control systems, and electronics.",
     tags: ["Electronics", "Telecommunications", "Control Systems", "Signals"],
-    highlight: "Full scholarship — Aerospace program at SJTU, China",
+    highlight: "Full scholarship, Aerospace program at SJTU, China",
   },
 ];
 
@@ -348,19 +348,19 @@ export const skillCategories = [
 ];
 
 // ─────────────────────────────────────────────────────────────────
-//  COMPANION  (the floating astronaut cat) — edit the short lines here
+//  COMPANION  (the floating astronaut cat): edit the short lines here
 // ─────────────────────────────────────────────────────────────────
 export const companion = {
   frames: {
     open: "/companion/cat-open.webp",
     closed: "/companion/cat-closed.webp",
   },
-  // several short lines per section — the cat picks one at random
+  // several short lines per section: the cat picks one at random
   dialogues: {
     hero: [
-      "Welcome aboard — scroll to explore my work",
+      "Welcome aboard, scroll to explore my work",
       "Hey! I'm Luis's little astronaut",
-      "Float on down — there's good stuff below",
+      "Float on down, there's good stuff below",
       "Scroll to see what I've built",
     ],
     about: [
@@ -369,14 +369,14 @@ export const companion = {
       "Here's my story so far",
     ],
     experience: [
-      "My journey — refineries to neural nets",
+      "My journey: refineries to neural nets",
       "Where I've been",
       "From PLCs to LLMs",
     ],
     projects: [
-      "Six projects — all real, shipped or shipping",
+      "Six projects, all real, shipped or shipping",
       "Hover a card, then click the links to open the repos",
-      "These aren't demos — they run in production",
+      "These aren't demos, they run in production",
       "Peek the code on GitHub",
       "From fraud detection to a shipped mobile app",
     ],
@@ -387,16 +387,16 @@ export const companion = {
     ],
     contact: [
       "This is the part where you say hi",
-      "He actually replies — usually same day",
+      "He actually replies, usually same day",
       "Hiring for a Fall 2026 co-op? Perfect timing",
       "Copy the email, I'll wait",
     ],
   },
   // shown when a specific project card is hovered (keyed by project id)
   projectLines: {
-    "wisp": "Wisp — I vibe-coded this whole app",
+    "wisp": "Wisp: I built this whole app with AI tooling",
     "cairn": "Cairn runs a RAG assistant fully offline",
-    "fraud-detection": "This one's live on Hugging Face — try it",
+    "fraud-detection": "This one's live on Hugging Face, try it",
     "graph-aml": "Catching money laundering in a transaction graph",
     "telco-churn": "Predicting who's about to churn",
     "house-prices": "Ranked #202 on Kaggle",
@@ -404,13 +404,13 @@ export const companion = {
   // shown when hovering the photo / the About metric cards / a timeline entry
   hoverLines: {
     "photo": "That's me",
-    "GPA": "Top of my class — quietly proud",
+    "GPA": "Top of my class, quietly proud",
     "Models deployed": "Real models, actually deployed",
     "Recall (Fraud)": "Caught 85% of the fraud",
     "Kaggle rank": "Cracked the top on Kaggle",
-    "ucsp": "Studied abroad in Shanghai, China — what an experience",
+    "ucsp": "Studied abroad in Shanghai, China. What an experience",
     "fanshawe": "Where I'm leveling up in AI/ML right now",
-    "bermalar": "Programming PLCs in a refinery — real stakes",
+    "bermalar": "Programming PLCs in a refinery, real stakes",
     "hikvision": "Testing gear before it hit the market",
     "td-synnex": "Cisco & Fortinet renewals days",
   },

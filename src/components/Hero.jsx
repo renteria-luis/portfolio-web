@@ -76,10 +76,10 @@ export default function Hero({ dark }) {
                   <span className={textPrimary}>whoami</span>
                 </div>
                 {/* The page's only <h1>. Search engines and screen readers use
-                    it as the document title — it has to be the name. */}
+                    it as the document title: it has to be the name. */}
                 <h1 className={`mb-4 text-base font-semibold pl-4 ${dark ? 'text-[#f5f8ff]' : 'text-[#1c2128]'}`}>
                   {personal.name}
-                  <span className="sr-only"> — AI/ML Engineer &amp; Data Scientist, London, Ontario</span>
+                  <span className="sr-only">, AI/ML Engineer &amp; Data Scientist, London, Ontario</span>
                 </h1>
 
                 {/* Command 2 */}
@@ -91,7 +91,7 @@ export default function Hero({ dark }) {
                   {personal.title}
                 </div>
 
-                {/* Command 3 — typing effect */}
+                {/* Command 3: typing effect */}
                 <div className={`mb-1 ${textSecondary}`}>
                   <span className="text-terminal-green">❯</span>{' '}
                   <span className={textPrimary}>ls /core-focus</span>

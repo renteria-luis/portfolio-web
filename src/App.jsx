@@ -26,37 +26,32 @@ export default function App() {
 
   return (
     <>
-      {/* Keyboard users land here first — Tab reveals it, Enter jumps past the nav */}
+      {/* Keyboard users land here first: Tab reveals it, Enter jumps past the nav */}
       <a href="#main" className="skip-link">skip to content</a>
 
-      {/* Film grain overlay — above canvas, pointer-events none */}
+      {/* Film grain overlay: above canvas, pointer-events none */}
       <div id="grain" aria-hidden="true" />
 
-      {/* Neural network canvas — fixed, full-viewport, z-0 */}
+      {/* Neural network canvas: fixed, full-viewport, z-0 */}
       <NeuralBackground dark={dark} />
 
-      {/* Floating astronaut cat — above canvas (z-0), behind all content (z-1) */}
+      {/* Floating astronaut cat: above canvas (z-0), behind all content (z-1) */}
       <Companion />
 
-      {/* Page wrapper — transparent so body bg + canvas show through */}
+      {/* Page wrapper: transparent so body bg + canvas show through */}
       <div className="min-h-screen">
         <Nav dark={dark} toggleDark={() => setDark(p => !p)} />
         <main id="main">
           <Hero dark={dark} />
 
-          {/* Section dividers — pure Tailwind, no inline styles */}
-          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
           <About dark={dark} />
 
-          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
           <Timeline dark={dark} />
 
           <Projects dark={dark} />
 
-          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
           <Skills dark={dark} />
 
-          <div className="max-w-5xl mx-auto px-6 h-px dark:bg-white/[0.05] bg-black/[0.06]" />
           <Contact dark={dark} />
         </main>
         <Footer dark={dark} />

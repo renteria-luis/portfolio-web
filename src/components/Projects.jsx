@@ -67,11 +67,6 @@ function ProjectCard({ project, dark }) {
             />
             {project.statusLabel}
           </div>
-          {project.period && (
-            <span className={`font-mono text-[10px] whitespace-nowrap ${dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}`}>
-              {project.period}
-            </span>
-          )}
         </div>
 
         {/* Links */}
@@ -127,6 +122,13 @@ function ProjectCard({ project, dark }) {
       <p className={`text-xs leading-6 mt-2 flex-1 ${textSecondary}`}>
         {project.description}
       </p>
+
+      {/* Date range */}
+      {project.period && (
+        <div className={`mt-3 font-mono text-[10px] ${dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}`}>
+          {project.period}
+        </div>
+      )}
 
       {/* Metrics row */}
       {project.metrics && (
@@ -229,7 +231,7 @@ function ProjectCard({ project, dark }) {
             }`}
           >
             <SiHuggingface size={11} />
-            live on HF Spaces
+            {project.links.demo.replace(/^https?:\/\//, '')}
           </a>
         )}
       </div>

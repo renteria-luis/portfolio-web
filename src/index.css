@@ -9,7 +9,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* DARK MODE — deep dark blue-gray, NOT pure black */
+/* DARK MODE: deep dark blue-gray, NOT pure black */
 html.dark body {
   background-color: #0e1420;
   color: #ecf0f8;
@@ -110,7 +110,7 @@ html:not(.dark) .skip-link { background: #fff; color: #1a7f37; border-color: rgb
 }
 
 /* ─── Card base (dark) ───────────────────────────────── */
-/* Background is #181f2e — clearly distinct from #0e1420 body */
+/* Background is #181f2e: clearly distinct from #0e1420 body */
 .card-dark {
   background: #181f2e;
   border: 1px solid rgba(139,151,168,0.1);
@@ -178,7 +178,7 @@ html:not(.dark) .skip-link { background: #fff; color: #1a7f37; border-color: rgb
   -webkit-backdrop-filter: blur(20px);
 }
 
-/* ─── Nav — always darker than page background ───────── */
+/* ─── Nav: always darker than page background ───────── */
 /* Dark mode: #07090e (near-black) with transparency */
 .nav-dark-bg {
   background-color: rgba(7, 9, 14, 0.92);
@@ -246,7 +246,7 @@ html.dark .scanlines {
 
 /* ─── Neural canvas ──────────────────────────────────── */
 /* Two stacked layers: #neural-canvas holds the static graph (painted once),
-   #neural-pulses only the moving pulses. The explicit width/height matter —
+   #neural-pulses only the moving pulses. The explicit width/height matter:
    the backing store is sized in device pixels for a crisp render on HiDPI,
    so the element must be told to lay out at viewport size. */
 .neural-layer {
@@ -333,7 +333,7 @@ nav, main, footer {
 }
 .companion-img.blinkimg.on { opacity: 1; }
 
-/* Speech bubble — the anchor is moved with `transform` only (writing left/top
+/* Speech bubble: the anchor is moved with `transform` only (writing left/top
    every frame would force a full-document layout 60×/s); the inner bubble owns
    the show/hide transition so the two transforms never fight. */
 .companion-bubble-anchor {

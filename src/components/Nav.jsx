@@ -21,8 +21,8 @@ export default function Nav({ dark, toggleDark }) {
   }, []);
 
   // ── Nav bg strategy:
-  //   Dark mode:  near-black (#07090e) — always darker than #0e1420 body
-  //   Light mode: clean white — contrasts against #eef1f7 body
+  //   Dark mode:  near-black (#07090e): always darker than #0e1420 body
+  //   Light mode: clean white: contrasts against #eef1f7 body
   //   Pre-scroll: slightly more transparent so page grid bleeds through subtly
   //   Post-scroll: more opaque + slight shadow to feel "lifted"
   const navStyle = dark

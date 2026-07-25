@@ -60,7 +60,7 @@ export default function About({ dark }) {
               }`}
             >
               <p className={`text-sm italic leading-6 ${dark ? 'text-[#a2afc2]' : 'text-[#57606a]'}`}>
-                "I understand the criticality of industrial and operational systems — which shapes how I
+                "I understand the criticality of industrial and operational systems, which shapes how I
                 build ML models: with real business impact, not just academic theory."
               </p>
             </div>
