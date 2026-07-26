@@ -6,6 +6,8 @@ const SECTIONS = ['hero', 'about', 'experience', 'projects', 'skills', 'contact'
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const CAT_RATIO = 508 / 520;
+// The bubble is painted above the nav, so it must never rise past it.
+const BUBBLE_TOP_LIMIT = 64;
 
 /**
  * Floating astronaut cat.
@@ -232,11 +234,35 @@ export default function Companion() {
         lastFace = s.face;
       }
       if (anchorRef.current) {
-        const bx = clamp(
-          s.side === 'left' ? s.x : s.x + cw - s.bubbleW,
-          8, Math.max(8, vw - s.bubbleW - 8),
-        );
-        const by = Math.max(64, s.y - s.bubbleH - 10);
+        // The bubble prefers to sit above the cat. Near the top of the screen
+        // there is no room: clamping it under the nav used to drop it straight
+        // on top of the cat. When that happens it moves beside the cat instead,
+        // on whichever side has room, vertically centred on it.
+        const maxX = Math.max(8, vw - s.bubbleW - 8);
+        const above = s.y - s.bubbleH - 10;
+        const alignedX = s.side === 'left' ? s.x : s.x + cw - s.bubbleW;
+        let bx, by;
+
+        if (above >= BUBBLE_TOP_LIMIT) {
+          bx = alignedX;
+          by = above;
+        } else {
+          // No room above. Try each side; on a narrow screen with the cat in
+          // the middle neither fits, and forcing one would land the bubble on
+          // top of the cat, so the last resort is directly below it.
+          const roomRight = s.x + cw + 10 + s.bubbleW <= vw - 8;
+          const roomLeft  = s.x - 10 - s.bubbleW >= 8;
+          if (roomRight || roomLeft) {
+            bx = roomRight ? s.x + cw + 10 : s.x - s.bubbleW - 10;
+            by = s.y + ch / 2 - s.bubbleH / 2;
+          } else {
+            bx = alignedX;
+            by = s.y + ch + 10;
+          }
+        }
+
+        bx = clamp(bx, 8, maxX);
+        by = clamp(by, BUBBLE_TOP_LIMIT, Math.max(BUBBLE_TOP_LIMIT, vh - s.bubbleH - 8));
         anchorRef.current.style.transform = `translate3d(${bx.toFixed(2)}px,${by.toFixed(2)}px,0)`;
       }
     }
