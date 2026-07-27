@@ -167,7 +167,7 @@ function ProjectCard({ project, dark, t }) {
       )}
 
       {/* Tags */}
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <div className="mt-3 flex flex-wrap gap-1.5">
         {project.tags.map((tag) => (
           <span
             key={tag}
@@ -183,7 +183,7 @@ function ProjectCard({ project, dark, t }) {
       </div>
 
       {/* Bottom link row */}
-      <div className="mt-4 flex flex-wrap items-center gap-4 relative">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 relative">
         {(project.links.github || project.links.demo) && (
           <>
             <span className="spark" style={{ left: '8px', top: '-5px', animationDelay: '0s' }} />
@@ -238,20 +238,6 @@ function ProjectCard({ project, dark, t }) {
           </span>
         )}
 
-        {post && (
-          <Link
-            to={`/blog/${post.slug}`}
-            className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
-              dark
-                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-terminal-green'
-                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#1a7f37]'
-            }`}
-          >
-            <BookOpen size={11} />
-            {t(ui.blog.readPost)}
-          </Link>
-        )}
-
         {project.links.demo && project.links.demo.includes('huggingface.co') && (
           <a
             href={project.links.demo}
@@ -266,6 +252,21 @@ function ProjectCard({ project, dark, t }) {
             <SiHuggingface size={11} />
             {project.links.demo.replace(/^https?:\/\//, '')}
           </a>
+        )}
+
+        {/* basis-full drops this onto its own line, always last */}
+        {post && (
+          <Link
+            to={`/blog/${post.slug}`}
+            className={`basis-full flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
+              dark
+                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-terminal-green'
+                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#1a7f37]'
+            }`}
+          >
+            <BookOpen size={11} />
+            {t(ui.blog.readPost)}
+          </Link>
         )}
       </div>
     </div>
