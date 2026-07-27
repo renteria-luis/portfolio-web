@@ -198,8 +198,8 @@ function ProjectCard({ project, dark, t }) {
             rel="noopener noreferrer"
             className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
               dark
-                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:text-terminal-green'
-                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:text-[#1a7f37]'
+                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-terminal-green'
+                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#1a7f37]'
             }`}
           >
             <Github size={11} />
@@ -245,8 +245,8 @@ function ProjectCard({ project, dark, t }) {
             rel="noopener noreferrer"
             className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
               dark
-                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:text-[#ffd21e]'
-                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:text-[#f5a623]'
+                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-[#ffd21e]'
+                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#f5a623]'
             }`}
           >
             <SiHuggingface size={11} />

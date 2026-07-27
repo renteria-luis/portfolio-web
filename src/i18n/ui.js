@@ -70,7 +70,7 @@ export const ui = {
 
   contact: {
     label: { en: '05 / contact', es: '05 / contacto' },
-    title: { en: 'hiring for AI/ML?', es: '¿buscas a alguien de AI/ML?' },
+    title: { en: "let's talk", es: 'hablemos' },
     intro: {
       en: 'I reply within 24 hours. If it is about a role, include the stack and the timeline and I can tell you straight away whether I am a fit.',
       es: 'Respondo en menos de 24 horas. Si es por un puesto, incluye el stack y las fechas y te digo enseguida si encajo.',
@@ -122,6 +122,7 @@ export const ui = {
                 es: 'Guarda ese id por si necesitas hacer seguimiento.' },
       again:  { en: 'Click here to send another message', es: 'Haz clic aquí para enviar otro mensaje' },
     },
+    blogLink: { en: 'writeups', es: 'artículos' },
     copy:     { en: 'copy', es: 'copiar' },
     copied:   { en: 'copied', es: 'copiado' },
     copyAria: { en: 'Copy to clipboard', es: 'Copiar al portapapeles' },

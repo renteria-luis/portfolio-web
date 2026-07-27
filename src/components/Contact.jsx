@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mail, Github, Linkedin, FileDown, Copy, Check, Play, MapPin, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, Github, Linkedin, FileDown, Copy, Check, Play, MapPin, Clock, BookOpen } from 'lucide-react';
 import { SiHuggingface, SiLeetcode } from 'react-icons/si';
 // Font Awesome's Kaggle mark is the plain "k"; the Simple Icons one is the
 // curved logo, which is unreadable at 12px.
@@ -481,6 +482,20 @@ export default function Contact({ dark }) {
                   {label}
                 </a>
               ))}
+
+              {/* col-span-2 keeps the grid symmetrical: the six links sit in
+                  three even rows and this closes the block underneath. */}
+              <Link
+                to="/blog"
+                className={`col-span-2 flex items-center justify-center gap-2 font-mono text-[11px] px-3 py-2.5 rounded border transition-all duration-200 ${
+                  dark
+                    ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:border-[rgba(63,185,80,0.3)] hover:text-terminal-green'
+                    : 'border-[rgba(30,50,80,0.15)] text-[#57606a] hover:border-[rgba(26,127,55,0.35)] hover:text-[#1a7f37]'
+                }`}
+              >
+                <BookOpen size={12} />
+                {t(ui.contact.blogLink)}
+              </Link>
             </div>
           </div>
         </div>
