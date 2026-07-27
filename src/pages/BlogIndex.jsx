@@ -13,6 +13,7 @@ export default function BlogIndex({ dark }) {
     title: t(ui.blog.metaTitle),
     description: t(ui.blog.metaDescription),
     path: '/blog',
+    type: 'website',
   });
 
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';

@@ -2,6 +2,13 @@ import { useEffect } from 'react';
 
 export const SITE_URL = 'https://luisrenteria.me';
 
+// Kept in sync with index.html and scripts/prerender.mjs. Home needs these so
+// that navigating back from an article restores the site title instead of
+// leaving the article's in the tab.
+export const SITE_TITLE = 'Luis Renteria Lezano, AI/ML Engineer';
+export const SITE_DESCRIPTION =
+  'Luis Renteria Lezano, AI/ML Engineer & Data Scientist in London, Ontario. NLP, RAG systems, MLOps and end-to-end machine learning pipelines, deployed and measured. Open to ML/Data co-op, Fall 2026.';
+
 /**
  * Keeps the document head in sync during client-side navigation.
  *
@@ -24,7 +31,7 @@ export function useDocumentMeta({ title, description, path, type = 'website' }) 
     set('meta[name="description"]', 'content', description);
     set('meta[property="og:title"]', 'content', title);
     set('meta[property="og:description"]', 'content', description);
-    set('meta[property="og:type"]', 'content', type === 'article' ? 'article' : 'website');
+    set('meta[property="og:type"]', 'content', type);
     set('meta[name="twitter:title"]', 'content', title);
     set('meta[name="twitter:description"]', 'content', description);
 
