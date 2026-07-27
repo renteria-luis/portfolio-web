@@ -75,10 +75,10 @@ function CopyButton({ value, dark, t }) {
       className={`flex items-center gap-1.5 font-mono text-[10px] px-2 py-1 rounded border transition-colors ${
         dark
           ? 'border-[rgba(125,167,217,0.15)] text-[#7b8fa6] hover:text-[#ecf0f8] hover:border-[rgba(125,167,217,0.3)]'
-          : 'border-[rgba(30,50,80,0.12)] text-[#8b9eb0] hover:text-[#1c2128] hover:border-[rgba(30,50,80,0.3)]'
+          : 'border-[rgba(30,50,80,0.12)] text-[#576c80] hover:text-[#1c2128] hover:border-[rgba(30,50,80,0.3)]'
       }`}
     >
-      {done ? <Check size={11} className={dark ? 'text-terminal-green' : 'text-[#1a7f37]'} /> : <Copy size={11} />}
+      {done ? <Check size={11} className={dark ? 'text-terminal-green' : 'text-[#197934]'} /> : <Copy size={11} />}
       {t(done ? ui.contact.copied : ui.contact.copy)}
     </button>
   );
@@ -191,7 +191,7 @@ export default function Contact({ dark }) {
   // ── theme tokens, same idiom as the rest of the site ───────────────────
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
-  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]';
+  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
   const borderColor = dark ? 'border-[rgba(125,167,217,0.08)]' : 'border-[rgba(30,50,80,0.1)]';
   const cardBg = dark ? 'bg-[#181f2e]' : 'bg-white';
   const terminalShadow = dark
@@ -216,7 +216,7 @@ export default function Contact({ dark }) {
       <div ref={ref} className="reveal">
         {/* Header */}
         <div className="mb-12">
-          <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+          <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
             {t(ui.contact.label)}
           </p>
           <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
@@ -252,7 +252,7 @@ export default function Contact({ dark }) {
                     ? 'bg-[rgba(63,185,80,0.06)] border-[rgba(63,185,80,0.3)]'
                     : 'bg-[rgba(26,127,55,0.05)] border-[rgba(26,127,55,0.25)]'
                 }`}>
-                  <div className={`flex items-center gap-2 mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+                  <div className={`flex items-center gap-2 mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
                     <Check size={13} /> {t(ui.contact.delivered)}
                     <span className={textMuted}>· 200 OK · {result.ms}ms</span>
                   </div>
@@ -272,7 +272,7 @@ export default function Contact({ dark }) {
                     type="button"
                     onClick={sendAnother}
                     className={`mt-2 font-mono text-[11px] underline underline-offset-2 decoration-dotted transition-colors ${
-                      dark ? 'text-[#7b8fa6] hover:text-terminal-green' : 'text-[#8b9eb0] hover:text-[#1a7f37]'
+                      dark ? 'text-[#7b8fa6] hover:text-terminal-green' : 'text-[#576c80] hover:text-[#197934]'
                     }`}
                   >
                     {t(ui.contact.receipt.again)}
@@ -297,7 +297,7 @@ export default function Contact({ dark }) {
                             on
                               ? dark
                                 ? 'bg-terminal-green/10 border-terminal-green/40 text-terminal-green'
-                                : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.4)] text-[#1a7f37]'
+                                : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.4)] text-[#197934]'
                               : dark
                                 ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:border-[rgba(125,167,217,0.3)]'
                                 : 'border-[rgba(30,50,80,0.15)] text-[#57606a] hover:border-[rgba(30,50,80,0.3)]'
@@ -384,7 +384,7 @@ export default function Contact({ dark }) {
                     className={`flex items-center gap-2 font-mono text-xs px-4 py-2.5 rounded border transition-all duration-200 disabled:opacity-70 ${
                       dark
                         ? 'bg-terminal-green/10 border-terminal-green/30 text-terminal-green hover:bg-terminal-green/15 hover:border-terminal-green/60'
-                        : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#1a7f37] hover:bg-[rgba(26,127,55,0.14)]'
+                        : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#197934] hover:bg-[rgba(26,127,55,0.14)]'
                     }`}
                   >
                     {busy
@@ -418,7 +418,7 @@ export default function Contact({ dark }) {
           {/* ── Availability card ───────────────────────────────────────── */}
           <div className="lg:col-span-2 lg:sticky lg:top-20 flex flex-col gap-3">
             <div className={`rounded-lg border ${borderColor} ${cardBg} p-5`}>
-              <div className={`flex items-center gap-2 font-mono text-xs mb-4 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+              <div className={`flex items-center gap-2 font-mono text-xs mb-4 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
                 <span className="inline-block w-2 h-2 rounded-full bg-terminal-green animate-pulse" />
                 {t(ui.contact.availability.available)}
               </div>
@@ -490,7 +490,7 @@ export default function Contact({ dark }) {
                 className={`col-span-2 flex items-center justify-center gap-2 font-mono text-[11px] px-3 py-2.5 rounded border transition-all duration-200 ${
                   dark
                     ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:border-[rgba(63,185,80,0.3)] hover:text-terminal-green'
-                    : 'border-[rgba(30,50,80,0.15)] text-[#57606a] hover:border-[rgba(26,127,55,0.35)] hover:text-[#1a7f37]'
+                    : 'border-[rgba(30,50,80,0.15)] text-[#57606a] hover:border-[rgba(26,127,55,0.35)] hover:text-[#197934]'
                 }`}
               >
                 <BookOpen size={12} />

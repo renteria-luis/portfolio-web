@@ -47,7 +47,7 @@ export default function Nav({ dark, toggleDark }) {
 
   const textMuted  = dark ? '#a2afc2' : '#57606a';
   const textBright = dark ? '#ecf0f8' : '#1c2128';
-  const accent     = dark ? '#3fb950' : '#1a7f37';
+  const accent     = dark ? '#3fb950' : '#197934';
 
   const themeLabel = t(dark ? ui.nav.themeToLight : ui.nav.themeToDark);
 

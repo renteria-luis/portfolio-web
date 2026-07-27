@@ -10,7 +10,7 @@ import { postForProject } from '../blog/posts';
 const STATUS_STYLES = {
   live: {
     dark: 'bg-[rgba(63,185,80,0.1)] text-terminal-green border-[rgba(63,185,80,0.25)]',
-    light: 'bg-[rgba(26,127,55,0.08)] text-[#1a7f37] border-[rgba(26,127,55,0.25)]',
+    light: 'bg-[rgba(26,127,55,0.08)] text-[#197934] border-[rgba(26,127,55,0.25)]',
     dot: '#3fb950',
   },
   building: {
@@ -26,7 +26,7 @@ const STATUS_STYLES = {
 };
 
 const ACCENT_MAP = {
-  'terminal-green': { dark: 'rgba(63,185,80,0.2)', light: 'rgba(26,127,55,0.25)', text: '#3fb950', textLight: '#1a7f37' },
+  'terminal-green': { dark: 'rgba(63,185,80,0.2)', light: 'rgba(26,127,55,0.25)', text: '#3fb950', textLight: '#197934' },
   'terminal-blue': { dark: 'rgba(121,192,255,0.2)', light: 'rgba(9,105,218,0.25)', text: '#79c0ff', textLight: '#0969da' },
   'terminal-purple': { dark: 'rgba(210,168,255,0.2)', light: 'rgba(124,58,237,0.25)', text: '#d2a8ff', textLight: '#7c3aed' },
   'terminal-orange': { dark: 'rgba(255,166,87,0.2)', light: 'rgba(180,83,9,0.25)', text: '#ffa657', textLight: '#b45309' },
@@ -38,7 +38,7 @@ function ProjectCard({ project, dark, t }) {
   const accent = ACCENT_MAP[project.accent];
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
-  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]';
+  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
   const accentColor = dark ? accent.text : accent.textLight;
   const borderHover = dark ? accent.dark : accent.light;
 
@@ -98,7 +98,7 @@ function ProjectCard({ project, dark, t }) {
               className={`p-1.5 rounded border transition-colors ${
                 dark
                   ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:text-terminal-green hover:border-[rgba(63,185,80,0.3)]'
-                  : 'border-[rgba(30,50,80,0.12)] text-[#57606a] hover:text-[#1a7f37]'
+                  : 'border-[rgba(30,50,80,0.12)] text-[#57606a] hover:text-[#197934]'
               }`}
               aria-label={`${project.title}: ${t(ui.blog.readPost)}`}
               title={t(ui.blog.readPost)}
@@ -199,7 +199,7 @@ function ProjectCard({ project, dark, t }) {
             className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
               dark
                 ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-terminal-green'
-                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#1a7f37]'
+                : 'text-[#576c80] group-hover:text-[#4b5563] hover:!text-[#197934]'
             }`}
           >
             <Github size={11} />
@@ -246,7 +246,7 @@ function ProjectCard({ project, dark, t }) {
             className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
               dark
                 ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-[#ffd21e]'
-                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#f5a623]'
+                : 'text-[#576c80] group-hover:text-[#4b5563] hover:!text-[#f5a623]'
             }`}
           >
             <SiHuggingface size={11} />
@@ -261,7 +261,7 @@ function ProjectCard({ project, dark, t }) {
             className={`basis-full flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
               dark
                 ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-terminal-green'
-                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#1a7f37]'
+                : 'text-[#576c80] group-hover:text-[#4b5563] hover:!text-[#197934]'
             }`}
           >
             <BookOpen size={11} />
@@ -288,7 +288,7 @@ export default function Projects({ dark }) {
         <div ref={ref} className="reveal">
           {/* Section header */}
           <div className="mb-12">
-            <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+            <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
               {t(ui.projects.label)}
             </p>
             <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
@@ -320,7 +320,7 @@ export default function Projects({ dark }) {
               href="https://github.com/renteria-luis"
               target="_blank"
               rel="noopener noreferrer me"
-              className={`transition-colors ${dark ? 'text-terminal-green hover:text-terminal-green/70' : 'text-[#1a7f37] hover:opacity-70'}`}
+              className={`transition-colors ${dark ? 'text-terminal-green hover:text-terminal-green/70' : 'text-[#197934] hover:opacity-70'}`}
             >
               github.com/renteria-luis
             </a>

@@ -5,7 +5,7 @@ import { useT } from '../i18n';
 
 export default function Footer({ dark }) {
   const t = useT();
-  const textSecondary = dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]';
+  const textSecondary = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
 
   return (
     <footer
@@ -20,8 +20,8 @@ export default function Footer({ dark }) {
 
           {/* Left: Prompt */}
           <div className={`font-mono text-xs ${textSecondary}`}>
-            <span className={dark ? 'text-terminal-green/50' : 'text-[#1a7f37]/50'}>luis@portfolio</span>
-            <span className={dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}>:~$ </span>
+            <span className={dark ? 'text-terminal-green/50' : 'text-[#197934]/50'}>luis@portfolio</span>
+            <span className={dark ? 'text-[#7b8fa6]' : 'text-[#576c80]'}>:~$ </span>
             <span>{t(ui.footer.thanks)}</span>
           </div>
 
@@ -32,7 +32,7 @@ export default function Footer({ dark }) {
               target="_blank"
               rel="noopener noreferrer"
               className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
-                dark ? 'text-[#7b8fa6] hover:text-terminal-green' : 'text-[#8b9eb0] hover:text-[#1a7f37]'
+                dark ? 'text-[#7b8fa6] hover:text-terminal-green' : 'text-[#576c80] hover:text-[#197934]'
               }`}
             >
               <Github size={12} /> GitHub
@@ -43,7 +43,7 @@ export default function Footer({ dark }) {
               target="_blank"
               rel="noopener noreferrer"
               className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
-                dark ? 'text-[#7b8fa6] hover:text-terminal-blue' : 'text-[#8b9eb0] hover:text-[#0969da]'
+                dark ? 'text-[#7b8fa6] hover:text-terminal-blue' : 'text-[#576c80] hover:text-[#0969da]'
               }`}
             >
               <Linkedin size={12} /> LinkedIn
@@ -52,7 +52,7 @@ export default function Footer({ dark }) {
             <a
               href={`mailto:${personal.email}`}
               className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
-                dark ? 'text-[#7b8fa6] hover:text-terminal-purple' : 'text-[#8b9eb0] hover:text-[#7c3aed]'
+                dark ? 'text-[#7b8fa6] hover:text-terminal-purple' : 'text-[#576c80] hover:text-[#7c3aed]'
               }`}
             >
               <Mail size={12} /> Email
@@ -62,7 +62,7 @@ export default function Footer({ dark }) {
               href={personal.cvUrl}
               download
               className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
-                dark ? 'text-[#7b8fa6] hover:text-terminal-orange' : 'text-[#8b9eb0] hover:text-[#b45309]'
+                dark ? 'text-[#7b8fa6] hover:text-terminal-orange' : 'text-[#576c80] hover:text-[#b45309]'
               }`}
             >
               <FileDown size={12} /> CV

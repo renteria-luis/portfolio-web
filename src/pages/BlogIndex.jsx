@@ -18,12 +18,12 @@ export default function BlogIndex({ dark }) {
 
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
-  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]';
+  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
 
   return (
     <section className="pt-32 pb-24 max-w-4xl mx-auto px-6 min-h-screen">
       <div className="mb-12">
-        <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+        <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
           ~/blog
         </p>
         <h1 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
@@ -54,7 +54,7 @@ export default function BlogIndex({ dark }) {
               <ArrowUpRight
                 size={12}
                 className={`shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity ${
-                  dark ? 'text-terminal-green' : 'text-[#1a7f37]'
+                  dark ? 'text-terminal-green' : 'text-[#197934]'
                 }`}
               />
             </h2>

@@ -13,7 +13,7 @@ const TAG_COLORS_DARK = [
   'bg-[rgba(255,166,87,0.1)] text-terminal-orange border-[rgba(255,166,87,0.15)]',
 ];
 const TAG_COLORS_LIGHT = [
-  'bg-[rgba(26,127,55,0.08)] text-[#1a7f37] border-[rgba(26,127,55,0.2)]',
+  'bg-[rgba(26,127,55,0.08)] text-[#197934] border-[rgba(26,127,55,0.2)]',
   'bg-[rgba(9,105,218,0.08)] text-[#0969da] border-[rgba(9,105,218,0.2)]',
   'bg-[rgba(124,58,237,0.08)] text-[#7c3aed] border-[rgba(124,58,237,0.2)]',
   'bg-[rgba(180,83,9,0.08)] text-[#b45309] border-[rgba(180,83,9,0.2)]',
@@ -34,12 +34,12 @@ function TimelineItem({ item, index, dark, isLast, t }) {
         <div
           className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
             isExp
-              ? dark ? 'border-terminal-green bg-[rgba(63,185,80,0.1)]' : 'border-[#1a7f37] bg-[rgba(26,127,55,0.08)]'
+              ? dark ? 'border-terminal-green bg-[rgba(63,185,80,0.1)]' : 'border-[#197934] bg-[rgba(26,127,55,0.08)]'
               : dark ? 'border-terminal-blue bg-[rgba(121,192,255,0.1)]' : 'border-[#0969da] bg-[rgba(9,105,218,0.08)]'
           }`}
         >
           {isExp
-            ? <Briefcase size={7} className={dark ? 'text-terminal-green' : 'text-[#1a7f37]'} />
+            ? <Briefcase size={7} className={dark ? 'text-terminal-green' : 'text-[#197934]'} />
             : <GraduationCap size={7} className={dark ? 'text-terminal-blue' : 'text-[#0969da]'} />
           }
         </div>
@@ -78,7 +78,7 @@ function TimelineItem({ item, index, dark, isLast, t }) {
             </h3>
             <div className={`font-mono text-xs mt-0.5 ${
               isExp
-                ? dark ? 'text-terminal-green' : 'text-[#1a7f37]'
+                ? dark ? 'text-terminal-green' : 'text-[#197934]'
                 : dark ? 'text-terminal-blue' : 'text-[#0969da]'
             }`}>
               {t(item.institution)}
@@ -86,7 +86,7 @@ function TimelineItem({ item, index, dark, isLast, t }) {
           </div>
           <div className="text-right">
             <div className={`font-mono text-[11px] ${textSecondary}`}>{t(item.period)}</div>
-            <div className={`font-mono text-[10px] mt-0.5 ${dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]'}`}>
+            <div className={`font-mono text-[10px] mt-0.5 ${dark ? 'text-[#7b8fa6]' : 'text-[#576c80]'}`}>
               {t(item.location)}
             </div>
           </div>
@@ -99,7 +99,7 @@ function TimelineItem({ item, index, dark, isLast, t }) {
         {item.highlight && (
           <div className={`font-mono text-[10px] px-2.5 py-1.5 rounded mb-3 inline-block ${
             isExp
-              ? dark ? 'bg-[rgba(63,185,80,0.06)] text-terminal-green/70' : 'bg-[rgba(26,127,55,0.06)] text-[#1a7f37]'
+              ? dark ? 'bg-[rgba(63,185,80,0.06)] text-terminal-green/70' : 'bg-[rgba(26,127,55,0.06)] text-[#197934]'
               : dark ? 'bg-[rgba(121,192,255,0.06)] text-terminal-blue/70' : 'bg-[rgba(9,105,218,0.06)] text-[#0969da]'
           }`}>
             ✦ {t(item.highlight)}
@@ -129,7 +129,7 @@ export default function Timeline({ dark }) {
       <div ref={ref} className="reveal">
         {/* Section header */}
         <div className="mb-12">
-          <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+          <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
             {t(ui.timeline.label)}
           </p>
           <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>

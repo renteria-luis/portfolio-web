@@ -59,7 +59,7 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
   outline-offset: 3px;
   border-radius: 4px;
 }
-html:not(.dark) :focus-visible { outline-color: #1a7f37; }
+html:not(.dark) :focus-visible { outline-color: #197934; }
 
 /* ─── Skip link ──────────────────────────────────────── */
 .skip-link {
@@ -78,7 +78,7 @@ html:not(.dark) :focus-visible { outline-color: #1a7f37; }
   transition: transform 0.18s ease;
 }
 .skip-link:focus { transform: translateY(0); }
-html:not(.dark) .skip-link { background: #fff; color: #1a7f37; border-color: rgba(26,127,55,0.4); }
+html:not(.dark) .skip-link { background: #fff; color: #197934; border-color: rgba(26,127,55,0.4); }
 
 /* ─── Respect reduced motion ─────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
@@ -436,7 +436,7 @@ html:not(.dark) .companion-bubble {
 html:not(.dark) .companion-head {
   background: rgba(255, 255, 255, 0.95);
   border-color: rgba(26, 127, 55, 0.4);
-  color: #1a7f37;
+  color: #197934;
 }
 
 /* ─── Blog article body ──────────────────────────────────────── */

@@ -35,8 +35,8 @@ const LEVEL_STYLES = {
   core: {
     dark:  'bg-[rgba(63,185,80,0.09)]  text-[#5fd87a] border-[rgba(63,185,80,0.22)]',
     light: 'bg-[rgba(26,127,55,0.07)]  text-[#16783a] border-[rgba(26,127,55,0.22)]',
-    dot: { dark: '#3fb950', light: '#1a7f37' },
-    legend: { dark: '#3fb950', light: '#1a7f37' },
+    dot: { dark: '#3fb950', light: '#197934' },
+    legend: { dark: '#3fb950', light: '#197934' },
   },
   learning: {
     dark:  'bg-[rgba(79,162,255,0.09)]  text-[#79c0ff] border-[rgba(79,162,255,0.22)]',
@@ -57,7 +57,7 @@ const CATEGORY_ICONS = { brain: Brain, database: Database, box: Box, layers: Lay
 // One entry per category id in data.js. A missing id falls back to green,
 // which is how web-dev and data-apps used to look identical to ml-ai.
 const CATEGORY_ACCENT = {
-  'ml-ai':     { dark: { border: 'rgba(63,185,80,0.2)',   icon: '#3fb950', bg: 'rgba(63,185,80,0.07)'   }, light: { border: 'rgba(26,127,55,0.2)',  icon: '#1a7f37', bg: 'rgba(26,127,55,0.06)'   } },
+  'ml-ai':     { dark: { border: 'rgba(63,185,80,0.2)',   icon: '#3fb950', bg: 'rgba(63,185,80,0.07)'   }, light: { border: 'rgba(26,127,55,0.2)',  icon: '#197934', bg: 'rgba(26,127,55,0.06)'   } },
   'web-dev':   { dark: { border: 'rgba(210,168,255,0.2)', icon: '#d2a8ff', bg: 'rgba(210,168,255,0.07)' }, light: { border: 'rgba(124,58,237,0.2)', icon: '#7c3aed', bg: 'rgba(124,58,237,0.06)' } },
   'data-eng':  { dark: { border: 'rgba(121,192,255,0.2)', icon: '#79c0ff', bg: 'rgba(121,192,255,0.07)' }, light: { border: 'rgba(9,105,218,0.2)',  icon: '#0969da', bg: 'rgba(9,105,218,0.06)'  } },
   'mlops':     { dark: { border: 'rgba(255,166,87,0.2)',  icon: '#ffa657', bg: 'rgba(255,166,87,0.07)'  }, light: { border: 'rgba(180,83,9,0.2)',   icon: '#b45309', bg: 'rgba(180,83,9,0.06)'   } },
@@ -138,7 +138,7 @@ export default function Skills({ dark }) {
     <section id="skills" className="py-24 max-w-5xl mx-auto px-6">
       <div ref={ref} className="reveal">
         <div className="mb-12">
-          <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#1a7f37]'}`}>
+          <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
             {t(ui.skills.label)}
           </p>
           <h2 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>

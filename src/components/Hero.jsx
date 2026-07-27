@@ -115,7 +115,7 @@ export default function Hero({ dark }) {
                 className={`font-mono text-xs px-4 py-2 rounded border transition-all duration-200 ${
                   dark
                     ? 'bg-terminal-green/10 border-terminal-green/30 text-terminal-green hover:bg-terminal-green/15 hover:border-terminal-green/60'
-                    : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#1a7f37] hover:bg-[rgba(26,127,55,0.14)]'
+                    : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#197934] hover:bg-[rgba(26,127,55,0.14)]'
                 }`}
               >
                 {t(ui.hero.viewProjects)}
@@ -141,7 +141,7 @@ export default function Hero({ dark }) {
                 target="_blank"
                 rel="noopener noreferrer me"
                 className={`flex items-center gap-1.5 font-mono text-xs transition-colors ${
-                  dark ? 'hover:text-terminal-green' : 'hover:text-[#1a7f37]'
+                  dark ? 'hover:text-terminal-green' : 'hover:text-[#197934]'
                 }`}
               >
                 <Github size={14} /> github

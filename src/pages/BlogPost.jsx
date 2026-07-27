@@ -20,9 +20,9 @@ export default function BlogPost({ dark }) {
 
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
-  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#8b9eb0]';
+  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
   const backLink = `flex items-center gap-1.5 font-mono text-xs transition-colors ${
-    dark ? 'text-[#a2afc2] hover:text-terminal-green' : 'text-[#57606a] hover:text-[#1a7f37]'
+    dark ? 'text-[#a2afc2] hover:text-terminal-green' : 'text-[#57606a] hover:text-[#197934]'
   }`;
 
   if (!post) {
@@ -59,7 +59,7 @@ export default function BlogPost({ dark }) {
                 href={repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center gap-1 transition-colors ${dark ? 'hover:text-terminal-green' : 'hover:text-[#1a7f37]'}`}
+                className={`flex items-center gap-1 transition-colors ${dark ? 'hover:text-terminal-green' : 'hover:text-[#197934]'}`}
               >
                 <Github size={11} /> {t(ui.blog.sourceCode)}
               </a>
@@ -99,7 +99,7 @@ export default function BlogPost({ dark }) {
             className={`font-mono text-xs px-4 py-2 rounded border transition-all duration-200 ${
               dark
                 ? 'bg-terminal-green/10 border-terminal-green/30 text-terminal-green hover:bg-terminal-green/15 hover:border-terminal-green/60'
-                : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#1a7f37] hover:bg-[rgba(26,127,55,0.14)]'
+                : 'bg-[rgba(26,127,55,0.08)] border-[rgba(26,127,55,0.3)] text-[#197934] hover:bg-[rgba(26,127,55,0.14)]'
             }`}
           >
             {t(ui.blog.getInTouch)}
