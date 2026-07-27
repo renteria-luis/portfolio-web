@@ -1,9 +1,11 @@
-import { Github, ExternalLink, Terminal, ArrowUpRight, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Github, ExternalLink, Terminal, ArrowUpRight, Lock, BookOpen } from 'lucide-react';
 import { SiHuggingface } from 'react-icons/si';
 import { projects, companion } from '../config/data';
 import { useReveal } from '../hooks/useTypingEffect';
 import { ui } from '../i18n/ui';
 import { useT } from '../i18n';
+import { postForProject } from '../blog/posts';
 
 const STATUS_STYLES = {
   live: {
@@ -31,6 +33,7 @@ const ACCENT_MAP = {
 };
 
 function ProjectCard({ project, dark, t }) {
+  const post = postForProject(project.id);
   const status = STATUS_STYLES[project.status];
   const accent = ACCENT_MAP[project.accent];
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
@@ -88,6 +91,20 @@ function ProjectCard({ project, dark, t }) {
             >
               <Github size={13} />
             </a>
+          )}
+          {post && (
+            <Link
+              to={`/blog/${post.slug}`}
+              className={`p-1.5 rounded border transition-colors ${
+                dark
+                  ? 'border-[rgba(125,167,217,0.15)] text-[#a2afc2] hover:text-terminal-green hover:border-[rgba(63,185,80,0.3)]'
+                  : 'border-[rgba(30,50,80,0.12)] text-[#57606a] hover:text-[#1a7f37]'
+              }`}
+              aria-label={`${project.title}: ${t(ui.blog.readPost)}`}
+              title={t(ui.blog.readPost)}
+            >
+              <BookOpen size={13} />
+            </Link>
           )}
           {project.links.demo && (
             <a
@@ -219,6 +236,20 @@ function ProjectCard({ project, dark, t }) {
               </>
             )}
           </span>
+        )}
+
+        {post && (
+          <Link
+            to={`/blog/${post.slug}`}
+            className={`flex items-center gap-1.5 font-mono text-[11px] transition-colors ${
+              dark
+                ? 'text-[#7b8fa6] group-hover:text-[#b8c2d0] hover:!text-terminal-green'
+                : 'text-[#8b9eb0] group-hover:text-[#4b5563] hover:!text-[#1a7f37]'
+            }`}
+          >
+            <BookOpen size={11} />
+            {t(ui.blog.readPost)}
+          </Link>
         )}
 
         {project.links.demo && project.links.demo.includes('huggingface.co') && (

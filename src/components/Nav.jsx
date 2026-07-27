@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, Moon, Sun, FileDown, Menu, X, Languages } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { personal } from '../config/data';
 import { ui } from '../i18n/ui';
 import { useLang, useT } from '../i18n';
 
-const navLinks = ['about', 'experience', 'projects', 'skills', 'contact'];
+// Anchors are absolute so they still resolve when the visitor is on /blog.
+const navLinks = [
+  { key: 'about',      to: '/#about' },
+  { key: 'experience', to: '/#experience' },
+  { key: 'projects',   to: '/#projects' },
+  { key: 'skills',     to: '/#skills' },
+  { key: 'blog',       to: '/blog' },
+  { key: 'contact',    to: '/#contact' },
+];
 
 export default function Nav({ dark, toggleDark }) {
   const [scrolled, setScrolled] = useState(false);
@@ -50,21 +59,21 @@ export default function Nav({ dark, toggleDark }) {
     >
       <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
 
-        <a
-          href="#hero"
+        <Link
+          to="/"
           className="font-mono text-sm font-medium tracking-tight transition-colors"
           style={{ color: accent }}
         >
           <span style={{ color: textMuted }}>~/</span>luis
           <span className="cursor-blink ml-[2px]">▊</span>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((key) => (
-            <a
+          {navLinks.map(({ key, to }) => (
+            <Link
               key={key}
-              href={`#${key}`}
+              to={to}
               className="nav-link font-mono text-xs font-medium transition-colors"
               style={{ color: textMuted }}
               onMouseEnter={(e) => { e.currentTarget.style.color = textBright; }}
@@ -72,7 +81,7 @@ export default function Nav({ dark, toggleDark }) {
             >
               <span style={{ color: dark ? 'rgba(63,185,80,0.5)' : 'rgba(26,127,55,0.5)' }}>./</span>
               {t(ui.nav[key])}
-            </a>
+            </Link>
           ))}
 
           <div className={`w-px h-4 ${dark ? 'bg-white/[0.14]' : 'bg-black/[0.14]'}`} />
@@ -169,16 +178,16 @@ export default function Nav({ dark, toggleDark }) {
       {/* Mobile menu */}
       {mobileOpen && (
         <div id="mobile-menu" className="md:hidden px-6 py-4 flex flex-col gap-4 nav-blur" style={mobileMenuStyle}>
-          {navLinks.map((key) => (
-            <a
+          {navLinks.map(({ key, to }) => (
+            <Link
               key={key}
-              href={`#${key}`}
+              to={to}
               onClick={() => setMobileOpen(false)}
               className="font-mono text-sm"
               style={{ color: textBright }}
             >
               <span style={{ color: 'rgba(63,185,80,0.5)' }}>~/</span>{t(ui.nav[key])}
-            </a>
+            </Link>
           ))}
           <div className="flex items-center gap-4 pt-2">
             <a href={personal.socials.github} target="_blank" rel="noopener noreferrer me" aria-label="GitHub">

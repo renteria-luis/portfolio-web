@@ -5,15 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build && node scripts/prerender.mjs",
+    "preview": "vite preview",
+    "prerender": "node scripts/prerender.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
     "lucide-react": "^0.263.1",
+    "marked": "^18.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
+    "react-router-dom": "^7.18.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {

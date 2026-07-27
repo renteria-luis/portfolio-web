@@ -11,6 +11,7 @@ export const ui = {
     projects:   { en: 'projects',   es: 'proyectos' },
     skills:     { en: 'skills',     es: 'skills' },
     contact:    { en: 'contact',    es: 'contacto' },
+    blog:       { en: 'blog',       es: 'blog' },
     themeToDark:  { en: 'Switch to dark theme',  es: 'Cambiar a tema oscuro' },
     themeToLight: { en: 'Switch to light theme', es: 'Cambiar a tema claro' },
     langSwitch: { en: 'Ver en español', es: 'View in English' },
@@ -136,6 +137,28 @@ export const ui = {
       network: { en: 'NetworkError: could not reach the server',
                  es: 'NetworkError: no se pudo contactar al servidor' },
     },
+  },
+
+  blog: {
+    title:  { en: 'writeups', es: 'artículos' },
+    intro:  {
+      en: 'Longer notes on the decisions behind the projects: why a threshold moved, why the winning model was not the one shipped, and why a rule engine beat an LLM.',
+      es: 'Notas largas sobre las decisiones detrás de los proyectos: por qué se movió un umbral, por qué el modelo ganador no fue el que se desplegó, y por qué un motor de reglas le ganó a un LLM.',
+    },
+    metaTitle: { en: 'Writeups · Luis Renteria', es: 'Artículos · Luis Renteria' },
+    metaDescription: {
+      en: 'Engineering writeups on machine learning decisions: threshold selection in fraud detection, confounders in churn models, and directing AI coding tools.',
+      es: 'Artículos de ingeniería sobre decisiones de machine learning: selección de umbrales en detección de fraude, confusores en modelos de churn, y cómo dirigir herramientas de IA.',
+    },
+    allPosts:   { en: 'all writeups', es: 'todos los artículos' },
+    sourceCode: { en: 'source', es: 'código' },
+    notFound:   { en: 'That writeup does not exist', es: 'Ese artículo no existe' },
+    readPost:   { en: 'read the writeup', es: 'leer el artículo' },
+    footerCta:  {
+      en: 'Building something in this space, or hiring for it? I reply within 24 hours.',
+      es: '¿Construyes algo parecido, o estás contratando? Respondo en menos de 24 horas.',
+    },
+    getInTouch: { en: 'get in touch', es: 'escríbeme' },
   },
 
   footer: {

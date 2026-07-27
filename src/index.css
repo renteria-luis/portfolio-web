@@ -438,3 +438,145 @@ html:not(.dark) .companion-head {
   border-color: rgba(26, 127, 55, 0.4);
   color: #1a7f37;
 }
+
+/* ─── Blog article body ──────────────────────────────────────── */
+/* Markdown is compiled to plain HTML, so the article is styled here rather
+   than with utility classes. Kept close to the terminal look: mono for
+   headings and code, sans for body copy. */
+.prose-terminal {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #a2afc2;
+}
+html:not(.dark) .prose-terminal { color: #57606a; }
+
+.prose-terminal > * + * { margin-top: 1.15em; }
+
+.prose-terminal h2,
+.prose-terminal h3 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  color: #ecf0f8;
+  scroll-margin-top: 5rem;
+}
+html:not(.dark) .prose-terminal h2,
+html:not(.dark) .prose-terminal h3 { color: #1c2128; }
+
+.prose-terminal h2 { font-size: 1.1rem; margin-top: 2.6em; }
+.prose-terminal h3 { font-size: 0.95rem; margin-top: 2em; }
+
+.prose-terminal h2::before {
+  content: '## ';
+  color: rgba(63, 185, 80, 0.5);
+}
+.prose-terminal h3::before {
+  content: '### ';
+  color: rgba(63, 185, 80, 0.4);
+}
+html:not(.dark) .prose-terminal h2::before { color: rgba(26, 127, 55, 0.5); }
+html:not(.dark) .prose-terminal h3::before { color: rgba(26, 127, 55, 0.4); }
+
+.prose-terminal strong { color: #ecf0f8; font-weight: 600; }
+html:not(.dark) .prose-terminal strong { color: #1c2128; }
+
+.prose-terminal a {
+  color: #79c0ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(121, 192, 255, 0.4);
+  transition: text-decoration-color 0.2s ease;
+}
+.prose-terminal a:hover { text-decoration-color: currentColor; }
+html:not(.dark) .prose-terminal a {
+  color: #0969da;
+  text-decoration-color: rgba(9, 105, 218, 0.4);
+}
+
+.prose-terminal ul, .prose-terminal ol { padding-left: 1.3em; }
+.prose-terminal ul { list-style: none; }
+.prose-terminal ul > li { position: relative; }
+.prose-terminal ul > li::before {
+  content: '-';
+  position: absolute;
+  left: -1.3em;
+  color: rgba(63, 185, 80, 0.7);
+  font-family: 'IBM Plex Mono', monospace;
+}
+html:not(.dark) .prose-terminal ul > li::before { color: rgba(26, 127, 55, 0.7); }
+.prose-terminal ol { list-style: decimal; }
+.prose-terminal li + li { margin-top: 0.4em; }
+
+.prose-terminal code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(125, 167, 217, 0.09);
+  color: #d2a8ff;
+}
+html:not(.dark) .prose-terminal code {
+  background: rgba(30, 50, 80, 0.07);
+  color: #7c3aed;
+}
+
+.prose-terminal pre {
+  background: #181f2e;
+  border: 1px solid rgba(125, 167, 217, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+html:not(.dark) .prose-terminal pre {
+  background: #ffffff;
+  border-color: rgba(30, 50, 80, 0.1);
+}
+.prose-terminal pre code {
+  background: none;
+  padding: 0;
+  color: #a2afc2;
+  font-size: inherit;
+}
+html:not(.dark) .prose-terminal pre code { color: #57606a; }
+
+/* Tables scroll on their own instead of pushing the page sideways */
+.prose-terminal table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+}
+.prose-terminal th, .prose-terminal td {
+  padding: 8px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(125, 167, 217, 0.1);
+  white-space: nowrap;
+}
+html:not(.dark) .prose-terminal th,
+html:not(.dark) .prose-terminal td { border-bottom-color: rgba(30, 50, 80, 0.1); }
+.prose-terminal th {
+  color: #7b8fa6;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+}
+.prose-terminal tbody tr:hover { background: rgba(125, 167, 217, 0.03); }
+
+.prose-terminal blockquote {
+  border-left: 2px solid rgba(63, 185, 80, 0.4);
+  padding-left: 1em;
+  font-style: italic;
+}
+
+.prose-terminal hr {
+  border: none;
+  border-top: 1px solid rgba(125, 167, 217, 0.1);
+  margin: 2.5em 0;
+}
+html:not(.dark) .prose-terminal hr { border-top-color: rgba(30, 50, 80, 0.1); }
+
+.prose-terminal em { color: inherit; }

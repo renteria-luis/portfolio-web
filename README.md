@@ -17,7 +17,7 @@ background, and a contact form that runs on a serverless function.
 | Layer | Choice | Why |
 |---|---|---|
 | Build | Vite 7 | Instant HMR, and the production bundle stays under 95 KB gzipped |
-| UI | React 18 | No router: the whole site is one page |
+| UI | React 18 + React Router | Portfolio at `/`, writeups under `/blog` |
 | Styling | Tailwind CSS 3 | Utility classes plus a small hand-written layer in `src/index.css` |
 | Icons | lucide-react, react-icons | Tree-shaken, only what is used ships |
 | Backend | Vercel Serverless Function | One endpoint, `api/contact.js` |
@@ -66,6 +66,32 @@ Two stacked canvases instead of one:
 That turns roughly 150 path operations and 10 `createRadialGradient()` calls
 per frame into about 10 small blits, which is main-thread time the companion
 gets back. Both canvases render at device pixel ratio.
+
+### The blog (`src/content/blog/`, `scripts/prerender.mjs`)
+
+Writeups are Markdown files with frontmatter, compiled at build time. The part
+that matters is `scripts/prerender.mjs`, which runs after `vite build` and
+writes a real HTML file per route.
+
+Without it every route would serve the same `index.html`: the same `<title>`,
+the same description, the same canonical, the same structured data. Google does
+execute JavaScript, but tags injected on the client are unreliable and a
+crawler reading the raw markup would see nothing article-specific. Since the
+entire point of publishing writeups is to be found by people searching for the
+topic rather than for me, the head has to be in the served HTML.
+
+Each article gets its own title, description, canonical, `BlogPosting`
+structured data and a generated 1200x630 social card. The sitemap is rebuilt
+from the same source, so adding a Markdown file is the only step needed to
+publish.
+
+Vercel checks the filesystem before applying rewrites, so `dist/blog/<slug>/
+index.html` wins over the SPA fallback and keeps its own head.
+
+Posts carry a `lang` field and the prerender sets `<html lang>` per route. The
+current three are English, since the audience searching for "threshold
+selection in fraud detection" searches in English. The plumbing for a Spanish
+post with its own URL is already there.
 
 ### The contact endpoint (`api/contact.js`)
 
@@ -133,11 +159,14 @@ is read only inside `api/`.
 
 ```
 api/contact.js            serverless endpoint: validate, verify, send
+scripts/prerender.mjs     one real HTML file per route, plus the sitemap
 assets/originals/         source images, deliberately outside public/
 public/                   shipped as-is: og.jpg, icons, CV, robots, sitemap
 src/
   config/data.js          all content lives here. Editing the site means
                           editing this file, not the components
+  content/blog/*.md       writeups, frontmatter + Markdown
+  pages/                  Home, BlogIndex, BlogPost
   components/
     Hero, About, Timeline, Projects, Skills, Contact, Footer, Nav
     Companion.jsx         the astronaut cat

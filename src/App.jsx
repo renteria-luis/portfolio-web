@@ -1,17 +1,33 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Nav from './components/Nav';
-import Hero from './components/Hero';
-import About from './components/About';
-import Timeline from './components/Timeline';
-import Projects from './components/Projects';
-import Skills from './components/Skills';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
 import NeuralBackground from './components/NeuralBackground';
 import Companion from './components/Companion';
+import Home from './pages/Home';
+import BlogIndex from './pages/BlogIndex';
+import BlogPost from './pages/BlogPost';
 import { ui } from './i18n/ui';
 import { useT } from './i18n';
+
+/**
+ * Restores scroll on navigation. Without this react-router keeps the previous
+ * scroll offset, so clicking into an article from halfway down the blog index
+ * drops you halfway down the article.
+ */
+function ScrollBehaviour() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      // Let the target section exist before jumping to it.
+      const el = document.getElementById(hash.slice(1));
+      if (el) { el.scrollIntoView({ behavior: 'smooth' }); return; }
+    }
+    window.scrollTo(0, 0);
+  }, [pathname, hash]);
+  return null;
+}
 
 export default function App() {
   const t = useT();
@@ -41,21 +57,18 @@ export default function App() {
       {/* Floating astronaut cat: above canvas (z-0), behind all content (z-1) */}
       <Companion />
 
+      <ScrollBehaviour />
+
       {/* Page wrapper: transparent so body bg + canvas show through */}
       <div className="min-h-screen">
         <Nav dark={dark} toggleDark={() => setDark(p => !p)} />
         <main id="main">
-          <Hero dark={dark} />
-
-          <About dark={dark} />
-
-          <Timeline dark={dark} />
-
-          <Projects dark={dark} />
-
-          <Skills dark={dark} />
-
-          <Contact dark={dark} />
+          <Routes>
+            <Route path="/" element={<Home dark={dark} />} />
+            <Route path="/blog" element={<BlogIndex dark={dark} />} />
+            <Route path="/blog/:slug" element={<BlogPost dark={dark} />} />
+            <Route path="*" element={<Home dark={dark} />} />
+          </Routes>
         </main>
         <Footer dark={dark} />
       </div>
