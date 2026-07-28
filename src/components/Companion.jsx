@@ -12,7 +12,12 @@ const BUBBLE_TOP_LIMIT = 64;
 // column. An article is a single uninterrupted block of text, so per-element
 // boxes there would be one big box anyway.
 const CONTENT_WIDTH = 1024;
+// On desktop the cat spends most of its time in the side gutters, so the dip
+// over content can be deep. A phone has no gutters: it is over content
+// permanently, and 0.42 left it looking permanently washed out. Keep a hint of
+// transparency so text still reads through, but let it stay solid.
 const OVER_CONTENT_OPACITY = 0.42;
+const OVER_CONTENT_OPACITY_MOBILE = 0.7;
 const DRAGGED_KEY = 'companionDragged';
 
 // ── Per-element collision ───────────────────────────────────────────────
@@ -144,7 +149,7 @@ export default function Companion({ route = '/' }) {
       s.vh = window.innerHeight;
       // Mirrors .companion-inner in index.css. Changing one without the other
       // desyncs the collision box and the drag hit-test from the sprite.
-      s.cw = s.vw < 900 ? 63 : 153;
+      s.cw = s.vw <= 900 ? 63 : 153;   // <= to match the CSS max-width query
       s.ch = s.cw * CAT_RATIO;
     }
 
@@ -360,9 +365,10 @@ export default function Companion({ route = '/' }) {
       } else {
         const colLeft = Math.max(0, (vw - CONTENT_WIDTH) / 2);
         const colRight = vw - colLeft;
-        overlaps = vw >= 900 && s.x + cw > colLeft && s.x < colRight;
+        overlaps = vw > 900 && s.x + cw > colLeft && s.x < colRight;
       }
-      const wantOver = s.dragging ? 1 : (overlaps ? OVER_CONTENT_OPACITY : 1);
+      const dimTo = vw <= 900 ? OVER_CONTENT_OPACITY_MOBILE : OVER_CONTENT_OPACITY;
+      const wantOver = s.dragging ? 1 : (overlaps ? dimTo : 1);
       s.over += (wantOver - s.over) * Math.min(1, dt * 4);
 
       const wrap = wrapRef.current;
