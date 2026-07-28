@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Clock } from 'lucide-react';
 import { posts, formatDate } from '../blog/posts';
+import { companion } from '../config/data';
 import { ui } from '../i18n/ui';
 import { useLang, useT } from '../i18n';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+
+const say = (t) => t && window.dispatchEvent(new CustomEvent('companionSay', { detail: t }));
 
 export default function BlogIndex({ dark }) {
   const t = useT();
@@ -39,6 +42,7 @@ export default function BlogIndex({ dark }) {
           <Link
             key={post.slug}
             to={`/blog/${post.slug}`}
+            onMouseEnter={() => say(companion.writeupLines?.[post.slug])}
             className={`group rounded-lg p-5 block transition-all duration-300 ${dark ? 'card-dark' : 'card-light'}`}
           >
             <div className={`flex items-center gap-3 font-mono text-[10px] mb-2 ${textMuted}`}>

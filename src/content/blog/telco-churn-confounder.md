@@ -6,6 +6,15 @@ project: telco-churn
 tags: [Churn, Confounders, SHAP, Ensembles, scikit-learn]
 lang: en
 readingMinutes: 9
+tldr:
+  - Contract length dominated every importance ranking, but it measures a legal exit barrier rather than loyalty, so it was drowning out every behavioural signal.
+  - Refitting on only the month-to-month segment, where customers are free to leave, surfaced referrals and price sensitivity as the real drivers.
+  - The business recommendation flips: not "push longer contracts", which buys 24 months of silence, but "invest in referral programs".
+tldrMetrics:
+  - Recall = 87%
+  - ROC-AUC = 0.906
+  - Threshold = 0.3
+  - Models compared = 6
 ---
 
 I built a churn model on the IBM Telco dataset. The ensemble catches 87% of churners at 0.906 ROC-AUC, which is a respectable number and not what this post is about.
@@ -13,6 +22,9 @@ I built a churn model on the IBM Telco dataset. The ensemble catches 87% of chur
 This post is about the moment the feature importances came back and the top bar was so tall that everything else looked like noise, and how that turned out to be the model telling me something true and useless at the same time.
 
 ## The dominant feature
+
+![SHAP summary: contract_length dominates every other feature](/writeups/telco-shap.webp)
+*One bar so tall the rest look like noise. It is a real signal and a useless explanation.*
 
 `contract_length` outranked everything. Feature importances agreed, SHAP agreed, every model agreed. If you were skimming, you would write "contract length is the strongest predictor of churn" in the summary slide and move on.
 
@@ -36,6 +48,9 @@ Mixing them means the model learns "contract equals stays", which is true, and s
 
 Isolate the month-to-month segment, refit, and look at what comes forward once the exit barrier is gone.
 
+![Churn drivers within the month-to-month segment: referrals and price sensitivity](/writeups/telco-organic-drivers.webp)
+*The same model, fitted only on customers who are free to leave. Different answer.*
+
 Two things did:
 
 **Number of referrals.** Customers who brought other people onto the network churn far less. This is a social tie, not a contractual one, and it is the more interesting of the two because it is a barrier the company can build without a contract and without discounting.
@@ -58,6 +73,9 @@ Six models, all evaluated at the operating threshold of 0.3, on a held-out set o
 | Gradient Boosting | **0.825** | **0.631** | 0.818 | **0.713** | **0.907** |
 | XGBoost | 0.822 | 0.626 | 0.818 | 0.709 | 0.903 |
 | **Soft Voting (shipped)** | 0.793 | 0.571 | 0.874 | 0.691 | 0.906 |
+
+![ROC curves for the models tested](/writeups/telco-roc.webp)
+*The curve climbs steeply enough that recall can reach roughly 90% while misclassifying about 20% of healthy customers. That shape is what made a 0.3 threshold viable.*
 
 Gradient Boosting wins on accuracy, precision and F1. I shipped the ensemble.
 

@@ -6,11 +6,22 @@ project: wisp
 tags: [AI-assisted development, React Native, Expo, TypeScript, Product design]
 lang: en
 readingMinutes: 10
+tldr:
+  - I shipped a React Native app in a stack I had never used, by directing AI coding tools. The tooling wrote the code; it decided nothing that mattered.
+  - The load-bearing decision was "a slip must never wipe your history", which killed the streak counter and propagated through the adherence engine, the re-planning logic and the companion's mood.
+  - The plan is a deterministic rule engine, never an LLM at runtime, so the app makes zero network calls and every number it shows can be explained and tested.
+tldrMetrics:
+  - Commits = 95
+  - TypeScript files = 140
+  - Test files = 21
+  - Network calls = 0
 ---
 
-Wisp is a quit-smoking companion. Fully offline, no account, no backend, no telemetry, no network calls at all. 95 commits, 142 TypeScript files, 21 test files, CI green. Expo and React Native, a stack I had never touched before starting.
+Wisp is a quit-smoking companion. Fully offline, no account, no backend, no telemetry, no network calls at all. 95 commits, 140 TypeScript files, 21 test files, CI green. Expo and React Native, a stack I had never touched before starting.
 
 The easy story is "AI wrote my app". It is also wrong, and it undersells the part that was actually hard.
+
+![Wisp: the home screen, with the companion reflecting how the week is going](/writeups/wisp-home.webp)
 
 ## What the model could not decide
 
@@ -31,6 +42,9 @@ Every one of those is a product decision. Ask a model to make them and you get a
 
 ### A slip must never wipe your history
 
+![The progress screen: a trend line rather than a streak counter](/writeups/wisp-progress.webp)
+*No streak counter anywhere. Progress is a trend, so one bad evening bends the line instead of deleting it.*
+
 Almost every habit app is built on a streak counter. Streaks are motivating right up until you break one, at which point the app punishes you with a reset, and one bad evening becomes a reason to stop opening the app entirely. The mechanic that drives engagement is the same one that causes abandonment at the worst possible moment.
 
 So Wisp has no streak. Progress is anchored on a **rolling trend**: adherence is computed over a window, and one bad day moves the line slightly instead of deleting it. The plan re-plans around you rather than declaring you failed.
@@ -38,6 +52,8 @@ So Wisp has no streak. Progress is anchored on a **rolling trend**: adherence is
 This is one design rule and it propagated through the whole codebase: the adherence engine, the re-planning logic, the companion's mood, the progress chart. None of that follows from "build a quit-smoking app". All of it follows from *"a slip must never wipe your history"*.
 
 ### Two tracks, not one
+
+![The plan screen: today's allowance, the week ahead and the full journey](/writeups/wisp-plan.webp)
 
 Most quit apps pick a philosophy. Cold turkey or gradual reduction, and if you are the other kind of smoker, the app is not for you.
 
@@ -70,6 +86,8 @@ Wisp's 16-step tour runs against a **throwaway sandbox world**. The user really 
 This took meaningfully longer than a tooltip overlay. It is also the difference between a user who has read about the app and a user who has used it.
 
 ### Silence, on purpose
+
+![The craving toolkit: guided breathing, a wait-it-out timer and distractions](/writeups/wisp-craving.webp)
 
 No sound. Haptics only.
 

@@ -16,11 +16,26 @@ function parseFrontmatter(raw) {
   if (!match) return { meta: {}, body: raw };
 
   const meta = {};
+  let listKey = null;
   for (const line of match[1].split(/\r?\n/)) {
+    // Block list item: "  - text". Belongs to the key that opened above it,
+    // which is how tldr bullets hold commas without being split.
+    const item = /^\s+-\s+(.*)$/.exec(line);
+    if (item && listKey) {
+      meta[listKey].push(item[1].trim().replace(/^["']|["']$/g, ''));
+      continue;
+    }
     const kv = /^([A-Za-z_][\w-]*):\s*(.*)$/.exec(line);
     if (!kv) continue;
     let [, key, value] = kv;
     value = value.trim();
+    if (value === '') {
+      // Bare "key:" opens a block list.
+      meta[key] = [];
+      listKey = key;
+      continue;
+    }
+    listKey = null;
     if (/^\[.*\]$/.test(value)) {
       meta[key] = value.slice(1, -1).split(',').map((s) => s.trim().replace(/^["']|["']$/g, '')).filter(Boolean);
     } else {
@@ -44,6 +59,11 @@ export const posts = Object.entries(files)
       project: meta.project || null,
       tags: meta.tags || [],
       lang: meta.lang || 'en',
+      tldr: meta.tldr || [],
+      tldrMetrics: (meta.tldrMetrics || []).map((s) => {
+        const [label, value] = s.split('=').map((x) => x.trim());
+        return { label, value };
+      }),
       readingMinutes: Number(meta.readingMinutes) || Math.max(1, Math.round(body.split(/\s+/).length / 220)),
       body,
       html: marked.parse(body),

@@ -6,6 +6,15 @@ project: fraud-detection
 tags: [XGBoost, Imbalanced data, Threshold tuning, FastAPI, Docker]
 lang: en
 readingMinutes: 8
+tldr:
+  - Moving the decision threshold from 0.5 to 0.2226 trades 9 points of precision for 6 points of recall, which is the right trade when a missed fraud costs more than a false alarm.
+  - The model with the best PR-AUC was not the one I shipped: the Optuna-tuned XGBoost hit 0.98 recall at 0.24 precision, with a curve too unstable to operate.
+  - F1 peaks at a threshold of 0.40, and I shipped 0.2226 anyway, because F1 assumes both error types cost the same and that is the assumption the whole post rejects.
+tldrMetrics:
+  - Recall = 85%
+  - Precision = 84%
+  - PR-AUC = 0.91
+  - Threshold = 0.2226
 ---
 
 Every binary classifier ships with a hidden assumption. `model.predict()` returns a class, not a probability, and to get there it compares the probability against 0.5. That number is a default, not a decision, and almost nobody questions it.
@@ -35,11 +44,20 @@ At the default threshold the model was already good:
 | 0.5 (default) | 0.93 | 0.79 | 0.85 |
 | **0.2226 (shipped)** | **0.84** | **0.85** | **0.84** |
 
+![Confusion matrix at the default 0.5 threshold: 936 frauds caught, 252 missed](/writeups/fraud-confusion-matrix.webp)
+*The default operating point, drawn out. The 73 in the top right is the analyst's queue. The 252 in the bottom left is money that left without anyone opening a case.*
+
 Read that as an exchange rate. Dropping the threshold gave up **9 points of precision** to buy **6 points of recall**.
 
 Six points of recall means six percent of all fraud in the test set going from undetected to caught. Nine points of precision means a larger pile of false alarms on an analyst's desk. If you believe the asymmetry above, that trade is obviously worth taking, and it is worth taking well past the point where F1 says stop.
 
 Which is the other thing worth saying: **F1 got slightly worse**, from 0.85 to 0.84. F1 is the harmonic mean of precision and recall, so it bakes in the assumption that both matter equally, the same assumption that made 0.5 wrong in the first place. Optimising F1 here would have meant optimising for a cost model I had already rejected.
+
+Rather than ask you to take that on faith, here is the whole curve. Drag it:
+
+<div data-widget="threshold-explorer"></div>
+
+Worth doing once you have it in front of you: find where F1 peaks. It is not at 0.2226 and it is not at 0.5, it is at **0.40**, scoring 0.859. That is the threshold a metric-driven pipeline would have picked on its own, and it lets 222 frauds through instead of 179. Forty-three transactions is what the F1 assumption costs, and no amount of staring at the F1 column tells you that number. The counts do.
 
 The number 0.2226 itself is not magic. It came from sweeping the threshold across the precision/recall curve and picking the point where recall crossed 85% while precision was still above 80%. Below that the precision collapse accelerates and the alert queue stops being workable.
 
@@ -66,9 +84,15 @@ The default-parameter XGBoost had a smooth, boring curve. Boring is a feature. I
 
 The threshold work is the interesting part, but most of the actual performance came from decisions made before training.
 
+![Class distribution: fraud is 0.29% of transactions after filtering](/writeups/fraud-class-imbalance.webp)
+*349 legitimate transactions for every fraudulent one. Accuracy is useless here.*
+
 **Fraud only exists in two transaction types.** `TRANSFER` (0.77% fraud rate) and `CASH_OUT` (0.18%). `PAYMENT`, `CASH_IN` and `DEBIT` had exactly zero fraudulent records. Not "few". Zero. I dropped those rows entirely rather than letting the model learn to discriminate against noise. The imbalance went from roughly 800:1 to 349:1 for free, and every subsequent metric got easier to read.
 
 **Fraud does not sleep.** Legitimate transactions follow a clean circadian rhythm, busy during the day, quiet at night. Fraud is completely flat across all 24 hours. That is not a human pattern, it is an automated one, and it makes `is_night` a genuinely informative feature: between midnight and 6am the ratio of fraud to legitimate traffic is far higher simply because the humans went to bed.
+
+![Transactions by hour: legitimate traffic follows a circadian cycle, fraud is flat](/writeups/fraud-time-distribution.webp)
+*Legitimate traffic sleeps. Fraud does not, which is what makes the hour informative.*
 
 **The dataset had a lie in it.** Legitimate transaction volume drops off a cliff after day 17 of the simulation. Fraud keeps going to day 30. That is an artifact of the PaySim generator, not a property of fraud, and any model trained on the full range would have learned a beautiful, completely fake rule: *late in the month means fraud*. I truncated the data at the last step where legitimate traffic still exists.
 
@@ -86,6 +110,9 @@ I kept those features and wrote down why in the notebook, along with which ones 
 
 The model runs behind FastAPI with Pydantic validation, containerised in a multi-stage, non-root Docker image, with a Streamlit demo live on Hugging Face Spaces.
 
+![The deployed console: scenario presets, a probability rail with the threshold drawn on it, and the signals behind the score](/writeups/fraud-console.webp)
+*The console on Hugging Face Spaces. The threshold sits on the same axis as the score, because that is the decision.*
+
 ```json
 POST /predict
 {
@@ -99,3 +126,8 @@ POST /predict
 The API returns the probability **and** the threshold it applied, not just the boolean. If somebody downstream disagrees with my cost assumptions, they have the raw number and can pick their own operating point. Baking 0.2226 into the response and hiding the probability would make my judgement call permanent for everyone who consumes the endpoint.
 
 That is the general principle behind all of this: **a threshold is a business decision, and it should be visible, movable and written down.** The model gives you a probability. Turning it into a yes or no is a separate act, and it deserves a separate argument.
+
+---
+
+*Code and notebooks: [github.com/renteria-luis/fraud-detection-v1](https://github.com/renteria-luis/fraud-detection-v1)*<br>
+*Live demo: [huggingface.co/spaces/renteria-luis/fraud-detection-v1](https://huggingface.co/spaces/renteria-luis/fraud-detection-v1)*
