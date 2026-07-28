@@ -5,24 +5,22 @@ import { useT } from '../i18n';
 
 const say = (t) => t && window.dispatchEvent(new CustomEvent('companionSay', { detail: t }));
 
-function MetricCard({ item, dark, t }) {
+function GlanceRow({ item, dark, t }) {
   return (
     <div
       onMouseEnter={() => say(companion.hoverLines[item.key])}
-      className={`p-4 rounded-lg border text-center transition-all duration-300 ${
-        dark
-          ? 'bg-[#181f2e] border-[rgba(125,167,217,0.08)] hover:border-[rgba(63,185,80,0.2)]'
-          : 'bg-white border-[rgba(30,50,80,0.1)] hover:border-[rgba(26,127,55,0.25)]'
-      }`}
+      className={`py-3 border-b ${dark ? 'border-[rgba(125,167,217,0.07)]' : 'border-[rgba(30,50,80,0.08)]'}`}
     >
-      <div className={`font-mono text-xl font-semibold mb-0.5 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
-        {item.value}
-      </div>
-      <div className={`font-mono text-[10px] uppercase tracking-wider mb-1 ${dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]'}`}>
+      <div className={`font-mono text-[10px] uppercase tracking-[0.16em] ${dark ? 'text-[#7b8fa6]' : 'text-[#576c80]'}`}>
         {t(item.label)}
       </div>
+      <div className={`font-mono text-xs mt-1 ${dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]'}`}>
+        {t(item.value)}
+      </div>
       {item.note && (
-        <div className={`text-[10px] ${dark ? 'text-[#7b8fa6]' : 'text-[#576c80]'}`}>{t(item.note)}</div>
+        <div className={`font-mono text-[10px] mt-0.5 ${dark ? 'text-[#a2afc2]' : 'text-[#57606a]'}`}>
+          {t(item.note)}
+        </div>
       )}
     </div>
   );
@@ -35,7 +33,7 @@ export default function About({ dark }) {
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
 
   return (
-    <section id="about" className="py-24 max-w-5xl mx-auto px-6">
+    <section id="about" className="py-16 md:py-24 max-w-5xl mx-auto px-6">
       <div ref={ref} className="reveal">
         {/* Section header */}
         <div className="mb-12">
@@ -68,11 +66,11 @@ export default function About({ dark }) {
             </div>
           </div>
 
-          {/* Metrics */}
+          {/* At a glance: a record, not a scoreboard */}
           <div className="lg:col-span-2">
-            <div className="grid grid-cols-2 gap-3">
-              {personal.highlights.map((h) => (
-                <MetricCard key={h.key} item={h} dark={dark} t={t} />
+            <div className={`border-t ${dark ? 'border-[rgba(125,167,217,0.07)]' : 'border-[rgba(30,50,80,0.08)]'}`}>
+              {personal.atAGlance.map((item) => (
+                <GlanceRow key={item.key} item={item} dark={dark} t={t} />
               ))}
             </div>
           </div>

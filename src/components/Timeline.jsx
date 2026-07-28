@@ -125,7 +125,7 @@ export default function Timeline({ dark }) {
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
 
   return (
-    <section id="experience" className="py-24 max-w-5xl mx-auto px-6">
+    <section id="experience" className="py-16 md:py-24 max-w-5xl mx-auto px-6">
       <div ref={ref} className="reveal">
         {/* Section header */}
         <div className="mb-12">

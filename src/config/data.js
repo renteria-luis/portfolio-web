@@ -54,20 +54,33 @@ export const personal = {
     ],
   },
 
+  // Replaces four stat tiles. Three of those repeated numbers that now live in
+  // the hero or on a project card, and a row of big-number tiles is the shape
+  // every generated landing page reaches for. This is a record instead, and it
+  // carries facts that were nowhere else on the page.
   // `key` is the stable identifier the companion uses for its hover lines.
-  highlights: [
-    { key: "GPA", label: "GPA", value: "4.18 / 4.2",
-      note: { en: "Dean's Honour Roll", es: "Cuadro de Honor" } },
-    { key: "Models deployed", label: { en: "Models deployed", es: "Modelos desplegados" }, value: "3+",
-      note: { en: "End-to-end, Dockerized", es: "De punta a punta, en Docker" } },
-    { key: "Recall (Fraud)", label: { en: "Recall (Fraud)", es: "Recall (Fraude)" }, value: "85%",
-      note: "PR-AUC 0.91" },
-    { key: "Kaggle rank", label: { en: "Kaggle rank", es: "Puesto en Kaggle" }, value: "#202",
-      note: { en: "House Prices comp", es: "Competencia House Prices" } },
+  atAGlance: [
+    { key: "now",
+      label: { en: "now", es: "ahora" },
+      value: { en: "Fanshawe College, AI/ML", es: "Fanshawe College, AI/ML" },
+      note:  { en: "Dean's Honour Roll · GPA 4.18 / 4.2", es: "Cuadro de Honor · GPA 4.18 / 4.2" } },
+    { key: "before",
+      label: { en: "before", es: "antes" },
+      value: { en: "refinery control systems", es: "sistemas de control de refinería" },
+      note:  { en: "PLC / SCADA, then enterprise IP security", es: "PLC / SCADA, luego seguridad IP empresarial" } },
+    { key: "languages",
+      label: { en: "languages", es: "idiomas" },
+      value: { en: "English · Spanish", es: "Inglés · Español" },
+      note:  { en: "both fully professional", es: "ambos a nivel profesional" } },
+    { key: "based in",
+      label: { en: "based in", es: "vivo en" },
+      value: { en: "London, Ontario", es: "London, Ontario" },
+      note:  { en: "EST · open to relocating in Canada", es: "EST · dispuesto a mudarme dentro de Canadá" } },
   ],
 
   photoUrl: '/photo.webp',
-  cvUrl: "/luis_renteria_cv.pdf",
+  // Named so it is findable in a recruiter's downloads folder next to 40 others.
+  cvUrl: "/Luis_Renteria_MLE_2026.pdf",
 
   socials: {
     github: "https://github.com/renteria-luis",
@@ -98,8 +111,8 @@ export const projects = [
     statusLabel: { en: "Shipped", es: "Publicado" },
     tags: ["Expo", "React Native", "TypeScript", "AI-assisted coding", "SQLite", "Zustand", "NativeWind", "i18next", "Jest", "CI"],
     metrics: [
-      { label: { en: "Platform", es: "Plataforma" }, value: "iOS + Android" },
       { label: { en: "On-device", es: "En dispositivo" }, value: "100%" },
+      { label: { en: "Platform", es: "Plataforma" }, value: "iOS + Android" },
       { label: { en: "Engine", es: "Motor" }, value: { en: "Deterministic", es: "Determinista" } },
     ],
     links: { github: "https://github.com/renteria-luis/wisp", demo: null },
@@ -122,9 +135,9 @@ export const projects = [
     statusLabel: { en: "In Development", es: "En desarrollo" },
     tags: ["Android", "Kotlin", "RAG", "EmbeddingGemma", "ObjectBox HNSW", "Vector Search", "Local LLM", "On-device"],
     metrics: [
+      { label: "Runtime", value: "100% offline" },
       { label: "Embeddings", value: "EmbeddingGemma" },
       { label: { en: "Vector store", es: "Índice vectorial" }, value: "HNSW" },
-      { label: "Runtime", value: "100% offline" },
     ],
     links: {
       // Private capstone repo owned by my teammate, so there is no public URL
@@ -136,6 +149,16 @@ export const projects = [
       { name: "Mannyking", url: "https://github.com/Mannyking", role: "repo owner" },
     ],
     repoPrivate: true,
+    // Group capstone: interviewers assume you did little unless you say
+    // otherwise, so the scope that is actually mine is stated on the card.
+    myRole: {
+      label: { en: "My role", es: "Mi rol" },
+      value: { en: "ML research and retrieval", es: "Investigación de ML y recuperación" },
+      detail: {
+        en: "Chunking strategy, embedding model selection and the dense retrieval layer over the HNSW index.",
+        es: "Estrategia de fragmentación, elección del modelo de embeddings y la capa de recuperación densa sobre el índice HNSW.",
+      },
+    },
     accent: "terminal-orange",
     featured: true,
   },
@@ -160,6 +183,10 @@ export const projects = [
       github: "https://github.com/renteria-luis/fraud-detection-v1",
       demo: "https://huggingface.co/spaces/renteria-luis/fraud-detection-v1",
     },
+    // Chooses what the hero shows as proof. Explicit on purpose: picking the
+    // first project with status "live" meant the hero silently changed if the
+    // array was ever reordered, or if a second project went live.
+    heroFeature: true,
     accent: "terminal-green",
     featured: true,
   },
@@ -202,10 +229,13 @@ export const projects = [
     status: "complete",
     statusLabel: { en: "Complete", es: "Completo" },
     tags: ["Python", "Scikit-learn", "XGBoost", "Pandas", "EDA", "Ensemble"],
+    // Recall and ROC-AUC come from the held-out results table in the writeup
+    // (soft-voting row: 0.874 recall, 0.906 ROC-AUC). The old trio led with
+    // "Threshold 0.3", which is an implementation detail, not a result.
     metrics: [
+      { label: "Recall", value: "87%" },
+      { label: "ROC-AUC", value: "0.906" },
       { label: { en: "Threshold", es: "Umbral" }, value: "0.3" },
-      { label: { en: "Model", es: "Modelo" }, value: "Ensemble" },
-      { label: { en: "Focus", es: "Enfoque" }, value: "Recall" },
     ],
     links: { github: "https://github.com/renteria-luis/telco-churn-prediction", demo: null },
     accent: "terminal-purple",
@@ -227,8 +257,8 @@ export const projects = [
     statusLabel: { en: "Complete", es: "Completo" },
     tags: ["Python", "Scikit-learn", "Pandas", "NumPy", "Matplotlib", "Regression"],
     metrics: [
+      { label: { en: "Kaggle rank", es: "Puesto Kaggle" }, value: "#202" },
       { label: { en: "Model", es: "Modelo" }, value: "Voting Reg." },
-      { label: "Kaggle", value: "#202" },
       { label: "Stack", value: "Scikit-learn" },
     ],
     links: { github: "https://github.com/renteria-luis/house-prices-prediction", demo: null },
@@ -437,6 +467,9 @@ export const companion = {
     open: "/companion/cat-open.webp",
     closed: "/companion/cat-closed.webp",
   },
+  // The very first thing it says, always. The cat is draggable and nothing on
+  // the page said so, which meant almost nobody found out.
+  intro: { en: "psst, you can drag me around", es: 'oye, puedes arrastrarme' },
   dialogues: {
     hero: [
       { en: "Welcome aboard, scroll to explore my work", es: "Bienvenido a bordo, baja para ver su trabajo" },
@@ -466,6 +499,12 @@ export const companion = {
       { en: "My daily stack", es: "Su stack del día a día" },
       { en: "What's in the toolbox", es: "Lo que hay en la caja de herramientas" },
     ],
+    blog: [
+      { en: "Longer versions of the project cards", es: 'Las versiones largas de las tarjetas' },
+      { en: "These are the decisions, not the tutorials", es: 'Aquí están las decisiones, no los tutoriales' },
+      { en: "Hover one to see what it's about", es: 'Pasa por uno para ver de qué va' },
+      { en: "He writes these himself, for the record", es: 'Los escribe él, que conste' },
+    ],
     contact: [
       { en: "This is the part where you say hi", es: "Esta es la parte donde saludas" },
       { en: "He actually replies, usually same day", es: "De verdad responde, casi siempre el mismo día" },
@@ -481,12 +520,26 @@ export const companion = {
     "telco-churn":     { en: "Predicting who's about to churn", es: "Prediciendo quién está por irse" },
     "house-prices":    { en: "Ranked #202 on Kaggle", es: "Puesto #202 en Kaggle" },
   },
+  writeupLines: {
+    "fraud-detection-threshold": {
+      en: "Why he shipped the model that scored worse",
+      es: 'Por qué desplegó el modelo que puntuaba peor',
+    },
+    "telco-churn-confounder": {
+      en: "The top feature turned out to explain nothing",
+      es: 'La feature más fuerte no explicaba nada',
+    },
+    "wisp-directing-ai": {
+      en: "The AI wrote it. He decided all of it",
+      es: 'La IA lo escribió. Él decidió todo',
+    },
+  },
   hoverLines: {
     "photo":           { en: "That's me", es: "Ese es él" },
-    "GPA":             { en: "Top of my class, quietly proud", es: "Primero de su clase, calladamente orgulloso" },
-    "Models deployed": { en: "Real models, actually deployed", es: "Modelos reales, de verdad desplegados" },
-    "Recall (Fraud)":  { en: "Caught 85% of the fraud", es: "Atrapó el 85% del fraude" },
-    "Kaggle rank":     { en: "Cracked the top on Kaggle", es: "Se metió arriba en Kaggle" },
+    "now":             { en: "Top of his class, quietly proud", es: "Primero de su clase, calladamente orgulloso" },
+    "before":          { en: "Programming PLCs in a refinery, real stakes", es: "Programando PLCs en una refinería, riesgo real" },
+    "languages":       { en: "Ask him in either one", es: "Pregúntale en cualquiera de los dos" },
+    "based in":        { en: "London, Ontario. Yes, the Canadian one", es: "London, Ontario. Sí, la de Canadá" },
     "ucsp":            { en: "Studied abroad in Shanghai, China. What an experience", es: "Estudió en Shanghái, China. Vaya experiencia" },
     "fanshawe":        { en: "Where I'm leveling up in AI/ML right now", es: "Donde está subiendo de nivel en AI/ML ahora" },
     "bermalar":        { en: "Programming PLCs in a refinery, real stakes", es: "Programando PLCs en una refinería, riesgo real" },

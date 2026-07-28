@@ -44,7 +44,7 @@ function ProjectCard({ project, dark, t }) {
 
   return (
     <div
-      className={`group rounded-lg p-5 flex flex-col transition-all duration-300 ${dark ? 'card-dark' : 'card-light'}`}
+      className={`group h-full rounded-lg p-5 flex flex-col transition-all duration-300 ${dark ? 'card-dark' : 'card-light'}`}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = borderHover;
         const line = companion.projectLines?.[project.id];
@@ -166,6 +166,21 @@ function ProjectCard({ project, dark, t }) {
         </div>
       )}
 
+      {/* Group work: name the part that is mine */}
+      {project.myRole && (
+        <div className={`mt-3 pt-3 border-t ${dark ? 'border-[rgba(125,167,217,0.06)]' : 'border-[rgba(30,50,80,0.08)]'}`}>
+          <span className={`font-mono text-[9px] uppercase tracking-wide ${textMuted}`}>
+            {t(project.myRole.label)}
+          </span>
+          <p className="font-mono text-[11px] mt-1" style={{ color: accentColor }}>
+            {t(project.myRole.value)}
+          </p>
+          <p className={`text-[11px] leading-5 mt-1 ${textSecondary}`}>
+            {t(project.myRole.detail)}
+          </p>
+        </div>
+      )}
+
       {/* Tags */}
       <div className="mt-3 flex flex-wrap gap-1.5">
         {project.tags.map((tag) => (
@@ -273,6 +288,53 @@ function ProjectCard({ project, dark, t }) {
   );
 }
 
+// A compact row for the projects that are not carrying the portfolio. Same
+// information, a fraction of the vertical space, and the contrast is what
+// makes the featured cards actually read as featured.
+function CompactProject({ project, dark, t }) {
+  const accent = ACCENT_MAP[project.accent] ?? ACCENT_MAP['terminal-green'];
+  const accentColor = dark ? accent.text : accent.textLight;
+  const post = postForProject(project.id);
+  const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
+  const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
+  const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
+  const linkCls = `flex items-center gap-1.5 font-mono text-[10px] transition-colors ${
+    dark ? 'text-[#7b8fa6] hover:!text-terminal-green' : 'text-[#576c80] hover:!text-[#197934]'
+  }`;
+
+  return (
+    <div
+      onMouseEnter={() => {
+        const line = companion.projectLines?.[project.id];
+        if (line) window.dispatchEvent(new CustomEvent('companionSay', { detail: line }));
+      }}
+      className={`group py-4 border-b ${dark ? 'border-[rgba(125,167,217,0.07)]' : 'border-[rgba(30,50,80,0.08)]'}`}
+    >
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h3 className={`font-mono text-xs font-semibold ${textPrimary}`}>{project.title}</h3>
+        <span className="font-mono text-[10px]" style={{ color: accentColor }}>{t(project.subtitle)}</span>
+        <span className={`font-mono text-[10px] ml-auto whitespace-nowrap ${textMuted}`}>{t(project.period)}</span>
+      </div>
+
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        {project.tags.slice(0, 5).map((tag) => (
+          <span key={tag} className={`font-mono text-[10px] ${textSecondary}`}>{tag}</span>
+        ))}
+        {project.links.github && (
+          <a href={project.links.github} target="_blank" rel="noopener noreferrer" className={`ml-auto ${linkCls}`}>
+            <Github size={10} className="shrink-0" /> github
+          </a>
+        )}
+        {post && (
+          <Link to={`/blog/${post.slug}`} className={linkCls}>
+            <BookOpen size={10} className="shrink-0" /> {t(ui.projects.writeupShort)}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Projects({ dark }) {
   const ref = useReveal(0.05);
   const t = useT();
@@ -283,7 +345,7 @@ export default function Projects({ dark }) {
   const others = projects.filter((p) => !p.featured);
 
   return (
-    <section id="projects" className="py-24">
+    <section id="projects" className="py-16 md:py-24">
       <div className="max-w-5xl mx-auto px-6">
         <div ref={ref} className="reveal">
           {/* Section header */}
@@ -299,19 +361,31 @@ export default function Projects({ dark }) {
             </p>
           </div>
 
-          {/* Featured: 2 column */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            {featured.map((p) => (
-              <ProjectCard key={p.id} project={p} dark={dark} t={t} />
+          {/* Featured */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {featured.map((p, i) => (
+              <div key={p.id} className="stagger h-full" style={{ '--i': i }}>
+                <ProjectCard project={p} dark={dark} t={t} />
+              </div>
             ))}
           </div>
 
-          {/* Others: 2 column, smaller visual weight */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {others.map((p) => (
-              <ProjectCard key={p.id} project={p} dark={dark} t={t} />
-            ))}
-          </div>
+          {/* Everything else, as rows. The hierarchy was declared in data.js
+              and never shown; this is what showing it looks like. */}
+          {others.length > 0 && (
+            <div className="mt-10">
+              <p className={`font-mono text-[10px] uppercase tracking-[0.18em] mb-1 ${
+                dark ? 'text-[#7b8fa6]' : 'text-[#576c80]'
+              }`}>
+                {t(ui.projects.alsoBuilt)}
+              </p>
+              <div className={`border-t ${dark ? 'border-[rgba(125,167,217,0.07)]' : 'border-[rgba(30,50,80,0.08)]'}`}>
+                {others.map((p) => (
+                  <CompactProject key={p.id} project={p} dark={dark} t={t} />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* CTA */}
           <div className={`mt-8 text-center font-mono text-xs ${textSecondary}`}>

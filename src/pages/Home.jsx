@@ -18,10 +18,12 @@ export default function Home({ dark }) {
 
   return (
     <>
+      {/* Projects sits directly after About: the evidence should not be behind
+          two blocks of biography when a recruiter gives the page ~2 minutes. */}
       <Hero dark={dark} />
       <About dark={dark} />
-      <Timeline dark={dark} />
       <Projects dark={dark} />
+      <Timeline dark={dark} />
       <Skills dark={dark} />
       <Contact dark={dark} />
     </>

@@ -72,14 +72,13 @@ function CopyButton({ value, dark, t }) {
         setDone(true); setTimeout(() => setDone(false), 1800);
       }}
       aria-label={t(ui.contact.copyAria)}
-      className={`flex items-center gap-1.5 font-mono text-[10px] px-2 py-1 rounded border transition-colors ${
-        dark
-          ? 'border-[rgba(125,167,217,0.15)] text-[#7b8fa6] hover:text-[#ecf0f8] hover:border-[rgba(125,167,217,0.3)]'
-          : 'border-[rgba(30,50,80,0.12)] text-[#576c80] hover:text-[#1c2128] hover:border-[rgba(30,50,80,0.3)]'
+      title={t(ui.contact.copyAria)}
+      className={`inline-flex items-center gap-1.5 font-mono text-[10px] transition-colors ${
+        dark ? 'text-[#7b8fa6] hover:text-[#ecf0f8]' : 'text-[#576c80] hover:text-[#1c2128]'
       }`}
     >
-      {done ? <Check size={11} className={dark ? 'text-terminal-green' : 'text-[#197934]'} /> : <Copy size={11} />}
-      {t(done ? ui.contact.copied : ui.contact.copy)}
+      {done ? <Check size={12} className={dark ? 'text-terminal-green' : 'text-[#197934]'} /> : <Copy size={12} />}
+      {done && t(ui.contact.copied)}
     </button>
   );
 }
@@ -212,7 +211,7 @@ export default function Contact({ dark }) {
   const btnLabel = t(ui.contact.button[status] ?? ui.contact.button.idle);
 
   return (
-    <section id="contact" ref={sectionRef} className="py-24 max-w-5xl mx-auto px-6">
+    <section id="contact" ref={sectionRef} className="py-16 md:py-24 max-w-5xl mx-auto px-6">
       <div ref={ref} className="reveal">
         {/* Header */}
         <div className="mb-12">
@@ -449,12 +448,15 @@ export default function Contact({ dark }) {
                 <p className="flex items-center gap-2">
                   <Clock size={12} className={textMuted} /> {t(ui.contact.availability.replies)}
                 </p>
-                <p className="flex items-center gap-2">
-                  <Mail size={12} className={textMuted} />
+                <p className="flex items-center gap-2 flex-wrap">
+                  <Mail size={12} className={`${textMuted} shrink-0`} />
                   <a href={`mailto:${personal.email}`}
                      className={`break-all transition-colors ${dark ? 'hover:text-terminal-blue' : 'hover:text-[#0969da]'}`}>
                     {personal.email}
                   </a>
+                  {/* Some people would rather copy the address than open a
+                      mail client they do not use. */}
+                  <CopyButton value={personal.email} dark={dark} t={t} />
                 </p>
               </div>
             </div>

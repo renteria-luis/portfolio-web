@@ -135,7 +135,7 @@ export default function Skills({ dark }) {
   }));
 
   return (
-    <section id="skills" className="py-24 max-w-5xl mx-auto px-6">
+    <section id="skills" className="py-16 md:py-24 max-w-5xl mx-auto px-6">
       <div ref={ref} className="reveal">
         <div className="mb-12">
           <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>

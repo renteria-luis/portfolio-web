@@ -21,7 +21,22 @@ export const ui = {
 
   hero: {
     available:   { en: 'available for ML/data roles (Fall 2026)', es: 'disponible para roles de ML/datos (otoño 2026)' },
-    viewProjects: { en: './view-projects', es: './ver-proyectos' },
+    // The hero's job is to say the one thing nobody else can say. This is it.
+    pivot: {
+      en: 'I programmed the PLC logic and the operator HMI for a refinery control system, where a bug stops a plant. I build ML the same way: assuming it fails, and that failing costs something.',
+      es: 'Programé la lógica del PLC y el HMI de operador de un sistema de control de refinería, donde un fallo para una planta. Construyo ML igual: asumiendo que va a fallar, y que fallar cuesta algo.',
+    },
+    liveLabel:   { en: 'live', es: 'en vivo' },
+    liveCaption: { en: 'deployed and serving predictions', es: 'desplegado y sirviendo predicciones' },
+    photoOpen:   { en: 'See the photo full size', es: 'Ver la foto en grande' },
+    copyEmail:   { en: 'Copy email address', es: 'Copiar el correo' },
+    photoClose:  { en: 'Close', es: 'Cerrar' },
+    photoHint:   { en: 'esc to close', es: 'esc para cerrar' },
+    openDemo:    { en: 'open it', es: 'ábrelo' },
+    tryLive:      { en: 'try it live', es: 'pruébalo en vivo' },
+    statProjects: { en: 'projects', es: 'proyectos' },
+    statLive:     { en: 'deployed', es: 'desplegado' },
+    statWriteups: { en: 'writeups', es: 'artículos' },
     downloadCv:  { en: 'download resume', es: 'descargar CV' },
     email:       { en: 'email', es: 'correo' },
     scroll:      { en: 'scroll', es: 'baja' },
@@ -39,16 +54,18 @@ export const ui = {
   },
 
   timeline: {
-    label: { en: '02 / experience & education', es: '02 / experiencia y formación' },
+    label: { en: '03 / experience & education', es: '03 / experiencia y formación' },
     title: { en: 'career timeline', es: 'trayectoria' },
   },
 
   projects: {
-    label:    { en: '03 / projects', es: '03 / proyectos' },
+    label:    { en: '02 / projects', es: '02 / proyectos' },
     title:    { en: "what I've built", es: 'lo que he construido' },
     subtitle: { en: 'End-to-end ML systems. Real data, real deployments.',
                 es: 'Sistemas de ML de punta a punta. Datos reales, despliegues reales.' },
     more:     { en: 'More on', es: 'Más en' },
+    alsoBuilt: { en: 'also built', es: 'también construí' },
+    writeupShort: { en: 'writeup', es: 'artículo' },
     privateRepo: { en: 'private repo', es: 'repo privado' },
     with:     { en: 'with', es: 'con' },
     srcOn:    { en: 'source on GitHub', es: 'código en GitHub' },
@@ -160,10 +177,31 @@ export const ui = {
       es: '¿Construyes algo parecido, o estás contratando? Respondo en menos de 24 horas.',
     },
     getInTouch: { en: 'get in touch', es: 'escríbeme' },
+    backToTop:  { en: 'back to top', es: 'ir arriba' },
+    tldr:       { en: 'the short version', es: 'la versión corta' },
+    explorerLoading:   { en: 'loading the curve...', es: 'cargando la curva...' },
+    explorerThreshold: { en: 'decision threshold', es: 'umbral de decisión' },
+    explorerShipped:   { en: 'shipped', es: 'desplegado' },
+    explorerDefault:   { en: 'default', es: 'por defecto' },
+    explorerCaught:    { en: 'fraud caught', es: 'fraudes detectados' },
+    explorerMissed:    { en: 'fraud missed', es: 'fraudes perdidos' },
+    explorerFalse:     { en: 'false alarms', es: 'falsas alarmas' },
+    explorerCaption: {
+      en: 'Real numbers from the shipped XGBoost pipeline scored on the held-out test set: {n} transactions, {f} of them fraudulent. Drag the threshold and the counts are what actually changes.',
+      es: 'Números reales del pipeline XGBoost desplegado sobre el conjunto de prueba: {n} transacciones, {f} de ellas fraudulentas. Mueve el umbral y lo que cambia de verdad son los conteos.',
+    },
   },
 
   footer: {
     thanks: { en: 'echo "Thanks for visiting 👾"', es: 'echo "Gracias por la visita 👾"' },
+    lastDeploy: { en: 'last deploy', es: 'último deploy' },
+    builtWith: { en: 'built with', es: 'hecho con' },
+    // Vercel Analytics is cookieless but the data still reaches Vercel, so
+    // "no third-party trackers" would be a stretch. This claim is exactly true.
+    noTrackers: {
+      en: 'no cookies, no ad tracking',
+      es: 'sin cookies, sin rastreo publicitario',
+    },
   },
 
   skipLink: { en: 'skip to content', es: 'saltar al contenido' },

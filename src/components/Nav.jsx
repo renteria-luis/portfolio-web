@@ -1,24 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, Moon, Sun, FileDown, Menu, X, Languages } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { personal } from '../config/data';
 import { ui } from '../i18n/ui';
 import { useLang, useT } from '../i18n';
+import { useActiveSection } from '../hooks/useActiveSection';
 
 // Anchors are absolute so they still resolve when the visitor is on /blog.
+// Order mirrors the page: about, projects, experience, skills, contact.
 const navLinks = [
-  { key: 'about',      to: '/#about' },
-  { key: 'experience', to: '/#experience' },
-  { key: 'projects',   to: '/#projects' },
-  { key: 'skills',     to: '/#skills' },
-  { key: 'contact',    to: '/#contact' },
+  { key: 'about',      to: '/#about',      id: 'about' },
+  { key: 'projects',   to: '/#projects',   id: 'projects' },
+  { key: 'experience', to: '/#experience', id: 'experience' },
+  { key: 'skills',     to: '/#skills',     id: 'skills' },
+  { key: 'contact',    to: '/#contact',    id: 'contact' },
 ];
+
+const SECTION_IDS = navLinks.map((l) => l.id);
 
 export default function Nav({ dark, toggleDark }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { lang, toggle } = useLang();
   const t = useT();
+  const { pathname } = useLocation();
+  const active = useActiveSection(SECTION_IDS, pathname === '/');
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 36);
@@ -69,19 +75,23 @@ export default function Nav({ dark, toggleDark }) {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
-          {navLinks.map(({ key, to }) => (
-            <Link
-              key={key}
-              to={to}
-              className="nav-link font-mono text-xs font-medium transition-colors"
-              style={{ color: textMuted }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = textBright; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = textMuted;  }}
-            >
-              <span style={{ color: dark ? 'rgba(63,185,80,0.5)' : 'rgba(26,127,55,0.5)' }}>./</span>
-              {t(ui.nav[key])}
-            </Link>
-          ))}
+          {navLinks.map(({ key, to, id }) => {
+            const isActive = active === id;
+            return (
+              <Link
+                key={key}
+                to={to}
+                aria-current={isActive ? 'true' : undefined}
+                className="nav-link font-mono text-xs font-medium transition-colors"
+                style={{ color: isActive ? accent : textMuted }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = isActive ? accent : textBright; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = isActive ? accent : textMuted; }}
+              >
+                <span style={{ color: isActive ? accent : (dark ? 'rgba(63,185,80,0.5)' : 'rgba(26,127,55,0.5)') }}>./</span>
+                {t(ui.nav[key])}
+              </Link>
+            );
+          })}
 
           <div className={`w-px h-4 ${dark ? 'bg-white/[0.14]' : 'bg-black/[0.14]'}`} />
 
