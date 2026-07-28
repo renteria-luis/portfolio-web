@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Github, Linkedin, ArrowDown, FileDown, Mail, ArrowUpRight } from 'lucide-react';
 import { personal, companion, projects } from '../config/data';
@@ -31,6 +31,26 @@ export default function Hero({ dark }) {
   const [photoOpen, setPhotoOpen] = useState(false);
   const t = useT();
 
+  // The scroll cue used to sit in the flow after everything else, so on a
+  // phone or a short laptop the hero grew past the viewport and the cue landed
+  // below the fold, half-drawn or missing. It is decorative, so the rule is:
+  // pin it to the bottom of the hero, and only show it when the content
+  // actually leaves room. Measured rather than guessed at a breakpoint,
+  // because the height depends on language, font loading and width.
+  const contentRef = useRef(null);
+  const [cueFits, setCueFits] = useState(false);
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return undefined;
+    // 96 = the fixed nav (56) plus room for the cue itself.
+    const check = () => setCueFits(el.offsetHeight + 96 <= window.innerHeight);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    window.addEventListener('resize', check);
+    return () => { ro.disconnect(); window.removeEventListener('resize', check); };
+  }, []);
+
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
   const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
@@ -46,9 +66,13 @@ export default function Hero({ dark }) {
   );
 
   return (
+    // Top-aligned on phones. Centring assumes empty space on both sides is
+    // worth having; here the space below already holds the scroll cue, so
+    // matching it above just pushed everything down. Still centred from sm up,
+    // where the hero is far shorter than the viewport.
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col justify-center pt-14 overflow-hidden scanlines"
+      className="relative min-h-screen flex flex-col justify-start sm:justify-center pt-14 overflow-hidden scanlines"
     >
       {/* Background grid */}
       <div
@@ -71,7 +95,7 @@ export default function Hero({ dark }) {
         }}
       />
 
-      <div className="relative max-w-3xl mx-auto px-6 py-20 w-full">
+      <div ref={contentRef} className="relative max-w-3xl mx-auto px-6 pt-8 pb-12 sm:py-16 lg:py-20 w-full">
 
         <div className={`font-mono text-xs mb-5 flex items-center gap-2 ${textSecondary}`}>
           <span className="inline-block w-2 h-2 rounded-full bg-terminal-green animate-pulse" />
@@ -203,7 +227,9 @@ export default function Hero({ dark }) {
           </a>
         </div>
 
-        <div className={`mt-6 flex items-center gap-4 ${textSecondary}`}>
+        {/* Tighter above the social row on a phone: that is the only width
+            where the scroll cue lands close enough to crowd it. */}
+        <div className={`mt-4 sm:mt-6 flex items-center gap-4 ${textSecondary}`}>
           <a href={personal.socials.github} target="_blank" rel="noopener noreferrer me"
              className={`flex items-center gap-1.5 font-mono text-xs transition-colors ${dark ? 'hover:text-terminal-green' : 'hover:text-[#197934]'}`}>
             <Github size={14} /> github
@@ -220,7 +246,10 @@ export default function Hero({ dark }) {
           </a>
         </div>
 
-        <div className={`mt-16 flex justify-center ${textSecondary}`}>
+      </div>
+
+      {cueFits && (
+        <div className={`absolute inset-x-0 bottom-8 sm:bottom-6 flex justify-center ${textSecondary}`}>
           <a href="#about" className="flex flex-col items-center gap-2 group">
             <span className="font-mono text-[10px] tracking-widest uppercase opacity-50 group-hover:opacity-80 transition-opacity">
               {t(ui.hero.scroll)}
@@ -228,7 +257,7 @@ export default function Hero({ dark }) {
             <ArrowDown size={14} className="animate-bounce opacity-50 group-hover:opacity-80 transition-opacity" />
           </a>
         </div>
-      </div>
+      )}
 
       <PhotoLightbox
         open={photoOpen}
