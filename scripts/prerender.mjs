@@ -26,11 +26,19 @@ function parseFrontmatter(raw) {
   const m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(raw);
   if (!m) return { meta: {}, body: raw };
   const meta = {};
+  let listKey = null;
   for (const line of m[1].split(/\r?\n/)) {
+    const item = /^\s+-\s+(.*)$/.exec(line);
+    if (item && listKey) {
+      meta[listKey].push(item[1].trim().replace(/^["']|["']$/g, ''));
+      continue;
+    }
     const kv = /^([A-Za-z_][\w-]*):\s*(.*)$/.exec(line);
     if (!kv) continue;
     let [, k, v] = kv;
     v = v.trim();
+    if (v === '') { meta[k] = []; listKey = k; continue; }
+    listKey = null;
     meta[k] = /^\[.*\]$/.test(v)
       ? v.slice(1, -1).split(',').map((x) => x.trim().replace(/^["']|["']$/g, '')).filter(Boolean)
       : v.replace(/^["']|["']$/g, '');
@@ -169,4 +177,78 @@ ${urls.map((u) => `  <url>
 </urlset>
 `);
 
+// ── machine-readable resume + llms.txt ───────────────────────────────────
+// Both are generated from data.js so the site, the JSON and the agent-facing
+// summary cannot drift apart. Increasingly the first reader of a portfolio is
+// a scraper, and giving it structure beats making it parse the DOM.
+const { personal, projects, timeline, skillCategories } = await import('../src/config/data.js');
+
+const en = (v) => (v && typeof v === 'object' && 'en' in v ? v.en : v);
+
+const resume = {
+  $schema: 'https://jsonresume.org/schema/',
+  basics: {
+    name: personal.name,
+    label: en(personal.title),
+    email: personal.email,
+    url: `${SITE}/`,
+    summary: en(personal.bio).join(' '),
+    location: { city: 'London', region: 'Ontario', countryCode: 'CA' },
+    profiles: Object.entries(personal.socials).map(([network, url]) => ({ network, url })),
+  },
+  work: timeline
+    .filter((e) => e.type === 'experience')
+    .map((e) => ({
+      name: en(e.institution), position: en(e.role), startEndDate: en(e.period),
+      summary: en(e.description),
+    })),
+  education: timeline
+    .filter((e) => e.type === 'education')
+    .map((e) => ({
+      institution: en(e.institution), studyType: en(e.role), startEndDate: en(e.period),
+      summary: en(e.description),
+    })),
+  projects: projects.map((p) => ({
+    name: p.title,
+    description: en(p.description),
+    startEndDate: en(p.period),
+    keywords: p.tags,
+    status: p.status,
+    url: p.links.demo || p.links.github || null,
+    highlights: p.metrics.map((mm) => `${en(mm.label)}: ${en(mm.value)}`),
+    ...(p.myRole ? { role: en(p.myRole.value), roleDetail: en(p.myRole.detail) } : {}),
+  })),
+  skills: skillCategories.map((c) => ({
+    name: en(c.label),
+    keywords: c.skills.map((s) => en(s.name)),
+  })),
+  meta: { generatedAt: new Date().toISOString().slice(0, 10), source: `${SITE}/` },
+};
+
+fs.writeFileSync(path.join(DIST, 'resume.json'), JSON.stringify(resume, null, 2));
+
+const live = projects.filter((p) => p.status === 'live');
+const llms = `# ${personal.name}
+
+> ${en(personal.title)} in ${en(personal.location)}. ${en(personal.tagline)}
+
+Open to: Machine Learning / Data co-op placement, Fall 2026.
+Contact: ${personal.email}
+Machine-readable resume: ${SITE}/resume.json
+
+## Projects
+${projects.map((p) => `- **${p.title}** (${en(p.period)}, ${p.status}): ${en(p.subtitle)}. ${p.metrics.map((mm) => `${en(mm.label)} ${en(mm.value)}`).join(', ')}.${p.links.demo ? ` Demo: ${p.links.demo}` : ''}${p.links.github ? ` Repo: ${p.links.github}` : ''}`).join('\n')}
+
+${live.length ? `Deployed and publicly reachable: ${live.map((p) => p.title).join(', ')}.` : ''}
+
+## Writeups
+${posts.map((p) => `- [${p.title}](${SITE}/blog/${p.slug}) (${p.date}): ${p.description}`).join('\n')}
+
+## Links
+${Object.entries(personal.socials).map(([k, v]) => `- ${k}: ${v}`).join('\n')}
+`;
+
+fs.writeFileSync(path.join(DIST, 'llms.txt'), llms);
+
 console.log(`prerendered /blog + ${posts.length} article${posts.length === 1 ? '' : 's'}, sitemap has ${urls.length} urls`);
+console.log(`wrote resume.json (${resume.projects.length} projects) and llms.txt`);

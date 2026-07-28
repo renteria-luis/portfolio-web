@@ -70,11 +70,25 @@ export default function Footer({ dark }) {
           </div>
         </div>
 
-        {/* Bottom line */}
-        <div className={`mt-6 pt-4 border-t text-center font-mono text-[10px] ${textSecondary} ${
+        {/* Bottom line. The commit is the real deployed SHA, baked in at build
+            time: it is the cheapest proof the site is alive and shipped by CI. */}
+        <div className={`mt-6 pt-4 border-t font-mono text-[10px] ${textSecondary} ${
           dark ? 'border-[rgba(139,151,168,0.07)]' : 'border-[rgba(30,50,80,0.08)]'
         }`}>
-          © {new Date().getFullYear()} {personal.name} · {t(personal.location)}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-1.5">
+            <span>© {new Date().getFullYear()} {personal.name} · {t(personal.location)}</span>
+            <a
+              href={`https://github.com/renteria-luis/portfolio-web/commit/${__COMMIT_SHA__}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`transition-colors ${dark ? 'hover:text-terminal-green' : 'hover:text-[#197934]'}`}
+            >
+              {t(ui.footer.lastDeploy)}: {__COMMIT_SHA__} · {__BUILD_DATE__}
+            </a>
+          </div>
+          <div className="mt-2 text-center opacity-70">
+            {t(ui.footer.builtWith)} Vite · React · Tailwind · Vercel · {t(ui.footer.noTrackers)}
+          </div>
         </div>
       </div>
     </footer>
