@@ -31,6 +31,7 @@ function ScrollBehaviour() {
 
 export default function App() {
   const t = useT();
+  const { pathname } = useLocation();
   const [dark, setDark] = useState(() => {
     const stored = localStorage.getItem('theme');
     if (stored) return stored === 'dark';
@@ -55,7 +56,7 @@ export default function App() {
       <NeuralBackground dark={dark} />
 
       {/* Floating astronaut cat: above canvas (z-0), behind all content (z-1) */}
-      <Companion />
+      <Companion route={pathname} />
 
       <ScrollBehaviour />
 

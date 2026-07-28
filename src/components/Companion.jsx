@@ -1,13 +1,66 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { companion } from '../config/data';
 import { useLang, useT } from '../i18n';
 
-const SECTIONS = ['hero', 'about', 'experience', 'projects', 'skills', 'contact'];
+const SECTIONS = ['hero', 'about', 'projects', 'experience', 'skills', 'contact'];
 const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const CAT_RATIO = 508 / 520;
 // The bubble is painted above the nav, so it must never rise past it.
 const BUBBLE_TOP_LIMIT = 64;
+// Fallback model, still used on the writeups: fade over the whole content
+// column. An article is a single uninterrupted block of text, so per-element
+// boxes there would be one big box anyway.
+const CONTENT_WIDTH = 1024;
+const OVER_CONTENT_OPACITY = 0.42;
+const DRAGGED_KEY = 'companionDragged';
+
+// ── Per-element collision ───────────────────────────────────────────────
+// The column model dimmed the cat across a 1024px band whether or not there
+// was anything under it, so it spent most of its time faded over blank space.
+// Instead we measure what is actually painted and fade only on a real hit.
+const HIT_PAD = 4;
+// Measured as whole boxes: they are opaque things with edges.
+const BOX_SEL = 'img,svg,canvas,video,input,textarea,select,pre,table,hr';
+
+/**
+ * Document-space rectangles of everything visible inside `root`.
+ *
+ * Text is measured per text node rather than per element, which gives the
+ * actual ink: a short last line only covers its own width, and screen-reader
+ * text is skipped instead of inflating its parent's box out to the column
+ * edge. Elements laid out but not painted return no rects, so they drop out
+ * on the size check for free.
+ *
+ * Document space, not viewport space, is the point: these change only when the
+ * layout changes, so scrolling never invalidates them and the animation loop
+ * can subtract scrollY instead of touching layout on every frame.
+ */
+function collectRects(root) {
+  const out = [];
+  const sx = window.scrollX;
+  const sy = window.scrollY;
+  const push = (r) => {
+    if (r.width < 5 || r.height < 5) return;
+    out.push({ l: r.left + sx, t: r.top + sy, r: r.right + sx, b: r.bottom + sy });
+  };
+
+  root.querySelectorAll(BOX_SEL).forEach((el) => push(el.getBoundingClientRect()));
+
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.nodeValue.trim()) continue;
+    // Visually hidden text is not something the cat can cover up.
+    if (node.parentElement?.closest('.sr-only')) continue;
+    range.selectNodeContents(node);
+    const rects = range.getClientRects();
+    for (let i = 0; i < rects.length; i++) push(rects[i]);
+  }
+
+  out.sort((a, b) => a.t - b.t);
+  return out;
+}
 
 /**
  * Floating astronaut cat.
@@ -20,15 +73,22 @@ const BUBBLE_TOP_LIMIT = 64;
  * Viewport + sprite sizes are cached and refreshed on resize instead of being
  * read inside the loop (reading them mid-frame forces a synchronous layout).
  */
-export default function Companion() {
+export default function Companion({ route = '/' }) {
   const wrapRef = useRef(null);
   const innerRef = useRef(null);
   const anchorRef = useRef(null);
   const bubbleRef = useRef(null);
+  // Set by the loop effect; called by the route/lang effects, which run after
+  // React has painted the new content.
+  const rebuildRef = useRef(() => {});
   const [dialogue, setDialogue] = useState(() => rand(companion.dialogues.hero));
   // starts hidden so the first greeting fades in with the cat instead of
   // popping at 0,0 before the loop has placed it
   const [showBubble, setShowBubble] = useState(false);
+  // The loop cannot read state, and the bubble has to take part in the
+  // collision test because it fades together with the cat.
+  const showBubbleRef = useRef(false);
+  showBubbleRef.current = showBubble;
   const [blink, setBlink] = useState(false);
   const [side, setSide] = useState('left');
   const [hidden, setHidden] = useState(false);
@@ -36,6 +96,10 @@ export default function Companion() {
   // re-translates a bubble that is already on screen.
   const t = useT();
   const { lang } = useLang();
+
+  const say = useCallback((text) => {
+    if (text) { setDialogue(text); setShowBubble(true); }
+  }, []);
 
   const st = useRef({
     // position / velocity (px, px per second)
@@ -47,8 +111,13 @@ export default function Companion() {
     face: 1, opacity: 0, lastOpacity: -1, phase: 'in', t: 0, teleportAt: 14,
     reduced: false, section: 'hero', lockUntil: 0, side: 'left',
     hidden: false, dragging: false, moved: false, offX: 0, offY: 0, resumeOut: false,
+    over: 1, everDragged: false,
+    // Collision cache: document-space rects + the scroll offset to map them
+    // into the viewport. `perElement` is false on the writeups, where the
+    // column model is kept.
+    rects: [], scrollY: 0, perElement: true,
     // cached viewport / sprite metrics (refreshed on resize only)
-    vw: 0, vh: 0, cw: 135, ch: 135 * CAT_RATIO, lastW: 0,
+    vw: 0, vh: 0, cw: 153, ch: 153 * CAT_RATIO, lastW: 0,
     bubbleW: 0, bubbleH: 0,
     lastMX: 0, lastMY: 0, lastMT: 0,
   });
@@ -61,14 +130,21 @@ export default function Companion() {
     st.current.bubbleH = el.offsetHeight;
   }, [dialogue, lang]);
 
+  // Switching language rewrites every string on the page, so every measured
+  // line box moves.
+  useEffect(() => { rebuildRef.current(); }, [lang]);
+
   useEffect(() => {
     const s = st.current;
     s.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try { s.everDragged = localStorage.getItem(DRAGGED_KEY) === '1'; } catch { /* private mode */ }
 
     function measure() {
       s.vw = window.innerWidth;
       s.vh = window.innerHeight;
-      s.cw = s.vw < 900 ? 62 : 135;
+      // Mirrors .companion-inner in index.css. Changing one without the other
+      // desyncs the collision box and the drag hit-test from the sprite.
+      s.cw = s.vw < 900 ? 63 : 153;
       s.ch = s.cw * CAT_RATIO;
     }
 
@@ -76,7 +152,11 @@ export default function Companion() {
       const { vw, vh, cw, ch } = s;
       const gutter = (vw - 1024) / 2;
       const mobile = gutter < 80;
-      const chosen = Math.random() < 0.5 ? 'left' : 'right';
+      const chosen = mobile
+        ? (Math.random() < 0.5 ? 'left' : 'right')
+        : (Math.random() < 0.8
+            ? (s.side === 'left' ? 'right' : 'left')   // usually cross over
+            : s.side);                                  // occasionally stay
       if (mobile) {
         s.baseX = chosen === 'left' ? 4 : vw - cw - 4;
       } else {
@@ -91,10 +171,41 @@ export default function Companion() {
       s.side = chosen; setSide(chosen);
     }
 
+    // Roughly 8-12s on desktop, 12-18s on a phone where it is in the way.
+    const nextTeleport = () =>
+      s.t + (s.vw >= 900 ? 8 + Math.random() * 4 : 12 + Math.random() * 6);
+
+    // ── collision cache ────────────────────────────────────────────────────
+    // Rebuilt only when the layout can have changed, never per frame: the
+    // measuring pass forces a synchronous layout and would cost more than the
+    // whole animation.
+    let rebuildTimer = 0;
+    const rebuildRects = () => {
+      const root = document.getElementById('main');
+      s.rects = root && s.perElement ? collectRects(root) : [];
+    };
+    const scheduleRebuild = (delay = 120) => {
+      clearTimeout(rebuildTimer);
+      rebuildTimer = setTimeout(rebuildRects, delay);
+    };
+    rebuildRef.current = scheduleRebuild;
+
+    const onScroll = () => { s.scrollY = window.scrollY; };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    s.scrollY = window.scrollY;
+
+    // Anything that reflows the page invalidates the rects: images arriving,
+    // fonts swapping, the contact form growing, a section revealing itself.
+    const ro = new ResizeObserver(() => scheduleRebuild());
+    const mainEl = document.getElementById('main');
+    if (mainEl) ro.observe(mainEl);
+    document.fonts?.ready?.then(() => scheduleRebuild(0));
+
     measure();
     s.lastW = s.vw;
     placeAnchor();
     s.x = s.baseX; s.y = s.baseY; s.vx = 0; s.vy = 0;
+    scheduleRebuild(0);
 
     // ── drag: started from a window-level hit-test so it still works when the
     //    cat is painted behind the cards on desktop ──────────────────────────
@@ -113,7 +224,13 @@ export default function Companion() {
       window.removeEventListener('pointermove', onDragMove);
       window.removeEventListener('pointerup', onDragUp);
       if (!s.moved) { s.hidden = true; s.resumeOut = false; setHidden(true); }  // tap -> minimize
-      else s.phase = 'inertia';                                                 // fling -> glide
+      else {
+        s.phase = 'inertia';                                                    // fling -> glide
+        if (!s.everDragged) {
+          s.everDragged = true;
+          try { localStorage.setItem(DRAGGED_KEY, '1'); } catch { /* private mode */ }
+        }
+      }
     };
     const startDrag = (e) => {
       if (s.hidden || s.dragging) return;
@@ -134,9 +251,8 @@ export default function Companion() {
       if (s.hidden || s.dragging) return;
       if (e.clientX < s.renderX || e.clientX > s.renderX + s.cw ||
           e.clientY < s.renderY || e.clientY > s.renderY + s.ch) return;
-      // On desktop the cat is painted *behind* the content, so a hit inside its
-      // box may really be a click on a card link it happens to be drifting
-      // under. Interactive targets always win.
+      // The cat floats over the content, so a press inside its box may really
+      // be aimed at a link underneath it. Interactive targets always win.
       if (e.target?.closest?.(INTERACTIVE)) return;
       e.stopPropagation();
       startDrag(e);
@@ -176,7 +292,7 @@ export default function Companion() {
           if (s.resumeOut) {                 // it was fading out when grabbed
             s.resumeOut = false; s.phase = 'out';
           } else {
-            s.phase = 'idle'; s.teleportAt = s.t + 12 + Math.random() * 6;
+            s.phase = 'idle'; s.teleportAt = nextTeleport();
           }
         }
       } else {
@@ -188,7 +304,7 @@ export default function Companion() {
           }
         } else if (s.phase === 'in') {
           s.opacity += dt / 1.4;
-          if (s.opacity >= 1) { s.opacity = 1; s.phase = 'idle'; s.teleportAt = s.t + 12 + Math.random() * 6; }
+          if (s.opacity >= 1) { s.opacity = 1; s.phase = 'idle'; s.teleportAt = nextTeleport(); }
         } else if (s.t > s.teleportAt) {
           s.phase = 'out';
         }
@@ -216,14 +332,49 @@ export default function Companion() {
       const rot = s.reduced ? 0 : Math.sin(s.t * 0.27 + s.p[0]) * 3.2;
       s.renderX = s.x; s.renderY = s.y;
 
+      // Fade only where something is actually painted underneath. Eased rather
+      // than switched so it never blinks.
+      let overlaps;
+      if (s.perElement) {
+        const sy = s.scrollY;
+        const catL = s.x - HIT_PAD, catR = s.x + cw + HIT_PAD;
+        const catT = s.y - HIT_PAD, catB = s.y + ch + HIT_PAD;
+        // The bubble is faded together with the cat, so it has to be part of
+        // the same test or it would sit at full strength on top of text.
+        const hasBubble = showBubbleRef.current && s.bubbleW > 0;
+        const bubL = s.bubbleX - HIT_PAD, bubR = s.bubbleX + s.bubbleW + HIT_PAD;
+        const bubT = s.bubbleY - HIT_PAD, bubB = s.bubbleY + s.bubbleH + HIT_PAD;
+
+        overlaps = false;
+        for (let i = 0; i < s.rects.length; i++) {
+          const rc = s.rects[i];
+          const t = rc.t - sy;
+          // Sorted by top, so once a rect starts below both boxes, so does
+          // every rect after it.
+          if (t > catB && (!hasBubble || t > bubB)) break;
+          const b = rc.b - sy;
+          if (b < 0) continue;
+          if (b >= catT && t <= catB && rc.r >= catL && rc.l <= catR) { overlaps = true; break; }
+          if (hasBubble && b >= bubT && t <= bubB && rc.r >= bubL && rc.l <= bubR) { overlaps = true; break; }
+        }
+      } else {
+        const colLeft = Math.max(0, (vw - CONTENT_WIDTH) / 2);
+        const colRight = vw - colLeft;
+        overlaps = vw >= 900 && s.x + cw > colLeft && s.x < colRight;
+      }
+      const wantOver = s.dragging ? 1 : (overlaps ? OVER_CONTENT_OPACITY : 1);
+      s.over += (wantOver - s.over) * Math.min(1, dt * 4);
+
       const wrap = wrapRef.current;
       if (wrap) {
-        if (s.opacity !== s.lastOpacity) {
-          wrap.style.opacity = s.opacity;
+        const shown = s.opacity * s.over;
+        if (shown !== s.lastOpacity) {
+          wrap.style.opacity = shown;
           // The bubble belongs to the cat: when it fades out to teleport, the
           // speech bubble fades with it instead of hanging in mid-air.
-          if (anchorRef.current) anchorRef.current.style.opacity = s.opacity;
-          s.lastOpacity = s.opacity;
+          // the bubble fades with the cat, not independently of it
+          if (anchorRef.current) anchorRef.current.style.opacity = shown;
+          s.lastOpacity = shown;
         }
         wrap.style.transform = `translate3d(${s.x.toFixed(2)}px,${s.y.toFixed(2)}px,0) rotate(${rot.toFixed(2)}deg)`;
       }
@@ -263,6 +414,9 @@ export default function Companion() {
 
         bx = clamp(bx, 8, maxX);
         by = clamp(by, BUBBLE_TOP_LIMIT, Math.max(BUBBLE_TOP_LIMIT, vh - s.bubbleH - 8));
+        // Kept for next frame's collision test: one frame of lag on a box that
+        // moves with a spring is not visible.
+        s.bubbleX = bx; s.bubbleY = by;
         anchorRef.current.style.transform = `translate3d(${bx.toFixed(2)}px,${by.toFixed(2)}px,0)`;
       }
     }
@@ -278,6 +432,7 @@ export default function Companion() {
     const onResize = () => {
       const w = window.innerWidth;
       measure();
+      scheduleRebuild();
       if (Math.abs(w - s.lastW) < 64) return;   // ignore mobile URL-bar height changes
       s.lastW = w;
       placeAnchor(); s.x = s.baseX; s.y = s.baseY; s.vx = 0; s.vy = 0;
@@ -297,20 +452,18 @@ export default function Companion() {
     };
     scheduleBlink();
 
-    const say = (text) => { if (text) { setDialogue(text); setShowBubble(true); } };
-
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting && companion.dialogues[en.target.id]) {
-          s.section = en.target.id; s.lockUntil = performance.now() + 600;
-          say(rand(companion.dialogues[en.target.id]));
-        }
-      });
-    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
-    SECTIONS.forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
-
+    // The drag hint is an interjection, never the greeting: the first thing the
+    // cat says should belong to the section you are actually reading. It lands
+    // on the first idle turn so nobody misses it, then drops to the background
+    // and retires for good once the cat has been dragged.
+    let turns = 0;
     const chatter = setInterval(() => {
       if (performance.now() < s.lockUntil) return;
+      turns += 1;
+      if (!s.everDragged && (turns === 1 || Math.random() < 0.15)) {
+        say(companion.intro);
+        return;
+      }
       const lines = companion.dialogues[s.section];
       if (lines) say(rand(lines));
     }, 13000);
@@ -326,10 +479,47 @@ export default function Companion() {
       window.removeEventListener('companionSay', onSay);
       window.removeEventListener('pointermove', onDragMove);
       window.removeEventListener('pointerup', onDragUp);
-      clearTimeout(blinkTimer); clearTimeout(introTimer);
-      clearInterval(chatter); io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+      ro.disconnect();
+      clearTimeout(blinkTimer); clearTimeout(introTimer); clearTimeout(rebuildTimer);
+      clearInterval(chatter);
     };
   }, []);
+
+  // Section awareness, rebuilt whenever the route changes. On the writeups the
+  // page is a single section, so there is nothing to observe: the cat is told
+  // where it is and comments accordingly.
+  useEffect(() => {
+    const s = st.current;
+    const onBlog = route.startsWith('/blog');
+    s.section = onBlog ? 'blog' : 'hero';
+    // An article is one continuous column of prose, so per-element boxes there
+    // would collapse into a single band anyway. Keep the cheaper model.
+    s.perElement = !onBlog;
+    rebuildRef.current();
+
+    if (onBlog) {
+      s.lockUntil = performance.now() + 600;
+      say(rand(companion.dialogues.blog));
+      return undefined;
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting && companion.dialogues[en.target.id]) {
+          s.section = en.target.id;
+          s.lockUntil = performance.now() + 600;
+          say(rand(companion.dialogues[en.target.id]));
+        }
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+
+    SECTIONS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+    return () => io.disconnect();
+  }, [route, say]);
 
   useEffect(() => {
     if (!showBubble) return;
