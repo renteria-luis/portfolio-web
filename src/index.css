@@ -346,6 +346,18 @@ nav, main, footer {
 }
 .companion-layer.gone { display: none; }
 
+/* ─── Hero height ────────────────────────────────────── */
+/* iOS Safari resolves 100vh against the viewport with the browser chrome
+   collapsed, which is taller than what is actually on screen when the page
+   loads. The hero therefore started off overflowing and the scroll cue sat
+   below the fold until you scrolled and the chrome retracted. svh is the
+   chrome-expanded height, so the hero fits what you can see from the first
+   frame. Static, unlike dvh, so collapsing the chrome does not reflow. */
+.hero-vh { min-height: 100vh; }
+@supports (min-height: 100svh) {
+  .hero-vh { min-height: 100svh; }
+}
+
 /* ─── Threshold explorer slider ──────────────────────── */
 .threshold-range {
   -webkit-appearance: none;

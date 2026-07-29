@@ -33,20 +33,39 @@ export default function Hero({ dark }) {
 
   // The scroll cue used to sit in the flow after everything else, so on a
   // phone or a short laptop the hero grew past the viewport and the cue landed
-  // below the fold, half-drawn or missing. It is decorative, so the rule is:
-  // pin it to the bottom of the hero, and only show it when the content
-  // actually leaves room. Measured rather than guessed at a breakpoint,
-  // because the height depends on language, font loading and width.
+  // below the fold, half-drawn or missing. It is decorative, so it is pinned to
+  // the bottom of the hero and only rendered when there is genuinely room.
+  //
+  // Both halves of that test are measured, not guessed at a breakpoint:
+  //   1. the hero must not itself overflow the viewport
+  //   2. the gap under the last visible row must clear the cue
+  // Measuring the gap from the last row rather than from the content box
+  // matters: the box carries bottom padding that the cue is free to sit in,
+  // and counting that padding as occupied hid the cue on iOS by ~7px.
   const contentRef = useRef(null);
+  const sectionRef = useRef(null);
   const [cueFits, setCueFits] = useState(false);
   useEffect(() => {
     const el = contentRef.current;
-    if (!el) return undefined;
-    // 96 = the fixed nav (56) plus room for the cue itself.
-    const check = () => setCueFits(el.offsetHeight + 96 <= window.innerHeight);
+    const section = sectionRef.current;
+    if (!el || !section) return undefined;
+
+    const check = () => {
+      const lastRow = el.lastElementChild;
+      if (!lastRow) return;
+      const secRect = section.getBoundingClientRect();
+      // The hero is sized in svh, so this stays put when iOS retracts the URL
+      // bar. Comparing against innerHeight instead made the answer change the
+      // moment you scrolled, which is exactly what went wrong on Safari.
+      const withinViewport = secRect.height <= window.innerHeight + 1;
+      const gapBelow = secRect.bottom - lastRow.getBoundingClientRect().bottom;
+      setCueFits(withinViewport && gapBelow >= 68);   // cue is ~60px tall incl. its offset
+    };
+
     check();
     const ro = new ResizeObserver(check);
     ro.observe(el);
+    ro.observe(section);
     window.addEventListener('resize', check);
     return () => { ro.disconnect(); window.removeEventListener('resize', check); };
   }, []);
@@ -72,7 +91,8 @@ export default function Hero({ dark }) {
     // where the hero is far shorter than the viewport.
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col justify-start sm:justify-center pt-14 overflow-hidden scanlines"
+      ref={sectionRef}
+      className="hero-vh relative flex flex-col justify-start sm:justify-center pt-14 overflow-hidden scanlines"
     >
       {/* Background grid */}
       <div
@@ -95,7 +115,7 @@ export default function Hero({ dark }) {
         }}
       />
 
-      <div ref={contentRef} className="relative max-w-3xl mx-auto px-6 pt-8 pb-12 sm:py-16 lg:py-20 w-full">
+      <div ref={contentRef} className="relative max-w-3xl mx-auto px-6 pt-5 pb-12 sm:py-16 lg:py-20 w-full">
 
         <div className={`font-mono text-xs mb-5 flex items-center gap-2 ${textSecondary}`}>
           <span className="inline-block w-2 h-2 rounded-full bg-terminal-green animate-pulse" />
@@ -249,7 +269,7 @@ export default function Hero({ dark }) {
       </div>
 
       {cueFits && (
-        <div className={`absolute inset-x-0 bottom-8 sm:bottom-6 flex justify-center ${textSecondary}`}>
+        <div className={`absolute inset-x-0 bottom-6 flex justify-center ${textSecondary}`}>
           <a href="#about" className="flex flex-col items-center gap-2 group">
             <span className="font-mono text-[10px] tracking-widest uppercase opacity-50 group-hover:opacity-80 transition-opacity">
               {t(ui.hero.scroll)}
