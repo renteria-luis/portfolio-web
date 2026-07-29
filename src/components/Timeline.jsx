@@ -84,7 +84,10 @@ function TimelineItem({ item, index, dark, isLast, t }) {
               {t(item.institution)}
             </div>
           </div>
-          <div className="text-right">
+          {/* Right-aligned only once there is a second column to align against.
+              On a phone this block wraps onto its own line, where ragged-right
+              text reads as a mistake. */}
+          <div className="text-left sm:text-right">
             <div className={`font-mono text-[11px] ${textSecondary}`}>{t(item.period)}</div>
             <div className={`font-mono text-[10px] mt-0.5 ${dark ? 'text-[#7b8fa6]' : 'text-[#576c80]'}`}>
               {t(item.location)}

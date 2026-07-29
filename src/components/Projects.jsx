@@ -310,26 +310,38 @@ function CompactProject({ project, dark, t }) {
       }}
       className={`group py-4 border-b ${dark ? 'border-[rgba(125,167,217,0.07)]' : 'border-[rgba(30,50,80,0.08)]'}`}
     >
+      {/* ml-auto only from sm up. On a phone there is no room to push the date
+          and the links to the right edge, so they wrapped into a ragged middle
+          column. Left-aligned on their own line reads like a list instead. */}
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h3 className={`font-mono text-xs font-semibold ${textPrimary}`}>{project.title}</h3>
         <span className="font-mono text-[10px]" style={{ color: accentColor }}>{t(project.subtitle)}</span>
-        <span className={`font-mono text-[10px] ml-auto whitespace-nowrap ${textMuted}`}>{t(project.period)}</span>
+        <span className={`font-mono text-[10px] basis-full sm:basis-auto sm:ml-auto whitespace-nowrap ${textMuted}`}>
+          {t(project.period)}
+        </span>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
         {project.tags.slice(0, 5).map((tag) => (
           <span key={tag} className={`font-mono text-[10px] ${textSecondary}`}>{tag}</span>
         ))}
-        {project.links.github && (
-          <a href={project.links.github} target="_blank" rel="noopener noreferrer" className={`ml-auto ${linkCls}`}>
-            <Github size={10} className="shrink-0" /> github
-          </a>
-        )}
-        {post && (
-          <Link to={`/blog/${post.slug}`} className={linkCls}>
-            <BookOpen size={10} className="shrink-0" /> {t(ui.projects.writeupShort)}
-          </Link>
-        )}
+        {/* sm:contents dissolves this wrapper on wider screens, so the links
+            go back to being direct flex children and ml-auto still pushes them
+            to the right edge. On a phone it keeps them together on one line
+            under the stack instead of one link per row. */}
+        <div className="basis-full flex items-center gap-x-3 sm:contents">
+          {project.links.github && (
+            <a href={project.links.github} target="_blank" rel="noopener noreferrer"
+               className={`sm:ml-auto ${linkCls}`}>
+              <Github size={10} className="shrink-0" /> github
+            </a>
+          )}
+          {post && (
+            <Link to={`/blog/${post.slug}`} className={linkCls}>
+              <BookOpen size={10} className="shrink-0" /> {t(ui.projects.writeupShort)}
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

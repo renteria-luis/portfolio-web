@@ -87,7 +87,7 @@ export const ui = {
 
   contact: {
     label: { en: '05 / contact', es: '05 / contacto' },
-    title: { en: "let's talk", es: 'hablemos' },
+    title: { en: "let's chat", es: 'hablemos' },
     intro: {
       en: 'I reply within 24 hours. If it is about a role, include the stack and the timeline and I can tell you straight away whether I am a fit.',
       es: 'Respondo en menos de 24 horas. Si es por un puesto, incluye el stack y las fechas y te digo enseguida si encajo.',
