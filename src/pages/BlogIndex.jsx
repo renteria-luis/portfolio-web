@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Clock } from 'lucide-react';
 import { posts, formatDate } from '../blog/posts';
 import { companion } from '../config/data';
 import { ui } from '../i18n/ui';
@@ -25,6 +25,25 @@ export default function BlogIndex({ dark }) {
 
   return (
     <section className="pt-32 pb-24 max-w-4xl mx-auto px-6 min-h-screen">
+      {/* The way out. This site talks in shell commands and the blog really is
+          a subdirectory of it, so leaving has an obvious name. Three parts,
+          three jobs: the arrow says "this goes back", `cd ..` carries the
+          voice, and the shell comment names the destination in plain words for
+          anyone who does not read `cd`. */}
+      <Link
+        to="/"
+        className={`group inline-flex items-center gap-2 font-mono text-xs mb-8 transition-colors ${
+          dark ? 'text-[#a2afc2] hover:text-terminal-green' : 'text-[#57606a] hover:text-[#197934]'
+        }`}
+      >
+        <ArrowLeft size={13} className="shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
+        <span>cd ..</span>
+        {/* No opacity dimming here: textMuted is already the quietest colour
+            that clears 4.5:1, and fading it to 70% dropped it to 2.75:1. The
+            hierarchy comes from the colour, not from transparency. */}
+        <span className={textMuted}># {t(ui.blog.backToPortfolio)}</span>
+      </Link>
+
       <div className="mb-12">
         <p className={`font-mono text-xs mb-2 ${dark ? 'text-terminal-green' : 'text-[#197934]'}`}>
           ~/blog

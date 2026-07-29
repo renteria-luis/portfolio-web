@@ -36,9 +36,24 @@ export default function BlogPost({ dark }) {
   const textPrimary = dark ? 'text-[#ecf0f8]' : 'text-[#1c2128]';
   const textSecondary = dark ? 'text-[#a2afc2]' : 'text-[#57606a]';
   const textMuted = dark ? 'text-[#7b8fa6]' : 'text-[#576c80]';
-  const backLink = `flex items-center gap-1.5 font-mono text-xs transition-colors ${
-    dark ? 'text-[#a2afc2] hover:text-terminal-green' : 'text-[#57606a] hover:text-[#197934]'
-  }`;
+  // Same shape as the one on the blog index. `cd ..` is literally accurate in
+  // both places and lands somewhere different in each, which is exactly how it
+  // behaves in a shell: from /blog/<slug> it goes up to the index, from /blog
+  // it goes up to the portfolio. The comment names the destination, because the
+  // command alone does not, and plenty of readers arrive here straight from a
+  // search result with no index to go "back" to.
+  const BackUp = ({ className = '' }) => (
+    <Link
+      to="/blog"
+      className={`group inline-flex items-center gap-2 font-mono text-xs transition-colors ${className} ${
+        dark ? 'text-[#a2afc2] hover:text-terminal-green' : 'text-[#57606a] hover:text-[#197934]'
+      }`}
+    >
+      <ArrowLeft size={13} className="shrink-0 transition-transform duration-200 group-hover:-translate-x-1" />
+      <span>cd ..</span>
+      <span className={textMuted}># {t(ui.blog.allPosts)}</span>
+    </Link>
+  );
 
   if (!post) {
     return (
@@ -46,9 +61,7 @@ export default function BlogPost({ dark }) {
         <h1 className={`font-mono text-2xl font-semibold section-title ${textPrimary}`}>
           {t(ui.blog.notFound)}
         </h1>
-        <Link to="/blog" className={`${backLink} mt-6`}>
-          <ArrowLeft size={13} /> {t(ui.blog.allPosts)}
-        </Link>
+        <BackUp className="mt-6" />
       </section>
     );
   }
@@ -58,9 +71,7 @@ export default function BlogPost({ dark }) {
 
   return (
     <article className="pt-32 pb-24 max-w-3xl mx-auto px-6 min-h-screen">
-      <Link to="/blog" className={`${backLink} mb-8`}>
-        <ArrowLeft size={13} /> {t(ui.blog.allPosts)}
-      </Link>
+      <BackUp className="mb-8" />
 
       <header className="mt-8 mb-10" onMouseEnter={() => say(companion.writeupLines?.[post.slug])}>
         <div className={`flex flex-wrap items-center gap-3 font-mono text-[11px] mb-3 ${textMuted}`}>

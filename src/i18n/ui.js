@@ -169,6 +169,7 @@ export const ui = {
       es: 'Artículos de ingeniería sobre decisiones de machine learning: selección de umbrales en detección de fraude, confusores en modelos de churn, y cómo dirigir herramientas de IA.',
     },
     allPosts:   { en: 'all writeups', es: 'todos los artículos' },
+    backToPortfolio: { en: 'back to the portfolio', es: 'volver al portfolio' },
     sourceCode: { en: 'source', es: 'código' },
     notFound:   { en: 'That writeup does not exist', es: 'Ese artículo no existe' },
     readPost:   { en: 'read the writeup', es: 'leer el artículo' },
