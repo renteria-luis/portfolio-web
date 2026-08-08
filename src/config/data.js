@@ -17,6 +17,9 @@ export const personal = {
   },
   location: { en: "London, ON, Canada", es: "London, ON, Canadá" },
   email: "luisrenterialezano@gmail.com",
+  // Shown alongside the personal address as extra context, not as a second
+  // destination: the contact form and every mailto still go to the personal one.
+  emailSchool: "l_renterialezano@fanshaweonline.ca",
   // NOTE: no `phone` here on purpose. It was never rendered, but it was still
   // compiled into the public JS bundle, so it was scrapeable. CV only.
 

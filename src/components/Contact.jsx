@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Github, Linkedin, FileDown, Copy, Check, Play, MapPin, Clock, BookOpen } from 'lucide-react';
+import { Mail, Github, Linkedin, FileDown, Copy, Check, Play, MapPin, Clock, BookOpen, GraduationCap } from 'lucide-react';
 import { SiHuggingface, SiLeetcode } from 'react-icons/si';
 // Font Awesome's Kaggle mark is the plain "k"; the Simple Icons one is the
 // curved logo, which is unreadable at 12px.
@@ -457,6 +457,17 @@ export default function Contact({ dark }) {
                   {/* Some people would rather copy the address than open a
                       mail client they do not use. */}
                   <CopyButton value={personal.email} dark={dark} t={t} />
+                </p>
+                {/* The school address is extra context, not a second inbox:
+                    the form and every other mailto still point at the personal
+                    one. */}
+                <p className="flex items-center gap-2 flex-wrap">
+                  <GraduationCap size={12} className={`${textMuted} shrink-0`} />
+                  <a href={`mailto:${personal.emailSchool}`}
+                     className={`break-all transition-colors ${dark ? 'hover:text-terminal-blue' : 'hover:text-[#0969da]'}`}>
+                    {personal.emailSchool}
+                  </a>
+                  <CopyButton value={personal.emailSchool} dark={dark} t={t} />
                 </p>
               </div>
             </div>
